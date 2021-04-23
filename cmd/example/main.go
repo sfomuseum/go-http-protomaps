@@ -38,7 +38,6 @@ func main() {
 	mux.Handle("/", index_handler)
 	
 	mux.Handle("/sfo.pmtiles", static_handler)
-	mux.Handle("/sfo.json", static_handler)		
 	
 	s, err := server.NewServer(ctx, *server_uri)
 
