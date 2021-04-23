@@ -25,6 +25,7 @@ func DefaultLeafletProtomapsOptions() *LeafletProtomapsOptions {
 		CSS: []string{},
 		JS: []string{
 			"/javascript/protomaps.min.js",
+			"/javascript/pmtiles.js",
 		},
 	}
 

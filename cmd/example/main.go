@@ -2,39 +2,19 @@ package main
 
 import (
 	"context"
+	"embed"
 	"flag"
-	"fmt"
 	"github.com/aaronland/go-http-server"
-	"github.com/sfomuseum/go-http-leaflet-geotag"
-	"github.com/sfomuseum/go-http-leaflet-geotag/templates/html"
-	"html/template"
+	"github.com/sfomuseum/go-http-leaflet-protomaps"
 	"log"
 	"net/http"
 )
 
-func PageHandler(templates *template.Template, t_name string) (http.Handler, error) {
+//go:embed index.html
+var htmlFS embed.FS
 
-	t := templates.Lookup(t_name)
-
-	if t == nil {
-		return nil, fmt.Errorf("Missing '%s' template", t_name)
-	}
-
-	fn := func(rsp http.ResponseWriter, req *http.Request) {
-
-		rsp.Header().Set("Content-type", "text/html")
-
-		err := t.Execute(rsp, nil)
-
-		if err != nil {
-			http.Error(rsp, err.Error(), http.StatusInternalServerError)
-		}
-
-		return
-	}
-
-	return http.HandlerFunc(fn), nil
-}
+// go:embed  sfo.json sfo.pmtiles
+var staticFS embed.FS
 
 func main() {
 
@@ -44,48 +24,28 @@ func main() {
 
 	ctx := context.Background()
 
-	t := template.New("example")
+	html_fs := http.FS(htmlFS)
+	html_handler := http.FileServer(html_fs)
 
-	t, err := t.ParseFS(html.FS, "*.html")
-
-	geotag_opts := geotag.DefaultLeafletGeotagOptions()
-
+	static_fs := http.FS(staticFS)
+	static_handler := http.FileServer(static_fs)
+	
 	mux := http.NewServeMux()
 
-	err = geotag.AppendAssetHandlers(mux)
+	err := protomaps.AppendAssetHandlers(mux)
 
 	if err != nil {
-		log.Fatalf("Failed to append leaflet-geotag asset handler, %v", err)
+		log.Fatalf("Failed to append leaflet-protomaps asset handler, %v", err)
 	}
 
-	camera_handler, err := PageHandler(t, "camera")
+	protomaps_opts := protomaps.DefaultLeafletProtomapsOptions()
+	
+	html_handler = protomaps.AppendResourcesHandler(html_handler, protomaps_opts)
 
-	if err != nil {
-		log.Fatalf("Failed to create camera handler, %v", err)
-	}
-
-	camera_handler = geotag.AppendResourcesHandler(camera_handler, geotag_opts)
-
-	mux.Handle("/camera/", camera_handler)
-
-	crosshair_handler, err := PageHandler(t, "crosshair")
-
-	if err != nil {
-		log.Fatalf("Failed to create crosshair handler, %v", err)
-	}
-
-	crosshair_handler = geotag.AppendResourcesHandler(crosshair_handler, geotag_opts)
-
-	mux.Handle("/crosshair/", crosshair_handler)
-
-	index_handler, err := PageHandler(t, "index")
-
-	if err != nil {
-		log.Fatalf("Failed to create index handler, %v", err)
-	}
-
-	mux.Handle("/", index_handler)
-
+	mux.Handle("/", html_handler)
+	mux.Handle("/sfo.pmtiles", static_handler)
+	mux.Handle("/sfo.json", static_handler)		
+	
 	s, err := server.NewServer(ctx, *server_uri)
 
 	if err != nil {
