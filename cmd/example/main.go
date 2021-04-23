@@ -10,10 +10,7 @@ import (
 	"net/http"
 )
 
-//go:embed index.html
-var htmlFS embed.FS
-
-// go:embed  sfo.json sfo.pmtiles
+//go:embed index.html sfo.json sfo.pmtiles
 var staticFS embed.FS
 
 func main() {
@@ -23,9 +20,6 @@ func main() {
 	flag.Parse()
 
 	ctx := context.Background()
-
-	html_fs := http.FS(htmlFS)
-	html_handler := http.FileServer(html_fs)
 
 	static_fs := http.FS(staticFS)
 	static_handler := http.FileServer(static_fs)
@@ -40,9 +34,9 @@ func main() {
 
 	protomaps_opts := protomaps.DefaultLeafletProtomapsOptions()
 	
-	html_handler = protomaps.AppendResourcesHandler(html_handler, protomaps_opts)
-
-	mux.Handle("/", html_handler)
+	index_handler := protomaps.AppendResourcesHandler(static_handler, protomaps_opts)
+	mux.Handle("/", index_handler)
+	
 	mux.Handle("/sfo.pmtiles", static_handler)
 	mux.Handle("/sfo.json", static_handler)		
 	
