@@ -12,3 +12,4 @@ Documentation remains to be written. In the meantime have a look at the [cmd/exa
 
 * https://protomaps.com/blog/new-way-to-make-maps/
 * https://github.com/protomaps/protomaps.js
+* https://github.com/aaronland/go-http-leaflet
