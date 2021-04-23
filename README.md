@@ -8,9 +8,6 @@ Go HTTP middleware for the Protomaps Leaflet package.
 
 Documentation remains to be written. In the meantime have a look at the [cmd/example/main.go](cmd/example/main.go) application.
 
-## Tools
-
-
 ## See also
 
 * https://protomaps.com/blog/new-way-to-make-maps/
