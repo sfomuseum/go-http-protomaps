@@ -10,7 +10,7 @@ import (
 	"net/http"
 )
 
-//go:embed index.html sfo.json sfo.pmtiles
+//go:embed index.html sfo.pmtiles
 var staticFS embed.FS
 
 func main() {
