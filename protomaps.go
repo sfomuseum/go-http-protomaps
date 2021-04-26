@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/aaronland/go-http-leaflet"
 	"github.com/aaronland/go-http-rewrite"
-	"github.com/sfomuseum/go-http-leaflet-protomaps/static"
+	"github.com/sfomuseum/go-http-protomaps/static"
 	"io/fs"
 	_ "log"
 	"net/http"
@@ -14,14 +14,15 @@ import (
 
 var INCLUDE_LEAFLET = true
 
-type LeafletProtomapsOptions struct {
+type ProtomapsOptions struct {
 	JS  []string
 	CSS []string
+	TileURL string
 }
 
-func DefaultLeafletProtomapsOptions() *LeafletProtomapsOptions {
+func DefaultProtomapsOptions() *ProtomapsOptions {
 
-	opts := &LeafletProtomapsOptions{
+	opts := &ProtomapsOptions{
 		CSS: []string{},
 		JS: []string{
 			"/javascript/protomaps.min.js",
@@ -32,7 +33,7 @@ func DefaultLeafletProtomapsOptions() *LeafletProtomapsOptions {
 	return opts
 }
 
-func AppendResourcesHandler(next http.Handler, opts *LeafletProtomapsOptions) http.Handler {
+func AppendResourcesHandler(next http.Handler, opts *ProtomapsOptions) http.Handler {
 
 	if INCLUDE_LEAFLET {
 		leaflet_opts := leaflet.DefaultLeafletOptions()
@@ -42,7 +43,7 @@ func AppendResourcesHandler(next http.Handler, opts *LeafletProtomapsOptions) ht
 	return AppendResourcesHandlerWithPrefix(next, opts, "")
 }
 
-func AppendResourcesHandlerWithPrefix(next http.Handler, opts *LeafletProtomapsOptions, prefix string) http.Handler {
+func AppendResourcesHandlerWithPrefix(next http.Handler, opts *ProtomapsOptions, prefix string) http.Handler {
 
 	if INCLUDE_LEAFLET {
 		leaflet_opts := leaflet.DefaultLeafletOptions()
@@ -52,6 +53,10 @@ func AppendResourcesHandlerWithPrefix(next http.Handler, opts *LeafletProtomapsO
 	js := opts.JS
 	css := opts.CSS
 
+	attrs := map[string]string {
+		"protomaps-tile-url": opts.TileURL,
+	}
+	
 	if prefix != "" {
 
 		for i, path := range js {
@@ -61,11 +66,19 @@ func AppendResourcesHandlerWithPrefix(next http.Handler, opts *LeafletProtomapsO
 		for i, path := range css {
 			css[i] = appendPrefix(prefix, path)
 		}
+
+		for k, path := range attrs {
+
+			if strings.HasSuffix(k, "-url") && !strings.HasPrefix(path, "http") {
+				attrs[k] = appendPrefix(prefix, path)
+			}
+		}		
 	}
 
 	ext_opts := &rewrite.AppendResourcesOptions{
 		JavaScript:  js,
 		Stylesheets: css,
+		DataAttributes: attrs,		
 	}
 
 	return rewrite.AppendResourcesHandler(next, ext_opts)
