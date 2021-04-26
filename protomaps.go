@@ -15,8 +15,8 @@ import (
 var INCLUDE_LEAFLET = true
 
 type ProtomapsOptions struct {
-	JS  []string
-	CSS []string
+	JS      []string
+	CSS     []string
 	TileURL string
 }
 
@@ -53,10 +53,10 @@ func AppendResourcesHandlerWithPrefix(next http.Handler, opts *ProtomapsOptions,
 	js := opts.JS
 	css := opts.CSS
 
-	attrs := map[string]string {
+	attrs := map[string]string{
 		"protomaps-tile-url": opts.TileURL,
 	}
-	
+
 	if prefix != "" {
 
 		for i, path := range js {
@@ -72,13 +72,13 @@ func AppendResourcesHandlerWithPrefix(next http.Handler, opts *ProtomapsOptions,
 			if strings.HasSuffix(k, "-url") && !strings.HasPrefix(path, "http") {
 				attrs[k] = appendPrefix(prefix, path)
 			}
-		}		
+		}
 	}
 
 	ext_opts := &rewrite.AppendResourcesOptions{
-		JavaScript:  js,
-		Stylesheets: css,
-		DataAttributes: attrs,		
+		JavaScript:     js,
+		Stylesheets:    css,
+		DataAttributes: attrs,
 	}
 
 	return rewrite.AppendResourcesHandler(next, ext_opts)
@@ -159,6 +159,34 @@ func AppendAssetHandlersWithPrefix(mux *http.ServeMux, prefix string) error {
 	}
 
 	return fs.WalkDir(static.FS, ".", walk_func)
+}
+
+// FileHandlerFromPath will take a path and create a http.FileServer handler
+// instance for the files in its root directory. The handler is returned with
+// a relative URI for the filename in 'path' to be assigned to a net/http
+// ServeMux instance.
+func FileHandlerFromPath(path string, prefix string) (string, http.Handler, error) {
+
+	abs_path, err := filepath.Abs(path)
+
+	if err != nil {
+		return "", nil, fmt.Errorf("Failed to determine absolute path for '%s', %v", path, err)
+	}
+
+	fname := filepath.Base(abs_path)
+	root := filepath.Dir(abs_path)
+
+	tile_dir := http.Dir(root)
+	tile_handler := http.FileServer(tile_dir)
+
+	tile_url := fmt.Sprintf("/%s", fname)
+
+	if prefix != "" {
+		tile_handler = http.StripPrefix(prefix, tile_handler)
+		tile_url = filepath.Join(prefix, fname)
+	}
+
+	return tile_url, tile_handler, nil
 }
 
 func appendPrefix(prefix string, path string) string {
