@@ -15,7 +15,7 @@
 	 var tile_url = document.body.getAttribute("data-protomaps-tile-url");
 	 
          const map = L.map('map');
-         const p = new pmtiles.PMTiles(tile_url);
+         const p = new pmtiles.PMTiles(tile_url, {"allow_200": true});
 	 
          p.metadata(m => {
              let bounds_str = m.bounds.split(',')
