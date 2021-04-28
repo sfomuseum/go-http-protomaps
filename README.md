@@ -101,6 +101,43 @@ $> ./bin/example -protomaps-tile-url file:///usr/local/data/sfo.pmtiles
 
 In the case of `file://` URLs the `example` application will create an `http.Dir` handler for the root folder of the URL (`/usr/local/data/)` and then route the filename (`/sfo.pmtiles`) to that handler.
 
+## AWS
+
+### S3
+
+If you are serving your Protomaps `.pmtiles` databases from an S3 bucket you'll need to make that you have `CORS` enabled for that bucket. For example:
+
+```
+[
+    {
+        "AllowedHeaders": [
+            "*"
+        ],
+        "AllowedMethods": [
+            "GET",
+            "HEAD"
+        ],
+        "AllowedOrigins": [
+            "*"
+        ],
+        "ExposeHeaders": [],
+        "MaxAgeSeconds": 3000
+    }
+]
+```
+
+_Be sure to allow the `HEAD` method. It took me a while to remember this was necessary the first time I set things up._
+
+### CloudFront
+
+If you are serving your Protomaps `.pmtiles` databases from a CloudFront endpoint you'll need to make sure you do the following:
+
+* Ensure that the `Allowed HTTP Methods` setting is configured to allow "GET, HEAD, OPTIONS".
+* Ensure that the `Cache Based on Selected Request Headers` setting is configured to use a "whitelist".
+* Add the following default headers to the whitelist: `Access-Control-Request-Headers`, `Access-Control-Request-Method`, `Origin`.
+* Add the following custom headers to the whitelist: `Range`.
+
+
 ## See also
 
 * https://protomaps.com/blog/new-way-to-make-maps/
