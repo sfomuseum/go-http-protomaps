@@ -12,6 +12,11 @@
         <div id="map"></div>
         <script type="text/javascript">
 
+	 // allow_200: necessary for servers (generally cloud providers)
+	 // that don't 206 for byte range requests - this needs to be set
+	 // in both the PMTiles and LeafletLayer constructors
+	 // https://github.com/protomaps/protomaps.js/issues/8
+
 	 var tile_url = document.body.getAttribute("data-protomaps-tile-url");
 	 
          const map = L.map('map');
@@ -20,7 +25,7 @@
          p.metadata(m => {
              let bounds_str = m.bounds.split(',')
              let bounds = [[+bounds_str[1],+bounds_str[0]],[+bounds_str[3],+bounds_str[2]]]
-             layer = new protomaps.LeafletLayer({url:tile_url, bounds:bounds})
+             layer = new protomaps.LeafletLayer({url:tile_url, bounds:bounds, allow_200:true})
              layer.addTo(map)
              map.fitBounds(bounds)
          });
