@@ -15,14 +15,9 @@
 	 var tile_url = document.body.getAttribute("data-protomaps-tile-url");
 	 
          const map = L.map('map');
-
 	 const p = new pmtiles.PMTiles(tile_url);
 
-	 console.log("P", p);
-	 
-	 p.metadata().then(m => {
-
-	    console.log("HELLO");
+	 p.metadata(m => {
 	     let bounds_str = m.bounds.split(',')
 	     let bounds = [[+bounds_str[1],+bounds_str[0]],[+bounds_str[3],+bounds_str[2]]]
 	     layer = new protomaps.LeafletLayer({url:p, bounds:bounds})
