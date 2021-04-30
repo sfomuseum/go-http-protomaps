@@ -31,7 +31,7 @@ func DefaultProtomapsOptions() *ProtomapsOptions {
 	opts := &ProtomapsOptions{
 		CSS: []string{},
 		JS: []string{
-			"/javascript/protomaps.min.js",
+			"/javascript/protomaps.js",
 			"/javascript/pmtiles.js",
 		},
 	}
