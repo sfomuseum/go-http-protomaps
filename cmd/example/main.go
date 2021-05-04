@@ -4,6 +4,7 @@ import (
 	"context"
 	"embed"
 	"flag"
+	"github.com/aaronland/go-http-leaflet"
 	"github.com/aaronland/go-http-server"
 	"github.com/sfomuseum/go-http-protomaps"
 	"log"
@@ -20,6 +21,7 @@ func main() {
 
 	tile_url := flag.String("protomaps-tile-url", "/sfo.pmtiles", "A custom file://, http:// or https:// URI pointing to a valid Protomaps tiles bundle.")
 
+	append_leaflet := flag.Bool("append-leaflet", true, "Append Leaflet.js assets and resources bundled with the go-http-protomaps package.")
 	flag.Parse()
 
 	ctx := context.Background()
@@ -27,7 +29,24 @@ func main() {
 	static_fs := http.FS(staticFS)
 	static_handler := http.FileServer(static_fs)
 
+	index_handler := static_handler
+
 	mux := http.NewServeMux()
+
+	if !*append_leaflet {
+
+		protomaps.APPEND_LEAFLET_RESOURCES = false
+		protomaps.APPEND_LEAFLET_ASSETS = false
+
+		leaflet_opts := leaflet.DefaultLeafletOptions()
+		index_handler = leaflet.AppendResourcesHandler(index_handler, leaflet_opts)
+
+		err := leaflet.AppendAssetHandlers(mux)
+
+		if err != nil {
+			log.Fatalf("Failed to append Leaflet asset handlers, %v", err)
+		}
+	}
 
 	err := protomaps.AppendAssetHandlers(mux)
 
@@ -67,7 +86,7 @@ func main() {
 	pm_opts := protomaps.DefaultProtomapsOptions()
 	pm_opts.TileURL = *tile_url
 
-	index_handler := protomaps.AppendResourcesHandler(static_handler, pm_opts)
+	index_handler = protomaps.AppendResourcesHandler(index_handler, pm_opts)
 	mux.Handle("/", index_handler)
 
 	s, err := server.NewServer(ctx, *server_uri)
