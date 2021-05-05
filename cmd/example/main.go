@@ -22,6 +22,7 @@ func main() {
 	tile_url := flag.String("protomaps-tile-url", "/sfo.pmtiles", "A custom file://, http:// or https:// URI pointing to a valid Protomaps tiles bundle.")
 
 	append_leaflet := flag.Bool("append-leaflet", true, "Append Leaflet.js assets and resources bundled with the go-http-protomaps package.")
+
 	flag.Parse()
 
 	ctx := context.Background()
@@ -39,6 +40,8 @@ func main() {
 		protomaps.APPEND_LEAFLET_ASSETS = false
 
 		leaflet_opts := leaflet.DefaultLeafletOptions()
+		leaflet_opts.EnableHash()
+
 		index_handler = leaflet.AppendResourcesHandler(index_handler, leaflet_opts)
 
 		err := leaflet.AppendAssetHandlers(mux)
@@ -85,6 +88,8 @@ func main() {
 
 	pm_opts := protomaps.DefaultProtomapsOptions()
 	pm_opts.TileURL = *tile_url
+
+	pm_opts.LeafletOptions.EnableHash()
 
 	index_handler = protomaps.AppendResourcesHandler(index_handler, pm_opts)
 	mux.Handle("/", index_handler)

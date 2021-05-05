@@ -26,16 +26,21 @@ type ProtomapsOptions struct {
 	CSS []string
 	// A URL for a specific PMTiles database to include as a 'data-protomaps-tile-url' attribute on the <body> tag.
 	TileURL string
+	// A leaflet.LeafletOptions struct
+	LeafletOptions *leaflet.LeafletOptions
 }
 
 // Return a *ProtomapsOptions struct with default paths and URIs.
 func DefaultProtomapsOptions() *ProtomapsOptions {
+
+	leaflet_opts := leaflet.DefaultLeafletOptions()
 
 	opts := &ProtomapsOptions{
 		CSS: []string{},
 		JS: []string{
 			"/javascript/protomaps.min.js",
 		},
+		LeafletOptions: leaflet_opts,
 	}
 
 	return opts
@@ -45,8 +50,7 @@ func DefaultProtomapsOptions() *ProtomapsOptions {
 func AppendResourcesHandler(next http.Handler, opts *ProtomapsOptions) http.Handler {
 
 	if APPEND_LEAFLET_RESOURCES {
-		leaflet_opts := leaflet.DefaultLeafletOptions()
-		next = leaflet.AppendResourcesHandler(next, leaflet_opts)
+		next = leaflet.AppendResourcesHandler(next, opts.LeafletOptions)
 	}
 
 	return AppendResourcesHandlerWithPrefix(next, opts, "")
@@ -56,8 +60,7 @@ func AppendResourcesHandler(next http.Handler, opts *ProtomapsOptions) http.Hand
 func AppendResourcesHandlerWithPrefix(next http.Handler, opts *ProtomapsOptions, prefix string) http.Handler {
 
 	if APPEND_LEAFLET_RESOURCES {
-		leaflet_opts := leaflet.DefaultLeafletOptions()
-		next = leaflet.AppendResourcesHandlerWithPrefix(next, leaflet_opts, prefix)
+		next = leaflet.AppendResourcesHandlerWithPrefix(next, opts.LeafletOptions, prefix)
 	}
 
 	js := opts.JS
