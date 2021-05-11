@@ -15,6 +15,10 @@
 	 var tile_url = document.body.getAttribute("data-protomaps-tile-url");
 	 
          const map = L.map('map');
+
+	 // var layer = new protomaps.LeafletLayer({url: tile_url});
+	 // layer.addTo(map);
+
 	 const p = new protomaps.PMTiles(tile_url);
 
 	 p.metadata().then(m => {
@@ -24,7 +28,7 @@
 	     layer.addTo(map)
 		 map.fitBounds(bounds)
 	 });
-
+	 
 	 new L.Hash(map);
         </script>
     </body>
