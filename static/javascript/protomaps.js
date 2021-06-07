@@ -1708,14 +1708,16 @@ var protomaps = (() => {
   // src/index.ts
   var src_exports = {};
   __export(src_exports, {
-    FillSymbolizer: () => FillSymbolizer,
+    CircleSymbolizer: () => CircleSymbolizer,
     Font: () => Font,
+    GroupSymbolizer: () => GroupSymbolizer,
     IconSymbolizer: () => IconSymbolizer,
     LeafletLayer: () => LeafletLayer,
     LineLabelSymbolizer: () => LineLabelSymbolizer,
     LineSymbolizer: () => LineSymbolizer,
     PMTiles: () => PMTiles,
     PolygonLabelSymbolizer: () => PolygonLabelSymbolizer,
+    PolygonSymbolizer: () => PolygonSymbolizer,
     Sprites: () => Sprites,
     Static: () => Static,
     TextSymbolizer: () => TextSymbolizer,
@@ -1951,6 +1953,8 @@ var protomaps = (() => {
           return true;
         });
         let result = yield this.p.getZxy(c.z, c.x, c.y);
+        if (!result)
+          throw new Error(`Tile ${c.z} ${c.x} ${c.y} not found in archive`);
         const controller = new AbortController();
         this.controllers.push([c.z, controller]);
         const signal = controller.signal;
@@ -2033,9 +2037,7 @@ var protomaps = (() => {
             }).catch((e) => {
               this.inflight.get(idx).forEach((f) => f[1](e));
               this.inflight.delete(idx);
-              if (e.name !== "AbortError") {
-                reject(e);
-              }
+              reject(e);
             });
           }
         });
@@ -2215,7 +2217,7 @@ var protomaps = (() => {
     let start = performance.now();
     let ctx;
     if (!state.ctx) {
-      ctx = state.element.getContext("2d", {alpha: false});
+      ctx = state.element.getContext("2d");
       state.ctx = ctx;
     } else {
       ctx = state.ctx;
@@ -2224,13 +2226,13 @@ var protomaps = (() => {
       return;
     }
     ctx.setTransform(state.tile_size / 256, 0, 0, state.tile_size / 256, 0, 0);
-    ctx.save();
-    ctx.fillStyle = "rgba(0,0,0,1)";
-    ctx.globalCompositeOperation = "destination-out";
-    ctx.fillRect(0, 0, 256, 256);
-    ctx.restore();
-    ctx.miterLimit = 1;
+    ctx.clearRect(0, 0, 256, 256);
+    ctx.miterLimit = 2;
     for (var rule of rules) {
+      if (rule.minzoom && paint_data.z < rule.minzoom)
+        continue;
+      if (rule.maxzoom && paint_data.z > rule.maxzoom)
+        continue;
       var layer = paint_data.data[rule.dataLayer];
       if (layer === void 0)
         continue;
@@ -2245,16 +2247,16 @@ var protomaps = (() => {
           if (!rule.filter(feature.properties))
             continue;
         }
-        rule.symbolizer.draw(ctx, feature.geom, paint_data.transform);
+        rule.symbolizer.draw(ctx, feature, paint_data.transform);
       }
     }
     let matches = label_data.data.search(label_data.bbox);
     for (var label of matches) {
       label.draw(ctx, label.anchor.clone().mult(label_data.transform.scale).add(label_data.transform.translate));
       if (debug) {
-        ctx.lineWidth = 1;
-        ctx.strokeStyle = "black";
-        ctx.fillStyle = "black";
+        ctx.lineWidth = 0.5;
+        ctx.strokeStyle = debug;
+        ctx.fillStyle = debug;
         ctx.globalAlpha = 1;
         let tl = new import_point_geometry2.default(label.minX, label.minY).mult(label_data.transform.scale).add(label_data.transform.translate);
         let br = new import_point_geometry2.default(label.maxX, label.maxY).mult(label_data.transform.scale).add(label_data.transform.translate);
@@ -2269,13 +2271,19 @@ var protomaps = (() => {
   // src/labeler.ts
   var import_point_geometry3 = __toModule(require_point_geometry());
   var import_rbush = __toModule(require_rbush_min());
+  var LabelAbortError = class extends Error {
+    constructor(message) {
+      super(message);
+      this.name = "AbortError";
+    }
+  };
   var Labeler = class {
-    constructor(view, z, scratch, label_style3) {
+    constructor(view, z, scratch, label_style) {
       this.tree = new import_rbush.default();
       this.view = view;
       this.z = z;
       this.scratch = scratch;
-      this.labelStyle = label_style3;
+      this.labelStyle = label_style;
     }
     layout(c, data) {
       let start = performance.now();
@@ -2287,6 +2295,10 @@ var protomaps = (() => {
       let extent = this.view.dataResolution;
       for (var [order, rule] of this.labelStyle.entries()) {
         if (rule.visible == false)
+          continue;
+        if (rule.minzoom && this.z < rule.minzoom)
+          continue;
+        if (rule.maxzoom && this.z > rule.maxzoom)
           continue;
         let layer = data[rule.dataLayer];
         if (layer === void 0)
@@ -2353,8 +2365,8 @@ var protomaps = (() => {
     }
   };
   var Superlabeler = class extends Labeler {
-    constructor(view, z, scratch, label_style3) {
-      super(view, z, scratch, label_style3);
+    constructor(view, z, scratch, label_style) {
+      super(view, z, scratch, label_style);
       this.active = true;
     }
     get() {
@@ -2374,8 +2386,8 @@ var protomaps = (() => {
     }
   };
   var Sublabeler = class extends Labeler {
-    constructor(view, z, scratch, label_style3, listener) {
-      super(view, z, scratch, label_style3);
+    constructor(view, z, scratch, label_style, listener) {
+      super(view, z, scratch, label_style);
       this.active = false;
       this.current = new Set();
       this.inflight = new Map();
@@ -2429,9 +2441,10 @@ var protomaps = (() => {
                 });
               }
             } else {
-              this.inflight.get(idx).forEach((f) => f[1]("Cancel label"));
+              let error = new LabelAbortError("cancel");
+              this.inflight.get(idx).forEach((f) => f[1](error));
               this.inflight.delete(idx);
-              reject("Cancel label");
+              reject(error);
             }
           }).catch((reason) => {
             this.inflight.get(idx).forEach((f) => f[1](reason));
@@ -2469,11 +2482,11 @@ var protomaps = (() => {
     }
   };
   var Labelers = class {
-    constructor(view, scratch, label_style3, listener) {
+    constructor(view, scratch, label_style, listener) {
       this.labelers = new Map();
       this.view = view;
       this.scratch = scratch;
-      this.labelStyle = label_style3;
+      this.labelStyle = label_style;
       this.listener = listener;
     }
     get(display_tile) {
@@ -2495,11 +2508,48 @@ var protomaps = (() => {
   var import_polylabel = __toModule(require_polylabel());
 
   // src/text.ts
+  function linebreak(str, maxlen) {
+    if (str.length <= 15)
+      return [str];
+    let space_before = str.lastIndexOf(" ", 14);
+    let space_after = str.indexOf(" ", 14);
+    if (space_before == -1 && space_after == -1) {
+      return [str];
+    }
+    let first;
+    let after;
+    if (space_after == -1 || 14 - space_before < space_after - 14) {
+      first = str.substring(0, space_before);
+      after = str.substring(space_before + 1, str.length);
+    } else {
+      first = str.substring(0, space_after);
+      after = str.substring(space_after + 1, str.length);
+    }
+    return [first, ...linebreak(after, maxlen)];
+  }
   var CJK_CHARS = "\u3005-\u3007\u3021-\u3029\u3031-\u3035\u3038-\u303C\u3220-\u3229\u3248-\u324F\u3251-\u325F\u3280-\u3289\u32B1-\u32BF\u3400-\u4DB5\u4E00-\u9FEA\uF900-\uFA6D\uFA70-\uFAD9\u2000";
   var cjk_test = new RegExp("^[" + CJK_CHARS + "]+$");
   function isFunction(obj) {
     return !!(obj && obj.constructor && obj.call && obj.apply);
   }
+  var TextSpec = class {
+    constructor(options = {}) {
+      this.properties = options.properties || ["name"];
+      this.textTransform = options.textTransform;
+    }
+    str(z, f) {
+      var retval;
+      for (let property of this.properties) {
+        if (f.hasOwnProperty(property)) {
+          retval = f[property];
+          break;
+        }
+      }
+      if (retval && this.textTransform === "uppercase")
+        retval = retval.toUpperCase();
+      return retval;
+    }
+  };
   var FontSpec = class {
     constructor(options) {
       if (options.font) {
@@ -2574,7 +2624,7 @@ var protomaps = (() => {
     fn(canvas, ctx);
     return canvas;
   };
-  var FillSymbolizer = class {
+  var PolygonSymbolizer = class {
     constructor(options) {
       this.fill = options.fill || "#000000";
       this.opacity = options.opacity || 1;
@@ -2588,9 +2638,9 @@ var protomaps = (() => {
       }
       ctx.globalAlpha = this.opacity;
     }
-    draw(ctx, geom, transform) {
+    draw(ctx, feature, transform) {
       ctx.beginPath();
-      for (var poly of geom) {
+      for (var poly of feature.geom) {
         for (var p = 0; p < poly.length - 1; p++) {
           let pt = poly[p].mult(transform.scale).add(transform.translate);
           if (p == 0)
@@ -2605,7 +2655,7 @@ var protomaps = (() => {
   function arr(base, a) {
     return (z) => {
       let b = z - base;
-      if (b > 0 && b < a.length) {
+      if (b >= 0 && b < a.length) {
         return a[b];
       }
       return 0;
@@ -2633,19 +2683,27 @@ var protomaps = (() => {
       this.color = options.color || "#000000";
       this.width = options.width || 1;
       this.opacity = options.opacity || 1;
+      this.skip = false;
+      this.dash = options.dash;
+      this.dashColor = options.dashColor || "black";
+      this.dashWidth = options.dashWidth || 1;
     }
     before(ctx, z) {
       ctx.strokeStyle = this.color;
       ctx.globalAlpha = this.opacity;
       if (isFunction2(this.width) && this.width.length == 1) {
-        ctx.lineWidth = this.width(z);
+        let width = this.width(z);
+        this.skip = width === 0;
+        ctx.lineWidth = width;
       } else {
         ctx.lineWidth = this.width;
       }
     }
-    draw(ctx, geom, transform) {
+    draw(ctx, feature, transform) {
+      if (this.skip)
+        return;
       ctx.beginPath();
-      for (var ls of geom) {
+      for (var ls of feature.geom) {
         for (var p = 0; p < ls.length; p++) {
           let pt = ls[p].mult(transform.scale).add(transform.translate);
           if (p == 0)
@@ -2655,6 +2713,14 @@ var protomaps = (() => {
         }
       }
       ctx.stroke();
+      if (this.dash) {
+        ctx.save();
+        ctx.lineWidth = this.dashWidth;
+        ctx.strokeStyle = this.dashColor;
+        ctx.setLineDash(this.dash);
+        ctx.stroke();
+        ctx.restore();
+      }
     }
   };
   var IconSymbolizer = class {
@@ -2679,33 +2745,99 @@ var protomaps = (() => {
       return {anchor, bbox, draw};
     }
   };
+  var CircleSymbolizer = class {
+    constructor(options) {
+      this.radius = options.radius || 3;
+      this.fill = options.fill || "black";
+      this.stroke = options.stroke || "white";
+      this.width = options.width || 0;
+    }
+    stash(scratch, feature, zoom) {
+      let pt = feature.geom[0];
+      let anchor = new import_point_geometry4.default(feature.geom[0][0].x, feature.geom[0][0].y);
+      let bbox = {
+        minX: -20,
+        minY: -20,
+        maxX: 20,
+        maxY: 20
+      };
+      let draw = (ctx, a) => {
+        ctx.globalAlpha = 1;
+        if (this.width > 0) {
+          ctx.fillStyle = this.stroke;
+          ctx.beginPath();
+          ctx.arc(a.x, a.y, this.radius + this.width, 0, 2 * Math.PI);
+          ctx.fill();
+        }
+        ctx.fillStyle = this.fill;
+        ctx.beginPath();
+        ctx.arc(a.x, a.y, this.radius, 0, 2 * Math.PI);
+        ctx.fill();
+      };
+      return {anchor, bbox, draw};
+    }
+  };
+  var mergeBbox = (b1, b2) => {
+    return {
+      minX: Math.min(b1.minX, b2.minX),
+      minY: Math.min(b1.minY, b2.minY),
+      maxX: Math.max(b1.maxX, b2.maxX),
+      maxY: Math.max(b1.maxY, b2.maxY)
+    };
+  };
+  var GroupSymbolizer = class {
+    constructor(list) {
+      this.list = list;
+    }
+    stash(scratch, feature, zoom) {
+      var result = this.list[0].stash(scratch, feature, zoom);
+      let anchor = result.anchor;
+      let bbox = result.bbox;
+      let draws = [result.draw];
+      for (let i = 1; i < this.list.length; i++) {
+        result = this.list[i].stash(scratch, feature, zoom);
+        if (!result)
+          return null;
+        bbox = mergeBbox(bbox, result.bbox);
+        draws.push(result.draw);
+      }
+      let draw = (ctx, a) => {
+        draws.forEach((d) => d(ctx, a));
+      };
+      return {anchor, bbox, draw};
+    }
+  };
   var TextSymbolizer = class {
     constructor(options) {
-      this.fill = options.fill;
       this.font = new FontSpec(options);
+      this.text = new TextSpec(options);
+      this.fill = options.fill;
       this.property = options.property || "name";
       this.stroke = options.stroke || "black";
       this.width = options.width || 0;
       this.align = options.align || "left";
+      this.offset = options.offset || 0;
+      this.textTransform = options.textTransform;
     }
     stash(scratch, feature, zoom) {
-      let property = feature.properties[this.property];
-      if (!property)
-        return null;
       if (feature.geomType == GeomType.Point) {
         let anchor = new import_point_geometry4.default(feature.geom[0][0].x, feature.geom[0][0].y);
         let font = this.font.str(zoom, feature.properties);
+        let property = this.text.str(zoom, feature.properties);
+        if (!property)
+          return null;
         scratch.font = font;
         let metrics = scratch.measureText(property);
         let p = 2;
         let width = metrics.width;
         let ascent = metrics.actualBoundingBoxAscent;
         let descent = metrics.actualBoundingBoxDescent;
+        let offset = this.offset;
         let bbox = {
-          minX: 0,
-          minY: -ascent * 4,
-          maxX: width * 4,
-          maxY: descent * 4
+          minX: offset * 4,
+          minY: (-offset - ascent) * 4,
+          maxX: (offset + width) * 4,
+          maxY: (-offset + descent) * 4
         };
         let b = [-p, -ascent - p, width + p * 2, ascent + descent + p * 2];
         let textX = 0;
@@ -2725,10 +2857,10 @@ var protomaps = (() => {
           if (this.width) {
             ctx.lineWidth = this.width;
             ctx.strokeStyle = this.stroke;
-            ctx.strokeText(property, a.x + textX, a.y);
+            ctx.strokeText(property, a.x + textX + offset, a.y - offset);
           }
           ctx.fillStyle = this.fill;
-          ctx.fillText(property, a.x + textX, a.y);
+          ctx.fillText(property, a.x + textX + offset, a.y - offset);
         };
         return {anchor, bbox, draw};
       }
@@ -2736,15 +2868,17 @@ var protomaps = (() => {
   };
   var LineLabelSymbolizer = class {
     constructor(options) {
+      this.font = new FontSpec(options);
+      this.text = new TextSpec(options);
       this.fill = options.fill || "black";
       this.stroke = options.stroke || "black";
       this.width = options.width || 0;
-      this.font = options.font || "12px sans-serif";
     }
-    stash(scratch, feature) {
-      let name = feature.properties["name"];
+    stash(scratch, feature, zoom) {
+      let font = this.font.str(zoom, feature.properties);
+      let name = this.text.str(zoom, feature.properties);
       if (!name)
-        return void 0;
+        return null;
       let fbbox = feature.bbox;
       let area = (fbbox[3] - fbbox[1]) * (fbbox[2] - fbbox[0]);
       if (area < 100)
@@ -2795,52 +2929,75 @@ var protomaps = (() => {
   };
   var PolygonLabelSymbolizer = class {
     constructor(options) {
+      this.font = new FontSpec(options);
+      this.text = new TextSpec(options);
       this.fill = options.fill || "black";
-      this.font = options.font || "16px sans-serif";
+      this.stroke = options.stroke || "black";
+      this.width = options.width || 0;
     }
-    stash(scratch, feature) {
+    stash(scratch, feature, zoom) {
       let fbbox = feature.bbox;
       let area = (fbbox[3] - fbbox[1]) * (fbbox[2] - fbbox[0]);
       if (area < 2e5)
         return void 0;
-      let property = feature.properties["name"];
+      let property = this.text.str(zoom, feature.properties);
       if (!property)
         return null;
       let first_poly = feature.geom[0];
       let found = (0, import_polylabel.default)([first_poly.map((c) => [c.x, c.y])]);
       let anchor = new import_point_geometry4.default(found[0], found[1]);
-      scratch.font = this.font;
-      let metrics = scratch.measureText(property);
+      let font = this.font.str(zoom, feature.properties);
+      scratch.font = font;
+      let lines = linebreak(property);
+      let lineHeight = 14;
+      var longestLine;
+      var longestLineLen = 0;
+      for (let line of lines) {
+        if (line.length > longestLineLen) {
+          longestLineLen = line.length;
+          longestLine = line;
+        }
+      }
+      let metrics = scratch.measureText(longestLine);
       let width = metrics.width;
       let bbox = {
         minX: -width * 4 / 2,
         minY: -metrics.actualBoundingBoxAscent * 4,
         maxX: width * 4 / 2,
-        maxY: metrics.actualBoundingBoxDescent * 4
+        maxY: (lineHeight * lines.length - metrics.actualBoundingBoxAscent) * 4
       };
       let fill = this.fill;
       let draw = (ctx, a) => {
         ctx.globalAlpha = 1;
-        ctx.fillStyle = fill;
-        ctx.font = this.font;
-        ctx.fillText(property, a.x - width / 2, a.y);
+        ctx.font = font;
+        var y = 0;
+        for (let line of lines) {
+          if (this.width) {
+            ctx.lineWidth = this.width;
+            ctx.strokeStyle = this.stroke;
+            ctx.strokeText(line, a.x - width / 2, a.y + y);
+          }
+          ctx.fillStyle = fill;
+          ctx.fillText(line, a.x - width / 2, a.y + y);
+          y += lineHeight;
+        }
       };
       return {anchor, bbox, draw};
     }
   };
 
   // src/default_style/style.ts
-  var paintStyle = (params) => {
+  var paintRules = (params) => {
     return [
       {
         dataLayer: "earth",
-        symbolizer: new FillSymbolizer({
+        symbolizer: new PolygonSymbolizer({
           fill: params.earth
         })
       },
       {
         dataLayer: "natural",
-        symbolizer: new FillSymbolizer({
+        symbolizer: new PolygonSymbolizer({
           fill: params.glacier
         }),
         filter: (f) => {
@@ -2849,7 +3006,7 @@ var protomaps = (() => {
       },
       {
         dataLayer: "landuse",
-        symbolizer: new FillSymbolizer({
+        symbolizer: new PolygonSymbolizer({
           fill: params.residential
         }),
         filter: (f) => {
@@ -2858,7 +3015,7 @@ var protomaps = (() => {
       },
       {
         dataLayer: "landuse",
-        symbolizer: new FillSymbolizer({
+        symbolizer: new PolygonSymbolizer({
           fill: params.hospital
         }),
         filter: (f) => {
@@ -2867,7 +3024,7 @@ var protomaps = (() => {
       },
       {
         dataLayer: "landuse",
-        symbolizer: new FillSymbolizer({
+        symbolizer: new PolygonSymbolizer({
           fill: params.cemetery
         }),
         filter: (f) => {
@@ -2876,7 +3033,7 @@ var protomaps = (() => {
       },
       {
         dataLayer: "landuse",
-        symbolizer: new FillSymbolizer({
+        symbolizer: new PolygonSymbolizer({
           fill: params.school
         }),
         filter: (f) => {
@@ -2885,7 +3042,7 @@ var protomaps = (() => {
       },
       {
         dataLayer: "landuse",
-        symbolizer: new FillSymbolizer({
+        symbolizer: new PolygonSymbolizer({
           fill: params.industrial
         }),
         filter: (f) => {
@@ -2894,7 +3051,7 @@ var protomaps = (() => {
       },
       {
         dataLayer: "natural",
-        symbolizer: new FillSymbolizer({
+        symbolizer: new PolygonSymbolizer({
           fill: params.wood
         }),
         filter: (f) => {
@@ -2903,7 +3060,7 @@ var protomaps = (() => {
       },
       {
         dataLayer: "landuse",
-        symbolizer: new FillSymbolizer({
+        symbolizer: new PolygonSymbolizer({
           fill: params.grass
         }),
         filter: (f) => {
@@ -2912,7 +3069,7 @@ var protomaps = (() => {
       },
       {
         dataLayer: "landuse",
-        symbolizer: new FillSymbolizer({
+        symbolizer: new PolygonSymbolizer({
           fill: params.park
         }),
         filter: (f) => {
@@ -2921,13 +3078,13 @@ var protomaps = (() => {
       },
       {
         dataLayer: "water",
-        symbolizer: new FillSymbolizer({
+        symbolizer: new PolygonSymbolizer({
           fill: params.water
         })
       },
       {
         dataLayer: "natural",
-        symbolizer: new FillSymbolizer({
+        symbolizer: new PolygonSymbolizer({
           fill: params.sand
         }),
         filter: (f) => {
@@ -2936,7 +3093,7 @@ var protomaps = (() => {
       },
       {
         dataLayer: "buildings",
-        symbolizer: new FillSymbolizer({
+        symbolizer: new PolygonSymbolizer({
           fill: params.buildings
         })
       },
@@ -3030,13 +3187,13 @@ var protomaps = (() => {
       },
       {
         dataLayer: "mask",
-        symbolizer: new FillSymbolizer({
+        symbolizer: new PolygonSymbolizer({
           fill: params.mask
         })
       }
     ];
   };
-  var labelStyle = (params) => {
+  var labelRules = (params) => {
     return [
       {
         dataLayer: "places",
@@ -3168,14 +3325,14 @@ var protomaps = (() => {
     roadsLabel: "#888888",
     poisLabel: "#606060"
   };
-  var paint_style = paintStyle(light);
-  var label_style = labelStyle(light);
+  var paint_rules = paintRules(light);
+  var label_rules = labelRules(light);
 
   // src/frontends/static.ts
   var Static = class {
     constructor(options) {
-      this.paint_style = options.paint_style || paint_style;
-      this.label_style = options.label_style || label_style;
+      this.paint_rules = options.paint_rules || paint_rules;
+      this.label_rules = options.label_rules || label_rules;
       let cache = new TileCache(new ZxySource(options.url));
       this.view = new Superview(cache, 14, 4096);
       this.debug = options.debug || false;
@@ -3186,7 +3343,7 @@ var protomaps = (() => {
         let paint_datas = yield this.view.get();
         let label_data = yield labeler.get();
         for (let paint_data of paint_datas) {
-          let p = painter({ctx}, "key", paint_data, label_data, this.paint_style, false);
+          let p = painter({ctx}, "key", paint_data, label_data, this.paint_rules, false);
         }
       });
     }
@@ -3227,12 +3384,13 @@ var protomaps = (() => {
     roadsLabel: "#C4C4C4",
     poisLabel: "#959393"
   };
-  var paint_style2 = paintStyle(dark);
-  var label_style2 = labelStyle(dark);
+  var paint_rules2 = paintRules(dark);
+  var label_rules2 = labelRules(dark);
 
   // src/frontends/leaflet.ts
   var CanvasPool = class {
-    constructor() {
+    constructor(lang) {
+      this.lang = lang;
       this.unused = [];
     }
     get(tile_size, clickHandler) {
@@ -3244,6 +3402,7 @@ var protomaps = (() => {
       let element = L.DomUtil.create("canvas", "leaflet-tile");
       element.width = tile_size;
       element.height = tile_size;
+      element.lang = this.lang;
       return element;
     }
     put(elem) {
@@ -3264,8 +3423,8 @@ var protomaps = (() => {
       if (options.noWrap && !options.bounds)
         options.bounds = [[-90, -180], [90, 180]];
       super(options);
-      this.paint_style = options.paint_style || (options.dark ? paint_style2 : paint_style);
-      this.label_style = options.label_style || (options.dark ? label_style2 : label_style);
+      this.paint_rules = options.paint_rules || (options.dark ? paint_rules2 : paint_rules);
+      this.label_rules = options.label_rules || (options.dark ? label_rules2 : label_rules);
       let source;
       if (options.url.url) {
         source = new PmtilesSource(options.url);
@@ -3277,8 +3436,7 @@ var protomaps = (() => {
       this.tasks = options.tasks || [];
       let cache = new TileCache(source);
       this.view = new Subview(cache, 14, 4096, 2, 256);
-      this.debug = options.debug || false;
-      this.lang = options.lang;
+      this.debug = options.debug;
       let scratch = document.createElement("canvas").getContext("2d");
       this.scratch = scratch;
       this.knockoutTiles = (tiles) => {
@@ -3286,14 +3444,14 @@ var protomaps = (() => {
           this.rerenderTile(t);
         });
       };
-      this.labelers = new Labelers(this.view, this.scratch, this.label_style, this.knockoutTiles);
+      this.labelers = new Labelers(this.view, this.scratch, this.label_rules, this.knockoutTiles);
       this.tile_size = 256 * window.devicePixelRatio;
-      this.pool = new CanvasPool();
+      this.pool = new CanvasPool(options.lang);
       this._onClick = null;
     }
     setDefaultStyle(dark2) {
-      this.paint_style = dark2 ? paint_style2 : paint_style;
-      this.label_style = dark2 ? label_style2 : label_style;
+      this.paint_rules = dark2 ? paint_rules2 : paint_rules;
+      this.label_rules = dark2 ? label_rules2 : label_rules;
     }
     onClick(callback) {
       this._onClick = callback;
@@ -3302,8 +3460,24 @@ var protomaps = (() => {
     }) {
       return __async(this, null, function* () {
         let state = {element, tile_size: this.tile_size, ctx: null};
-        let paint_data = yield this.view.get(coords);
-        let label_data = yield this.labelers.get(coords);
+        var paint_data, label_data;
+        try {
+          paint_data = yield this.view.get(coords);
+        } catch (e) {
+          if (e.name == "AbortError")
+            return;
+          else
+            throw e;
+        }
+        yield Promise.allSettled(this.tasks);
+        try {
+          label_data = yield this.labelers.get(coords);
+        } catch (e) {
+          if (e.name == "AbortError")
+            return;
+          else
+            throw e;
+        }
         if (!this._map) {
           return;
         }
@@ -3311,30 +3485,26 @@ var protomaps = (() => {
         var pixelBounds = this._getTiledPixelBounds(center), tileRange = this._pxBoundsToTileRange(pixelBounds), tileCenter = tileRange.getCenter();
         let priority = coords.distanceTo(tileCenter) * 5;
         yield timer(priority);
-        yield Promise.all(this.tasks);
-        let painting_time = painter(state, key, paint_data, label_data, this.paint_style, this.debug);
+        let painting_time = painter(state, key, paint_data, label_data, this.paint_rules, this.debug);
         if (this.debug) {
           let ctx = state.ctx;
           if (!ctx)
             return;
           let data_tile = this.view.dataTile(coords);
           ctx.save();
-          ctx.fillStyle = "black";
-          ctx.globalAlpha = 0.5;
-          ctx.fillStyle = "#000";
-          ctx.font = "800 12px sans-serif";
+          ctx.fillStyle = this.debug;
+          ctx.font = "600 12px sans-serif";
           ctx.fillText(coords.z + " " + coords.x + " " + coords.y, 4, 14);
+          ctx.font = "200 12px sans-serif";
           if ((data_tile.x % 2 + data_tile.y % 2) % 2 == 0) {
-            ctx.fillStyle = "black";
-          } else {
-            ctx.fillStyle = "blue";
+            ctx.font = "200 italic 12px sans-serif";
           }
           ctx.fillText(data_tile.z + " " + data_tile.x + " " + data_tile.y, 4, 28);
-          ctx.fillStyle = "red";
           if (painting_time > 8) {
             ctx.fillText(painting_time.toFixed() + " ms", 4, 42);
           }
-          ctx.strokeStyle = "#000";
+          ctx.strokeStyle = this.debug;
+          ctx.lineWidth = 0.5;
           ctx.strokeRect(0, 0, 256, 256);
           ctx.restore();
         }
@@ -3350,7 +3520,7 @@ var protomaps = (() => {
       }
     }
     clearLayout() {
-      this.labelers = new Labelers(this.view, this.scratch, this.label_style, this.knockoutTiles);
+      this.labelers = new Labelers(this.view, this.scratch, this.label_rules, this.knockoutTiles);
     }
     rerenderTiles() {
       for (var unwrapped_k in this._tiles) {
@@ -3459,8 +3629,8 @@ var protomaps = (() => {
     }
   }
   function json_style(obj) {
-    let paint_style3 = [];
-    let label_style3 = [];
+    let paint_style = [];
+    let label_style = [];
     let refs = new Map();
     for (var layer of obj.layers) {
       refs.set(layer.id, layer);
@@ -3481,7 +3651,7 @@ var protomaps = (() => {
         filter = filterFn(layer.filter);
       }
       if (layer.type == "fill") {
-        paint_style3.push({
+        paint_style.push({
           dataLayer: layer["source-layer"],
           filter,
           symbolizer: new FillSymbolizer({
@@ -3490,7 +3660,7 @@ var protomaps = (() => {
           })
         });
       } else if (layer.type == "line") {
-        paint_style3.push({
+        paint_style.push({
           dataLayer: layer["source-layer"],
           filter,
           symbolizer: new LineSymbolizer({
@@ -3500,7 +3670,7 @@ var protomaps = (() => {
         });
       } else if (layer.type == "symbol") {
         if (layer.layout["symbol-placement"] == "line") {
-          label_style3.push({
+          label_style.push({
             dataLayer: layer["source-layer"],
             filter,
             symbolizer: new LineLabelSymbolizer({
@@ -3510,7 +3680,7 @@ var protomaps = (() => {
             })
           });
         } else {
-          label_style3.push({
+          label_style.push({
             dataLayer: layer["source-layer"],
             filter,
             symbolizer: new TextSymbolizer({
@@ -3523,7 +3693,7 @@ var protomaps = (() => {
         }
       }
     }
-    return {paint_style: paint_style3, label_style: label_style3};
+    return {paint_style, label_style};
   }
 
   // node_modules/protosprites/index.js
