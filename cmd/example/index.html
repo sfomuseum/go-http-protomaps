@@ -16,17 +16,15 @@
 	 
          const map = L.map('map');
 
-	 // var layer = new protomaps.LeafletLayer({url: tile_url});
-	 // layer.addTo(map);
-
 	 const p = new protomaps.PMTiles(tile_url);
 
 	 p.metadata().then(m => {
 	     let bounds_str = m.bounds.split(',')
 	     let bounds = [[+bounds_str[1],+bounds_str[0]],[+bounds_str[3],+bounds_str[2]]]
-	     layer = new protomaps.LeafletLayer({url:p, bounds:bounds})
-	     layer.addTo(map)
-		 map.fitBounds(bounds)
+
+	     var layer = protomaps.leafletLayer({url: tile_url, bounds:bounds});
+	     layer.addTo(map);	     
+	     map.fitBounds(bounds)
 	 });
 	 
 	 new L.Hash(map);
