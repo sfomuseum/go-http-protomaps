@@ -39,28 +39,24 @@ var protomaps = (() => {
   var __toModule = (module) => {
     return __reExport(__markAsModule(__defProp(module != null ? __create(__getProtoOf(module)) : {}, "default", module && module.__esModule && "default" in module ? { get: () => module.default, enumerable: true } : { value: module, enumerable: true })), module);
   };
-  var __publicField = (obj, key, value) => {
-    __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
-    return value;
-  };
   var __async = (__this, __arguments, generator) => {
     return new Promise((resolve, reject) => {
       var fulfilled = (value) => {
         try {
-          step(generator.next(value));
+          step2(generator.next(value));
         } catch (e2) {
           reject(e2);
         }
       };
       var rejected = (value) => {
         try {
-          step(generator.throw(value));
+          step2(generator.throw(value));
         } catch (e2) {
           reject(e2);
         }
       };
-      var step = (x) => x.done ? resolve(x.value) : Promise.resolve(x.value).then(fulfilled, rejected);
-      step((generator = generator.apply(__this, __arguments)).next());
+      var step2 = (x2) => x2.done ? resolve(x2.value) : Promise.resolve(x2.value).then(fulfilled, rejected);
+      step2((generator = generator.apply(__this, __arguments)).next());
     });
   };
 
@@ -68,14 +64,14 @@ var protomaps = (() => {
   var require_point_geometry = __commonJS({
     "node_modules/@mapbox/point-geometry/index.js"(exports, module) {
       "use strict";
-      module.exports = Point7;
-      function Point7(x, y) {
-        this.x = x;
+      module.exports = Point9;
+      function Point9(x2, y) {
+        this.x = x2;
         this.y = y;
       }
-      Point7.prototype = {
+      Point9.prototype = {
         clone: function() {
-          return new Point7(this.x, this.y);
+          return new Point9(this.x, this.y);
         },
         add: function(p2) {
           return this.clone()._add(p2);
@@ -135,12 +131,12 @@ var protomaps = (() => {
         angleWith: function(b) {
           return this.angleWithSep(b.x, b.y);
         },
-        angleWithSep: function(x, y) {
-          return Math.atan2(this.x * y - this.y * x, this.x * x + this.y * y);
+        angleWithSep: function(x2, y) {
+          return Math.atan2(this.x * y - this.y * x2, this.x * x2 + this.y * y);
         },
         _matMult: function(m) {
-          var x = m[0] * this.x + m[1] * this.y, y = m[2] * this.x + m[3] * this.y;
-          this.x = x;
+          var x2 = m[0] * this.x + m[1] * this.y, y = m[2] * this.x + m[3] * this.y;
+          this.x = x2;
           this.y = y;
           return this;
         },
@@ -185,14 +181,14 @@ var protomaps = (() => {
           return this;
         },
         _rotate: function(angle) {
-          var cos = Math.cos(angle), sin = Math.sin(angle), x = cos * this.x - sin * this.y, y = sin * this.x + cos * this.y;
-          this.x = x;
+          var cos = Math.cos(angle), sin = Math.sin(angle), x2 = cos * this.x - sin * this.y, y = sin * this.x + cos * this.y;
+          this.x = x2;
           this.y = y;
           return this;
         },
         _rotateAround: function(angle, p2) {
-          var cos = Math.cos(angle), sin = Math.sin(angle), x = p2.x + cos * (this.x - p2.x) - sin * (this.y - p2.y), y = p2.y + sin * (this.x - p2.x) + cos * (this.y - p2.y);
-          this.x = x;
+          var cos = Math.cos(angle), sin = Math.sin(angle), x2 = p2.x + cos * (this.x - p2.x) - sin * (this.y - p2.y), y = p2.y + sin * (this.x - p2.x) + cos * (this.y - p2.y);
+          this.x = x2;
           this.y = y;
           return this;
         },
@@ -202,12 +198,12 @@ var protomaps = (() => {
           return this;
         }
       };
-      Point7.convert = function(a2) {
-        if (a2 instanceof Point7) {
+      Point9.convert = function(a2) {
+        if (a2 instanceof Point9) {
           return a2;
         }
         if (Array.isArray(a2)) {
-          return new Point7(a2[0], a2[1]);
+          return new Point9(a2[0], a2[1]);
         }
         return a2;
       };
@@ -218,7 +214,7 @@ var protomaps = (() => {
   var require_vectortilefeature = __commonJS({
     "node_modules/@mapbox/vector-tile/lib/vectortilefeature.js"(exports, module) {
       "use strict";
-      var Point7 = require_point_geometry();
+      var Point9 = require_point_geometry();
       module.exports = VectorTileFeature;
       function VectorTileFeature(pbf, end, extent, keys, values) {
         this.properties = {};
@@ -251,7 +247,7 @@ var protomaps = (() => {
       VectorTileFeature.prototype.loadGeometry = function() {
         var pbf = this._pbf;
         pbf.pos = this._geometry;
-        var end = pbf.readVarint() + pbf.pos, cmd = 1, length = 0, x = 0, y = 0, lines = [], line;
+        var end = pbf.readVarint() + pbf.pos, cmd = 1, length = 0, x2 = 0, y = 0, lines = [], line;
         while (pbf.pos < end) {
           if (length <= 0) {
             var cmdLen = pbf.readVarint();
@@ -260,14 +256,14 @@ var protomaps = (() => {
           }
           length--;
           if (cmd === 1 || cmd === 2) {
-            x += pbf.readSVarint();
+            x2 += pbf.readSVarint();
             y += pbf.readSVarint();
             if (cmd === 1) {
               if (line)
                 lines.push(line);
               line = [];
             }
-            line.push(new Point7(x, y));
+            line.push(new Point9(x2, y));
           } else if (cmd === 7) {
             if (line) {
               line.push(line[0].clone());
@@ -283,7 +279,7 @@ var protomaps = (() => {
       VectorTileFeature.prototype.bbox = function() {
         var pbf = this._pbf;
         pbf.pos = this._geometry;
-        var end = pbf.readVarint() + pbf.pos, cmd = 1, length = 0, x = 0, y = 0, x1 = Infinity, x2 = -Infinity, y1 = Infinity, y2 = -Infinity;
+        var end = pbf.readVarint() + pbf.pos, cmd = 1, length = 0, x2 = 0, y = 0, x1 = Infinity, x22 = -Infinity, y1 = Infinity, y2 = -Infinity;
         while (pbf.pos < end) {
           if (length <= 0) {
             var cmdLen = pbf.readVarint();
@@ -292,12 +288,12 @@ var protomaps = (() => {
           }
           length--;
           if (cmd === 1 || cmd === 2) {
-            x += pbf.readSVarint();
+            x2 += pbf.readSVarint();
             y += pbf.readSVarint();
-            if (x < x1)
-              x1 = x;
-            if (x > x2)
-              x2 = x;
+            if (x2 < x1)
+              x1 = x2;
+            if (x2 > x22)
+              x22 = x2;
             if (y < y1)
               y1 = y;
             if (y > y2)
@@ -306,10 +302,10 @@ var protomaps = (() => {
             throw new Error("unknown command " + cmd);
           }
         }
-        return [x1, y1, x2, y2];
+        return [x1, y1, x22, y2];
       };
-      VectorTileFeature.prototype.toGeoJSON = function(x, y, z2) {
-        var size = this.extent * Math.pow(2, z2), x0 = this.extent * x, y0 = this.extent * y, coords = this.loadGeometry(), type = VectorTileFeature.types[this.type], i2, j;
+      VectorTileFeature.prototype.toGeoJSON = function(x2, y, z2) {
+        var size = this.extent * Math.pow(2, z2), x0 = this.extent * x2, y0 = this.extent * y, coords = this.loadGeometry(), type = VectorTileFeature.types[this.type], i2, j;
         function project3(line) {
           for (var j2 = 0; j2 < line.length; j2++) {
             var p2 = line[j2], y2 = 180 - (p2.y + y0) * 360 / size;
@@ -644,7 +640,7 @@ var protomaps = (() => {
             return val;
           b = buf[this.pos];
           val |= (b & 15) << 28;
-          return readVarintRemainder(val, isSigned, this);
+          return readVarintRemainder2(val, isSigned, this);
         },
         readVarint64: function() {
           return this.readVarint(true);
@@ -955,38 +951,38 @@ var protomaps = (() => {
           this.writeVarintField(tag, Boolean(val));
         }
       };
-      function readVarintRemainder(l2, s2, p2) {
+      function readVarintRemainder2(l2, s2, p2) {
         var buf = p2.buf, h, b;
         b = buf[p2.pos++];
         h = (b & 112) >> 4;
         if (b < 128)
-          return toNum(l2, h, s2);
+          return toNum2(l2, h, s2);
         b = buf[p2.pos++];
         h |= (b & 127) << 3;
         if (b < 128)
-          return toNum(l2, h, s2);
+          return toNum2(l2, h, s2);
         b = buf[p2.pos++];
         h |= (b & 127) << 10;
         if (b < 128)
-          return toNum(l2, h, s2);
+          return toNum2(l2, h, s2);
         b = buf[p2.pos++];
         h |= (b & 127) << 17;
         if (b < 128)
-          return toNum(l2, h, s2);
+          return toNum2(l2, h, s2);
         b = buf[p2.pos++];
         h |= (b & 127) << 24;
         if (b < 128)
-          return toNum(l2, h, s2);
+          return toNum2(l2, h, s2);
         b = buf[p2.pos++];
         h |= (b & 1) << 31;
         if (b < 128)
-          return toNum(l2, h, s2);
+          return toNum2(l2, h, s2);
         throw new Error("Expected varint not more than 10 bytes");
       }
       function readPackedEnd(pbf) {
         return pbf.type === Pbf.Bytes ? pbf.readVarint() + pbf.pos : pbf.pos + 1;
       }
-      function toNum(low, high, isSigned) {
+      function toNum2(low, high, isSigned) {
         if (isSigned) {
           return high * 4294967296 + (low >>> 0);
         }
@@ -1223,14 +1219,14 @@ var protomaps = (() => {
                 var o3 = a4 - e4 + 1, s3 = r4 - e4 + 1, l3 = Math.log(o3), f3 = 0.5 * Math.exp(2 * l3 / 3), u3 = 0.5 * Math.sqrt(l3 * f3 * (o3 - f3) / o3) * (s3 - o3 / 2 < 0 ? -1 : 1), m2 = Math.max(e4, Math.floor(r4 - s3 * f3 / o3 + u3)), c3 = Math.min(a4, Math.floor(r4 + (o3 - s3) * f3 / o3 + u3));
                 t4(n3, r4, m2, c3, h3);
               }
-              var p3 = n3[r4], d2 = e4, x = a4;
-              for (i2(n3, e4, r4), h3(n3[a4], p3) > 0 && i2(n3, e4, a4); d2 < x; ) {
-                for (i2(n3, d2, x), d2++, x--; h3(n3[d2], p3) < 0; )
+              var p3 = n3[r4], d2 = e4, x2 = a4;
+              for (i2(n3, e4, r4), h3(n3[a4], p3) > 0 && i2(n3, e4, a4); d2 < x2; ) {
+                for (i2(n3, d2, x2), d2++, x2--; h3(n3[d2], p3) < 0; )
                   d2++;
-                for (; h3(n3[x], p3) > 0; )
-                  x--;
+                for (; h3(n3[x2], p3) > 0; )
+                  x2--;
               }
-              h3(n3[e4], p3) === 0 ? i2(n3, e4, x) : i2(n3, ++x, a4), x <= r4 && (e4 = x + 1), r4 <= x && (a4 = x - 1);
+              h3(n3[e4], p3) === 0 ? i2(n3, e4, x2) : i2(n3, ++x2, a4), x2 <= r4 && (e4 = x2 + 1), r4 <= x2 && (a4 = x2 - 1);
             }
           }(t3, r3, e3 || 0, a3 || t3.length - 1, h2 || n2);
         }
@@ -1416,7 +1412,7 @@ var protomaps = (() => {
           this.data = p2([t3, i3]), this.data.height = t3.height + 1, this.data.leaf = false, a2(this.data, this.toBBox);
         }, r2.prototype._chooseSplitIndex = function(t3, i3, n3) {
           for (var r3, e3, a3, o3, s3, l3, u3, m2 = 1 / 0, c3 = 1 / 0, p3 = i3; p3 <= n3 - i3; p3++) {
-            var d2 = h(t3, 0, p3, this.toBBox), x = h(t3, p3, n3, this.toBBox), v = (e3 = d2, a3 = x, o3 = void 0, s3 = void 0, l3 = void 0, u3 = void 0, o3 = Math.max(e3.minX, a3.minX), s3 = Math.max(e3.minY, a3.minY), l3 = Math.min(e3.maxX, a3.maxX), u3 = Math.min(e3.maxY, a3.maxY), Math.max(0, l3 - o3) * Math.max(0, u3 - s3)), M = f2(d2) + f2(x);
+            var d2 = h(t3, 0, p3, this.toBBox), x2 = h(t3, p3, n3, this.toBBox), v = (e3 = d2, a3 = x2, o3 = void 0, s3 = void 0, l3 = void 0, u3 = void 0, o3 = Math.max(e3.minX, a3.minX), s3 = Math.max(e3.minY, a3.minY), l3 = Math.min(e3.maxX, a3.maxX), u3 = Math.min(e3.maxY, a3.maxY), Math.max(0, l3 - o3) * Math.max(0, u3 - s3)), M = f2(d2) + f2(x2);
             v < m2 ? (m2 = v, r3 = p3, c3 = M < c3 ? M : c3) : v === m2 && M < c3 && (c3 = M, r3 = p3);
           }
           return r3 || n3 - i3;
@@ -1445,6 +1441,12 @@ var protomaps = (() => {
     }
   });
 
+  // src/types/unitbezier.d.ts
+  var require_unitbezier_d = __commonJS({
+    "src/types/unitbezier.d.ts"() {
+    }
+  });
+
   // node_modules/tinyqueue/tinyqueue.js
   var require_tinyqueue = __commonJS({
     "node_modules/tinyqueue/tinyqueue.js"(exports, module) {
@@ -1452,14 +1454,14 @@ var protomaps = (() => {
         typeof exports === "object" && typeof module !== "undefined" ? module.exports = factory() : typeof define === "function" && define.amd ? define(factory) : (global = global || self, global.TinyQueue = factory());
       })(exports, function() {
         "use strict";
-        var TinyQueue = function TinyQueue2(data, compare) {
+        var TinyQueue = function TinyQueue2(data, compare2) {
           if (data === void 0)
             data = [];
-          if (compare === void 0)
-            compare = defaultCompare;
+          if (compare2 === void 0)
+            compare2 = defaultCompare;
           this.data = data;
           this.length = this.data.length;
-          this.compare = compare;
+          this.compare = compare2;
           if (this.length > 0) {
             for (var i2 = (this.length >> 1) - 1; i2 >= 0; i2--) {
               this._down(i2);
@@ -1490,12 +1492,12 @@ var protomaps = (() => {
         TinyQueue.prototype._up = function _up(pos) {
           var ref = this;
           var data = ref.data;
-          var compare = ref.compare;
+          var compare2 = ref.compare;
           var item = data[pos];
           while (pos > 0) {
             var parent = pos - 1 >> 1;
             var current = data[parent];
-            if (compare(item, current) >= 0) {
+            if (compare2(item, current) >= 0) {
               break;
             }
             data[pos] = current;
@@ -1506,18 +1508,18 @@ var protomaps = (() => {
         TinyQueue.prototype._down = function _down(pos) {
           var ref = this;
           var data = ref.data;
-          var compare = ref.compare;
+          var compare2 = ref.compare;
           var halfLength = this.length >> 1;
           var item = data[pos];
           while (pos < halfLength) {
             var left = (pos << 1) + 1;
             var best = data[left];
             var right = left + 1;
-            if (right < this.length && compare(data[right], best) < 0) {
+            if (right < this.length && compare2(data[right], best) < 0) {
               left = right;
               best = data[right];
             }
-            if (compare(best, item) >= 0) {
+            if (compare2(best, item) >= 0) {
               break;
             }
             data[pos] = best;
@@ -1566,9 +1568,9 @@ var protomaps = (() => {
           return degeneratePoleOfInaccessibility;
         }
         var cellQueue = new Queue(void 0, compareMax);
-        for (var x = minX; x < maxX; x += cellSize) {
+        for (var x2 = minX; x2 < maxX; x2 += cellSize) {
           for (var y = minY; y < maxY; y += cellSize) {
-            cellQueue.push(new Cell(x + h, y + h, h, polygon));
+            cellQueue.push(new Cell(x2 + h, y + h, h, polygon));
           }
         }
         var bestCell = getCentroidCell(polygon);
@@ -1603,14 +1605,14 @@ var protomaps = (() => {
       function compareMax(a2, b) {
         return b.max - a2.max;
       }
-      function Cell(x, y, h, polygon) {
-        this.x = x;
+      function Cell(x2, y, h, polygon) {
+        this.x = x2;
         this.y = y;
         this.h = h;
-        this.d = pointToPolygonDist(x, y, polygon);
+        this.d = pointToPolygonDist(x2, y, polygon);
         this.max = this.d + this.h * Math.SQRT2;
       }
-      function pointToPolygonDist(x, y, polygon) {
+      function pointToPolygonDist(x2, y, polygon) {
         var inside = false;
         var minDistSq = Infinity;
         for (var k = 0; k < polygon.length; k++) {
@@ -1618,330 +1620,1226 @@ var protomaps = (() => {
           for (var i2 = 0, len = ring.length, j = len - 1; i2 < len; j = i2++) {
             var a2 = ring[i2];
             var b = ring[j];
-            if (a2[1] > y !== b[1] > y && x < (b[0] - a2[0]) * (y - a2[1]) / (b[1] - a2[1]) + a2[0])
+            if (a2[1] > y !== b[1] > y && x2 < (b[0] - a2[0]) * (y - a2[1]) / (b[1] - a2[1]) + a2[0])
               inside = !inside;
-            minDistSq = Math.min(minDistSq, getSegDistSq(x, y, a2, b));
+            minDistSq = Math.min(minDistSq, getSegDistSq(x2, y, a2, b));
           }
         }
         return minDistSq === 0 ? 0 : (inside ? 1 : -1) * Math.sqrt(minDistSq);
       }
       function getCentroidCell(polygon) {
         var area = 0;
-        var x = 0;
+        var x2 = 0;
         var y = 0;
         var points = polygon[0];
         for (var i2 = 0, len = points.length, j = len - 1; i2 < len; j = i2++) {
           var a2 = points[i2];
           var b = points[j];
           var f2 = a2[0] * b[1] - b[0] * a2[1];
-          x += (a2[0] + b[0]) * f2;
+          x2 += (a2[0] + b[0]) * f2;
           y += (a2[1] + b[1]) * f2;
           area += f2 * 3;
         }
         if (area === 0)
           return new Cell(points[0][0], points[0][1], 0, polygon);
-        return new Cell(x / area, y / area, 0, polygon);
+        return new Cell(x2 / area, y / area, 0, polygon);
       }
       function getSegDistSq(px, py, a2, b) {
-        var x = a2[0];
+        var x2 = a2[0];
         var y = a2[1];
-        var dx = b[0] - x;
+        var dx = b[0] - x2;
         var dy = b[1] - y;
         if (dx !== 0 || dy !== 0) {
-          var t2 = ((px - x) * dx + (py - y) * dy) / (dx * dx + dy * dy);
+          var t2 = ((px - x2) * dx + (py - y) * dy) / (dx * dx + dy * dy);
           if (t2 > 1) {
-            x = b[0];
+            x2 = b[0];
             y = b[1];
           } else if (t2 > 0) {
-            x += dx * t2;
+            x2 += dx * t2;
             y += dy * t2;
           }
         }
-        dx = px - x;
+        dx = px - x2;
         dy = py - y;
         return dx * dx + dy * dy;
       }
     }
   });
 
-  // node_modules/linelabel/xy.js
-  var require_xy = __commonJS({
-    "node_modules/linelabel/xy.js"(exports, module) {
-      module.exports = function(pts, max_angle_delta) {
-        var chunks = [];
-        var cur_angles = [null];
-        var a2, b, c2, i2 = 0, n2 = 0, d = 0;
-        var abmag = 0, bcmag = 0;
-        var abx = 0, aby = 0;
-        var bcx = 0, bcy = 0;
-        var dt = 0;
-        var i_start = 0;
-        var d_start = 0;
-        if (pts.length < 2)
-          return [];
-        if (pts.length === 2) {
-          d = Math.sqrt(Math.pow(pts[1].x - pts[0].x, 2) + Math.pow(pts[1].y - pts[0].y, 2));
-          return [{
-            length: d,
-            beginIndex: 0,
-            beginDistance: 0,
-            endIndex: 2,
-            endDistance: d,
-            angles: [null, null]
-          }];
-        }
-        abmag = Math.sqrt(Math.pow(pts[1].x - pts[0].x, 2) + Math.pow(pts[1].y - pts[0].y, 2));
-        for (i2 = 1, n2 = pts.length - 1; i2 < n2; i2++) {
-          a2 = pts[i2 - 1];
-          b = pts[i2];
-          c2 = pts[i2 + 1];
-          abx = b.x - a2.x;
-          aby = b.y - a2.y;
-          bcx = c2.x - b.x;
-          bcy = c2.y - b.y;
-          bcmag = Math.sqrt(bcx * bcx + bcy * bcy);
-          d += abmag;
-          dt = Math.acos((abx * bcx + aby * bcy) / (abmag * bcmag));
-          cur_angles.push(dt);
-          if (dt > max_angle_delta) {
-            chunks.push({
-              length: d - d_start,
-              beginDistance: d_start,
-              beginIndex: i_start,
-              endIndex: i2 + 1,
-              endDistance: d,
-              angles: cur_angles
-            });
-            i_start = i2;
-            d_start = d;
-            cur_angles = [dt];
-          }
-          abmag = bcmag;
-        }
-        cur_angles.push(null);
-        if (i2 - i_start > 0) {
-          chunks.push({
-            length: d - d_start + bcmag,
-            beginIndex: i_start,
-            beginDistance: d_start,
-            endIndex: i2 + 1,
-            endDistance: d + bcmag,
-            angles: cur_angles
-          });
-        }
-        return chunks;
-      };
-    }
-  });
-
   // src/index.ts
   var src_exports = {};
   __export(src_exports, {
+    CenteredSymbolizer: () => CenteredSymbolizer,
     CenteredTextSymbolizer: () => CenteredTextSymbolizer,
     CircleSymbolizer: () => CircleSymbolizer,
     FlexSymbolizer: () => FlexSymbolizer,
     Font: () => Font,
+    GeomType: () => GeomType,
     GroupSymbolizer: () => GroupSymbolizer,
     IconSymbolizer: () => IconSymbolizer,
+    Index: () => Index,
+    Justify: () => Justify,
+    Labeler: () => Labeler,
+    Labelers: () => Labelers,
+    LineLabelPlacement: () => LineLabelPlacement,
     LineLabelSymbolizer: () => LineLabelSymbolizer,
     LineSymbolizer: () => LineSymbolizer,
+    OffsetSymbolizer: () => OffsetSymbolizer,
     OffsetTextSymbolizer: () => OffsetTextSymbolizer,
     PMTiles: () => PMTiles,
+    Padding: () => Padding,
+    PmtilesSource: () => PmtilesSource,
     PolygonLabelSymbolizer: () => PolygonLabelSymbolizer,
     PolygonSymbolizer: () => PolygonSymbolizer,
+    Sheet: () => Sheet,
     ShieldSymbolizer: () => ShieldSymbolizer,
-    Sprites: () => Sprites,
     Static: () => Static,
+    TextPlacements: () => TextPlacements,
+    TextSymbolizer: () => TextSymbolizer,
+    TileCache: () => TileCache,
+    View: () => View,
+    ZxySource: () => ZxySource,
     arr: () => arr,
+    covering: () => covering,
     createPattern: () => createPattern,
+    cubicBezier: () => cubicBezier,
     dark: () => dark,
     exp: () => exp,
     filterFn: () => filterFn,
     getFont: () => getFont,
+    getZoom: () => getZoom,
+    isCCW: () => isCCW,
+    isInRing: () => isInRing,
     json_style: () => json_style,
     labelRules: () => labelRules,
     leafletLayer: () => leafletLayer,
     light: () => light,
+    linear: () => linear,
     numberFn: () => numberFn,
     numberOrFn: () => numberOrFn,
     paintRules: () => paintRules,
-    widthFn: () => widthFn
+    painter: () => painter,
+    pointInPolygon: () => pointInPolygon,
+    pointMinDistToLines: () => pointMinDistToLines,
+    pointMinDistToPoints: () => pointMinDistToPoints,
+    sourcesToViews: () => sourcesToViews,
+    step: () => step,
+    toIndex: () => toIndex,
+    transformGeom: () => transformGeom,
+    widthFn: () => widthFn,
+    wrap: () => wrap
   });
 
   // src/frontends/static.ts
-  var import_point_geometry5 = __toModule(require_point_geometry());
+  var import_point_geometry7 = __toModule(require_point_geometry());
+
+  // src/view.ts
+  var import_point_geometry2 = __toModule(require_point_geometry());
 
   // src/tilecache.ts
   var import_point_geometry = __toModule(require_point_geometry());
   var import_vector_tile = __toModule(require_vector_tile());
   var import_pbf = __toModule(require_pbf());
 
-  // node_modules/pmtiles/index.mjs
-  var shift = (number, shift2) => {
-    return number * Math.pow(2, shift2);
+  // node_modules/pmtiles/dist/index.mjs
+  var __async2 = (__this, __arguments, generator) => {
+    return new Promise((resolve, reject) => {
+      var fulfilled = (value) => {
+        try {
+          step2(generator.next(value));
+        } catch (e2) {
+          reject(e2);
+        }
+      };
+      var rejected = (value) => {
+        try {
+          step2(generator.throw(value));
+        } catch (e2) {
+          reject(e2);
+        }
+      };
+      var step2 = (x2) => x2.done ? resolve(x2.value) : Promise.resolve(x2.value).then(fulfilled, rejected);
+      step2((generator = generator.apply(__this, __arguments)).next());
+    });
   };
-  var getUint24 = (dataview, pos) => {
-    return shift(dataview.getUint16(pos + 1, true), 8) + dataview.getUint8(pos, true);
+  var u8 = Uint8Array;
+  var u16 = Uint16Array;
+  var u32 = Uint32Array;
+  var fleb = new u8([0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 0, 0, 0, 0]);
+  var fdeb = new u8([0, 0, 0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 11, 11, 12, 12, 13, 13, 0, 0]);
+  var clim = new u8([16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15]);
+  var freb = function(eb, start) {
+    var b = new u16(31);
+    for (var i2 = 0; i2 < 31; ++i2) {
+      b[i2] = start += 1 << eb[i2 - 1];
+    }
+    var r2 = new u32(b[30]);
+    for (var i2 = 1; i2 < 30; ++i2) {
+      for (var j = b[i2]; j < b[i2 + 1]; ++j) {
+        r2[j] = j - b[i2] << 5 | i2;
+      }
+    }
+    return [b, r2];
   };
-  var getUint48 = (dataview, pos) => {
-    return shift(dataview.getUint32(pos + 2, true), 16) + dataview.getUint16(pos, true);
+  var _a = freb(fleb, 2);
+  var fl = _a[0];
+  var revfl = _a[1];
+  fl[28] = 258, revfl[258] = 28;
+  var _b = freb(fdeb, 0);
+  var fd = _b[0];
+  var revfd = _b[1];
+  var rev = new u16(32768);
+  for (var i2 = 0; i2 < 32768; ++i2) {
+    x = (i2 & 43690) >>> 1 | (i2 & 21845) << 1;
+    x = (x & 52428) >>> 2 | (x & 13107) << 2;
+    x = (x & 61680) >>> 4 | (x & 3855) << 4;
+    rev[i2] = ((x & 65280) >>> 8 | (x & 255) << 8) >>> 1;
+  }
+  var x;
+  var hMap = function(cd, mb, r2) {
+    var s2 = cd.length;
+    var i2 = 0;
+    var l2 = new u16(mb);
+    for (; i2 < s2; ++i2) {
+      if (cd[i2])
+        ++l2[cd[i2] - 1];
+    }
+    var le = new u16(mb);
+    for (i2 = 0; i2 < mb; ++i2) {
+      le[i2] = le[i2 - 1] + l2[i2 - 1] << 1;
+    }
+    var co;
+    if (r2) {
+      co = new u16(1 << mb);
+      var rvb = 15 - mb;
+      for (i2 = 0; i2 < s2; ++i2) {
+        if (cd[i2]) {
+          var sv = i2 << 4 | cd[i2];
+          var r_1 = mb - cd[i2];
+          var v = le[cd[i2] - 1]++ << r_1;
+          for (var m = v | (1 << r_1) - 1; v <= m; ++v) {
+            co[rev[v] >>> rvb] = sv;
+          }
+        }
+      }
+    } else {
+      co = new u16(s2);
+      for (i2 = 0; i2 < s2; ++i2) {
+        if (cd[i2]) {
+          co[i2] = rev[le[cd[i2] - 1]++] >>> 15 - cd[i2];
+        }
+      }
+    }
+    return co;
   };
-  var parseHeader = (dataview) => {
-    var magic = dataview.getUint16(0, true);
-    var version = dataview.getUint16(2, true);
-    var json_size = dataview.getUint32(4, true);
-    var root_entries = dataview.getUint16(8, true);
-    return { version, json_size, root_entries };
-  };
-  var bytesToMap = (dataview) => {
-    let m = new Map();
-    for (var i2 = 0; i2 < dataview.byteLength; i2 += 17) {
-      var z_raw = dataview.getUint8(i2, true);
-      var z2 = z_raw & 127;
-      var is_dir = z_raw >> 7;
-      var x = getUint24(dataview, i2 + 1);
-      var y = getUint24(dataview, i2 + 4);
-      var offset = getUint48(dataview, i2 + 7);
-      var length = dataview.getUint32(i2 + 13, true);
-      m.set(z2 + "_" + x + "_" + y, [offset, length, is_dir]);
+  var flt = new u8(288);
+  for (var i2 = 0; i2 < 144; ++i2)
+    flt[i2] = 8;
+  for (var i2 = 144; i2 < 256; ++i2)
+    flt[i2] = 9;
+  for (var i2 = 256; i2 < 280; ++i2)
+    flt[i2] = 7;
+  for (var i2 = 280; i2 < 288; ++i2)
+    flt[i2] = 8;
+  var fdt = new u8(32);
+  for (var i2 = 0; i2 < 32; ++i2)
+    fdt[i2] = 5;
+  var flrm = /* @__PURE__ */ hMap(flt, 9, 1);
+  var fdrm = /* @__PURE__ */ hMap(fdt, 5, 1);
+  var max = function(a2) {
+    var m = a2[0];
+    for (var i2 = 1; i2 < a2.length; ++i2) {
+      if (a2[i2] > m)
+        m = a2[i2];
     }
     return m;
   };
-  var PMTiles = class {
-    constructor(url) {
-      __publicField(this, "metadata", (func) => {
-        return new Promise((resolve, reject) => {
-          this.root.then((root) => {
-            resolve(root.metadata);
-          });
-        });
-      });
-      __publicField(this, "getLeaf", (offset, len) => {
-        return new Promise((resolve, reject) => {
-          if (this.leaves.has(offset)) {
-            this.leaves.get(offset)[0]++;
-            resolve(this.leaves.get(offset)[1]);
-          } else if (this.outstanding_requests.has(offset)) {
-            this.outstanding_requests.get(offset).push(resolve);
-          } else {
-            this.outstanding_requests.set(offset, []);
-            fetch(this.url, { headers: { Range: "bytes=" + offset + "-" + (offset + len - 1) } }).then((resp) => {
-              return resp.arrayBuffer();
-            }).then((buf) => {
-              var map = bytesToMap(new DataView(buf), len / 17);
-              if (this.leaves.size > 32) {
-                var minStep = Infinity;
-                var minKey = void 0;
-                this.leaves.forEach((val, key) => {
-                  if (val[0] < minStep) {
-                    minStep = val[0];
-                    minKey = key;
-                  }
-                });
-                this.leaves.delete(minKey);
-              }
-              this.leaves.set(offset, [this.step++, map]);
-              resolve(map);
-              this.outstanding_requests.get(offset).forEach((f2) => f2(map));
-              this.outstanding_requests.delete(offset);
-            });
+  var bits = function(d, p2, m) {
+    var o2 = p2 / 8 | 0;
+    return (d[o2] | d[o2 + 1] << 8) >> (p2 & 7) & m;
+  };
+  var bits16 = function(d, p2) {
+    var o2 = p2 / 8 | 0;
+    return (d[o2] | d[o2 + 1] << 8 | d[o2 + 2] << 16) >> (p2 & 7);
+  };
+  var shft = function(p2) {
+    return (p2 + 7) / 8 | 0;
+  };
+  var slc = function(v, s2, e2) {
+    if (s2 == null || s2 < 0)
+      s2 = 0;
+    if (e2 == null || e2 > v.length)
+      e2 = v.length;
+    var n2 = new (v.BYTES_PER_ELEMENT == 2 ? u16 : v.BYTES_PER_ELEMENT == 4 ? u32 : u8)(e2 - s2);
+    n2.set(v.subarray(s2, e2));
+    return n2;
+  };
+  var ec = [
+    "unexpected EOF",
+    "invalid block type",
+    "invalid length/literal",
+    "invalid distance",
+    "stream finished",
+    "no stream handler",
+    ,
+    "no callback",
+    "invalid UTF-8 data",
+    "extra field too long",
+    "date not in range 1980-2099",
+    "filename too long",
+    "stream finishing",
+    "invalid zip data"
+  ];
+  var err = function(ind, msg, nt) {
+    var e2 = new Error(msg || ec[ind]);
+    e2.code = ind;
+    if (Error.captureStackTrace)
+      Error.captureStackTrace(e2, err);
+    if (!nt)
+      throw e2;
+    return e2;
+  };
+  var inflt = function(dat, buf, st) {
+    var sl = dat.length;
+    if (!sl || st && st.f && !st.l)
+      return buf || new u8(0);
+    var noBuf = !buf || st;
+    var noSt = !st || st.i;
+    if (!st)
+      st = {};
+    if (!buf)
+      buf = new u8(sl * 3);
+    var cbuf = function(l22) {
+      var bl = buf.length;
+      if (l22 > bl) {
+        var nbuf = new u8(Math.max(bl * 2, l22));
+        nbuf.set(buf);
+        buf = nbuf;
+      }
+    };
+    var final = st.f || 0, pos = st.p || 0, bt = st.b || 0, lm = st.l, dm = st.d, lbt = st.m, dbt = st.n;
+    var tbts = sl * 8;
+    do {
+      if (!lm) {
+        final = bits(dat, pos, 1);
+        var type = bits(dat, pos + 1, 3);
+        pos += 3;
+        if (!type) {
+          var s2 = shft(pos) + 4, l2 = dat[s2 - 4] | dat[s2 - 3] << 8, t2 = s2 + l2;
+          if (t2 > sl) {
+            if (noSt)
+              err(0);
+            break;
           }
-        });
-      });
-      __publicField(this, "getZxy", (z2, x, y) => {
-        var strid = z2 + "_" + x + "_" + y;
-        return this.root.then((root) => {
-          if (root.dir.has(strid) && root.dir.get(strid)[2] == 0) {
-            return root.dir.get(strid);
-          } else {
-            if (z2 >= 7) {
-              var z7_tile_diff = z2 - 7;
-              var z7_tile = [7, Math.trunc(x / (1 << z7_tile_diff)), Math.trunc(y / (1 << z7_tile_diff))];
-              var z7_tile_str = z7_tile[0] + "_" + z7_tile[1] + "_" + z7_tile[2];
-              if (root.dir.has(z7_tile_str) && root.dir.get(z7_tile_str)[2] == 1) {
-                const val = root.dir.get(z7_tile_str);
-                return this.getLeaf(val[0], val[1]).then((leafdir) => {
-                  if (leafdir.has(strid)) {
-                    return leafdir.get(strid);
-                  }
-                  return null;
-                });
-              }
+          if (noBuf)
+            cbuf(bt + l2);
+          buf.set(dat.subarray(s2, t2), bt);
+          st.b = bt += l2, st.p = pos = t2 * 8, st.f = final;
+          continue;
+        } else if (type == 1)
+          lm = flrm, dm = fdrm, lbt = 9, dbt = 5;
+        else if (type == 2) {
+          var hLit = bits(dat, pos, 31) + 257, hcLen = bits(dat, pos + 10, 15) + 4;
+          var tl = hLit + bits(dat, pos + 5, 31) + 1;
+          pos += 14;
+          var ldt = new u8(tl);
+          var clt = new u8(19);
+          for (var i2 = 0; i2 < hcLen; ++i2) {
+            clt[clim[i2]] = bits(dat, pos + i2 * 3, 7);
+          }
+          pos += hcLen * 3;
+          var clb = max(clt), clbmsk = (1 << clb) - 1;
+          var clm = hMap(clt, clb, 1);
+          for (var i2 = 0; i2 < tl; ) {
+            var r2 = clm[bits(dat, pos, clbmsk)];
+            pos += r2 & 15;
+            var s2 = r2 >>> 4;
+            if (s2 < 16) {
+              ldt[i2++] = s2;
+            } else {
+              var c2 = 0, n2 = 0;
+              if (s2 == 16)
+                n2 = 3 + bits(dat, pos, 3), pos += 2, c2 = ldt[i2 - 1];
+              else if (s2 == 17)
+                n2 = 3 + bits(dat, pos, 7), pos += 3;
+              else if (s2 == 18)
+                n2 = 11 + bits(dat, pos, 127), pos += 7;
+              while (n2--)
+                ldt[i2++] = c2;
             }
           }
-          return null;
-        });
-      });
-      __publicField(this, "transformRequest", (u2, t2, tile, done) => {
-        if (u2.endsWith(".pmtiles") && done) {
-          var tid = tile.tileID.canonical;
-          var strid = tid.z + "_" + tid.x + "_" + tid.y;
-          this.getZxy(tid.z, tid.x, tid.y).then((val) => {
-            if (val) {
-              done({ url: this.url, headers: { "Range": "bytes=" + val[0] + "-" + (val[0] + val[1] - 1) } });
-            }
-          });
+          var lt = ldt.subarray(0, hLit), dt = ldt.subarray(hLit);
+          lbt = max(lt);
+          dbt = max(dt);
+          lm = hMap(lt, lbt, 1);
+          dm = hMap(dt, dbt, 1);
+        } else
+          err(1);
+        if (pos > tbts) {
+          if (noSt)
+            err(0);
+          break;
         }
-        return { url: u2 };
-      });
-      __publicField(this, "leafletLayer", (options) => {
-        const self2 = this;
-        var cls = L.GridLayer.extend({
-          createTile: function(coord, done) {
-            var tile = document.createElement("img");
-            var error;
-            self2.getZxy(coord.z, coord.x, coord.y).then((result) => {
-              if (result === null)
-                return;
-              fetch(self2.url, { headers: { Range: "bytes=" + result[0] + "-" + (result[0] + result[1] - 1) } }).then((resp) => {
-                return resp.arrayBuffer();
-              }).then((buf) => {
-                var blob = new Blob([buf], { type: "image/png" });
-                var imageUrl = window.URL.createObjectURL(blob);
-                tile.src = imageUrl;
-                done(error, tile);
-              });
-            });
-            return tile;
-          },
-          _removeTile: function(key) {
-            var tile = this._tiles[key];
-            if (!tile) {
-              return;
-            }
-            tile.el.width = 0;
-            tile.el.height = 0;
-            tile.el.deleted = true;
-            L.DomUtil.remove(tile.el);
-            delete this._tiles[key];
-            this.fire("tileunload", {
-              tile: tile.el,
-              coords: this._keyToTileCoords(key)
-            });
-          }
-        });
-        return new cls(options);
-      });
-      this.url = url;
-      const controller = new AbortController();
-      const signal = controller.signal;
-      this.root = fetch(this.url, { signal, headers: { Range: "bytes=0-511999" } }).then((resp) => {
-        if (resp.headers.get("Content-Length") != 512e3) {
-          console.error("Content-Length mismatch indicates byte serving not supported; aborting.");
-          controller.abort();
+      }
+      if (noBuf)
+        cbuf(bt + 131072);
+      var lms = (1 << lbt) - 1, dms = (1 << dbt) - 1;
+      var lpos = pos;
+      for (; ; lpos = pos) {
+        var c2 = lm[bits16(dat, pos) & lms], sym = c2 >>> 4;
+        pos += c2 & 15;
+        if (pos > tbts) {
+          if (noSt)
+            err(0);
+          break;
         }
-        return resp.arrayBuffer();
-      }).then((buf) => {
-        const header = parseHeader(new DataView(buf, 0, 10));
-        var dec = new TextDecoder("utf-8");
+        if (!c2)
+          err(2);
+        if (sym < 256)
+          buf[bt++] = sym;
+        else if (sym == 256) {
+          lpos = pos, lm = null;
+          break;
+        } else {
+          var add = sym - 254;
+          if (sym > 264) {
+            var i2 = sym - 257, b = fleb[i2];
+            add = bits(dat, pos, (1 << b) - 1) + fl[i2];
+            pos += b;
+          }
+          var d = dm[bits16(dat, pos) & dms], dsym = d >>> 4;
+          if (!d)
+            err(3);
+          pos += d & 15;
+          var dt = fd[dsym];
+          if (dsym > 3) {
+            var b = fdeb[dsym];
+            dt += bits16(dat, pos) & (1 << b) - 1, pos += b;
+          }
+          if (pos > tbts) {
+            if (noSt)
+              err(0);
+            break;
+          }
+          if (noBuf)
+            cbuf(bt + 131072);
+          var end = bt + add;
+          for (; bt < end; bt += 4) {
+            buf[bt] = buf[bt - dt];
+            buf[bt + 1] = buf[bt + 1 - dt];
+            buf[bt + 2] = buf[bt + 2 - dt];
+            buf[bt + 3] = buf[bt + 3 - dt];
+          }
+          bt = end;
+        }
+      }
+      st.l = lm, st.p = lpos, st.b = bt, st.f = final;
+      if (lm)
+        final = 1, st.m = lbt, st.d = dm, st.n = dbt;
+    } while (!final);
+    return bt == buf.length ? buf : slc(buf, 0, bt);
+  };
+  var et = /* @__PURE__ */ new u8(0);
+  var gzs = function(d) {
+    if (d[0] != 31 || d[1] != 139 || d[2] != 8)
+      err(6, "invalid gzip data");
+    var flg = d[3];
+    var st = 10;
+    if (flg & 4)
+      st += d[10] | (d[11] << 8) + 2;
+    for (var zs = (flg >> 3 & 1) + (flg >> 4 & 1); zs > 0; zs -= !d[st++])
+      ;
+    return st + (flg & 2);
+  };
+  var gzl = function(d) {
+    var l2 = d.length;
+    return (d[l2 - 4] | d[l2 - 3] << 8 | d[l2 - 2] << 16 | d[l2 - 1] << 24) >>> 0;
+  };
+  var zlv = function(d) {
+    if ((d[0] & 15) != 8 || d[0] >>> 4 > 7 || (d[0] << 8 | d[1]) % 31)
+      err(6, "invalid zlib data");
+    if (d[1] & 32)
+      err(6, "invalid zlib data: preset dictionaries not supported");
+  };
+  function inflateSync(data, out) {
+    return inflt(data, out);
+  }
+  function gunzipSync(data, out) {
+    return inflt(data.subarray(gzs(data), -8), out || new u8(gzl(data)));
+  }
+  function unzlibSync(data, out) {
+    return inflt((zlv(data), data.subarray(2, -4)), out);
+  }
+  function decompressSync(data, out) {
+    return data[0] == 31 && data[1] == 139 && data[2] == 8 ? gunzipSync(data, out) : (data[0] & 15) != 8 || data[0] >> 4 > 7 || (data[0] << 8 | data[1]) % 31 ? inflateSync(data, out) : unzlibSync(data, out);
+  }
+  var te = typeof TextEncoder != "undefined" && /* @__PURE__ */ new TextEncoder();
+  var td = typeof TextDecoder != "undefined" && /* @__PURE__ */ new TextDecoder();
+  var tds = 0;
+  try {
+    td.decode(et, { stream: true });
+    tds = 1;
+  } catch (e2) {
+  }
+  var mt = typeof queueMicrotask == "function" ? queueMicrotask : typeof setTimeout == "function" ? setTimeout : function(fn) {
+    fn();
+  };
+  var shift = (n2, shift2) => {
+    return n2 * Math.pow(2, shift2);
+  };
+  var unshift = (n2, shift2) => {
+    return Math.floor(n2 / Math.pow(2, shift2));
+  };
+  var getUint24 = (view, pos) => {
+    return shift(view.getUint16(pos + 1, true), 8) + view.getUint8(pos);
+  };
+  var getUint48 = (view, pos) => {
+    return shift(view.getUint32(pos + 2, true), 16) + view.getUint16(pos, true);
+  };
+  var compare = (tz, tx, ty, view, i2) => {
+    if (tz != view.getUint8(i2))
+      return tz - view.getUint8(i2);
+    const x2 = getUint24(view, i2 + 1);
+    if (tx != x2)
+      return tx - x2;
+    const y = getUint24(view, i2 + 4);
+    if (ty != y)
+      return ty - y;
+    return 0;
+  };
+  var queryLeafdir = (view, z2, x2, y) => {
+    const offset_len = queryView(view, z2 | 128, x2, y);
+    if (offset_len) {
+      return {
+        z: z2,
+        x: x2,
+        y,
+        offset: offset_len[0],
+        length: offset_len[1],
+        is_dir: true
+      };
+    }
+    return null;
+  };
+  var queryTile = (view, z2, x2, y) => {
+    const offset_len = queryView(view, z2, x2, y);
+    if (offset_len) {
+      return {
+        z: z2,
+        x: x2,
+        y,
+        offset: offset_len[0],
+        length: offset_len[1],
+        is_dir: false
+      };
+    }
+    return null;
+  };
+  var queryView = (view, z2, x2, y) => {
+    let m = 0;
+    let n2 = view.byteLength / 17 - 1;
+    while (m <= n2) {
+      const k = n2 + m >> 1;
+      const cmp = compare(z2, x2, y, view, k * 17);
+      if (cmp > 0) {
+        m = k + 1;
+      } else if (cmp < 0) {
+        n2 = k - 1;
+      } else {
+        return [getUint48(view, k * 17 + 7), view.getUint32(k * 17 + 13, true)];
+      }
+    }
+    return null;
+  };
+  var entrySort = (a2, b) => {
+    if (a2.is_dir && !b.is_dir) {
+      return 1;
+    }
+    if (!a2.is_dir && b.is_dir) {
+      return -1;
+    }
+    if (a2.z !== b.z) {
+      return a2.z - b.z;
+    }
+    if (a2.x !== b.x) {
+      return a2.x - b.x;
+    }
+    return a2.y - b.y;
+  };
+  var parseEntry = (dataview, i2) => {
+    const z_raw = dataview.getUint8(i2 * 17);
+    const z2 = z_raw & 127;
+    return {
+      z: z2,
+      x: getUint24(dataview, i2 * 17 + 1),
+      y: getUint24(dataview, i2 * 17 + 4),
+      offset: getUint48(dataview, i2 * 17 + 7),
+      length: dataview.getUint32(i2 * 17 + 13, true),
+      is_dir: z_raw >> 7 === 1
+    };
+  };
+  var sortDir = (a2) => {
+    const entries = [];
+    const view = new DataView(a2);
+    for (let i2 = 0; i2 < view.byteLength / 17; i2++) {
+      entries.push(parseEntry(view, i2));
+    }
+    return createDirectory(entries);
+  };
+  var createDirectory = (entries) => {
+    entries.sort(entrySort);
+    const buffer = new ArrayBuffer(17 * entries.length);
+    const arr2 = new Uint8Array(buffer);
+    for (let i2 = 0; i2 < entries.length; i2++) {
+      const entry = entries[i2];
+      let z2 = entry.z;
+      if (entry.is_dir)
+        z2 = z2 | 128;
+      arr2[i2 * 17] = z2;
+      arr2[i2 * 17 + 1] = entry.x & 255;
+      arr2[i2 * 17 + 2] = entry.x >> 8 & 255;
+      arr2[i2 * 17 + 3] = entry.x >> 16 & 255;
+      arr2[i2 * 17 + 4] = entry.y & 255;
+      arr2[i2 * 17 + 5] = entry.y >> 8 & 255;
+      arr2[i2 * 17 + 6] = entry.y >> 16 & 255;
+      arr2[i2 * 17 + 7] = entry.offset & 255;
+      arr2[i2 * 17 + 8] = unshift(entry.offset, 8) & 255;
+      arr2[i2 * 17 + 9] = unshift(entry.offset, 16) & 255;
+      arr2[i2 * 17 + 10] = unshift(entry.offset, 24) & 255;
+      arr2[i2 * 17 + 11] = unshift(entry.offset, 32) & 255;
+      arr2[i2 * 17 + 12] = unshift(entry.offset, 48) & 255;
+      arr2[i2 * 17 + 13] = entry.length & 255;
+      arr2[i2 * 17 + 14] = entry.length >> 8 & 255;
+      arr2[i2 * 17 + 15] = entry.length >> 16 & 255;
+      arr2[i2 * 17 + 16] = entry.length >> 24 & 255;
+    }
+    return buffer;
+  };
+  var deriveLeaf = (view, tile) => {
+    if (view.byteLength < 17)
+      return null;
+    const numEntries = view.byteLength / 17;
+    const entry = parseEntry(view, numEntries - 1);
+    if (entry.is_dir) {
+      let leaf_level = entry.z;
+      const level_diff = tile.z - leaf_level;
+      const leaf_x = Math.trunc(tile.x / (1 << level_diff));
+      const leaf_y = Math.trunc(tile.y / (1 << level_diff));
+      return { z: leaf_level, x: leaf_x, y: leaf_y };
+    }
+    return null;
+  };
+  function getHeader(source) {
+    return __async2(this, null, function* () {
+      let resp = yield source.getBytes(0, 512e3);
+      const dataview = new DataView(resp.data);
+      const json_size = dataview.getUint32(4, true);
+      const root_entries = dataview.getUint16(8, true);
+      const dec = new TextDecoder("utf-8");
+      const json_metadata = JSON.parse(dec.decode(new DataView(resp.data, 10, json_size)));
+      let tile_compression = Compression.Unknown;
+      if (json_metadata.compression === "gzip") {
+        tile_compression = Compression.Gzip;
+      }
+      let minzoom = 0;
+      if ("minzoom" in json_metadata) {
+        minzoom = +json_metadata.minzoom;
+      }
+      let maxzoom = 0;
+      if ("maxzoom" in json_metadata) {
+        maxzoom = +json_metadata.maxzoom;
+      }
+      let center_lon = 0;
+      let center_lat = 0;
+      let center_zoom = 0;
+      let min_lon = -180;
+      let min_lat = -85;
+      let max_lon = 180;
+      let max_lat = 85;
+      if (json_metadata.bounds) {
+        let split = json_metadata.bounds.split(",");
+        min_lon = +split[0];
+        min_lat = +split[1];
+        max_lon = +split[2];
+        max_lat = +split[3];
+      }
+      if (json_metadata.center) {
+        let split = json_metadata.center.split(",");
+        center_lon = +split[0];
+        center_lat = +split[1];
+        center_zoom = +split[2];
+      }
+      const header = {
+        specVersion: dataview.getUint16(2, true),
+        rootDirectoryOffset: 10 + json_size,
+        rootDirectoryLength: root_entries * 17,
+        jsonMetadataOffset: 10,
+        jsonMetadataLength: json_size,
+        leafDirectoryOffset: 0,
+        leafDirectoryLength: void 0,
+        tileDataOffset: 0,
+        tileDataLength: void 0,
+        numAddressedTiles: 0,
+        numTileEntries: 0,
+        numTileContents: 0,
+        clustered: false,
+        internalCompression: Compression.None,
+        tileCompression: tile_compression,
+        tileType: TileType.Mvt,
+        minZoom: minzoom,
+        maxZoom: maxzoom,
+        minLon: min_lon,
+        minLat: min_lat,
+        maxLon: max_lon,
+        maxLat: max_lat,
+        centerZoom: center_zoom,
+        centerLon: center_lon,
+        centerLat: center_lat,
+        etag: resp.etag
+      };
+      return header;
+    });
+  }
+  function getZxy(header, source, cache, z2, x2, y, signal) {
+    return __async2(this, null, function* () {
+      let root_dir = yield cache.getArrayBuffer(source, header.rootDirectoryOffset, header.rootDirectoryLength, header);
+      if (header.specVersion === 1) {
+        root_dir = sortDir(root_dir);
+      }
+      const entry = queryTile(new DataView(root_dir), z2, x2, y);
+      if (entry) {
+        let resp = yield source.getBytes(entry.offset, entry.length, signal);
+        let tile_data = resp.data;
+        let view = new DataView(tile_data);
+        if (view.getUint8(0) == 31 && view.getUint8(1) == 139) {
+          tile_data = decompressSync(new Uint8Array(tile_data));
+        }
         return {
-          metadata: JSON.parse(dec.decode(new DataView(buf, 10, header.json_size))),
-          dir: bytesToMap(new DataView(buf, 10 + header.json_size, 17 * header.root_entries))
+          data: tile_data
+        };
+      }
+      const leafcoords = deriveLeaf(new DataView(root_dir), { z: z2, x: x2, y });
+      if (leafcoords) {
+        const leafdir_entry = queryLeafdir(new DataView(root_dir), leafcoords.z, leafcoords.x, leafcoords.y);
+        if (leafdir_entry) {
+          let leaf_dir = yield cache.getArrayBuffer(source, leafdir_entry.offset, leafdir_entry.length, header);
+          if (header.specVersion === 1) {
+            leaf_dir = sortDir(leaf_dir);
+          }
+          let tile_entry = queryTile(new DataView(leaf_dir), z2, x2, y);
+          if (tile_entry) {
+            let resp = yield source.getBytes(tile_entry.offset, tile_entry.length, signal);
+            let tile_data = resp.data;
+            let view = new DataView(tile_data);
+            if (view.getUint8(0) == 31 && view.getUint8(1) == 139) {
+              tile_data = decompressSync(new Uint8Array(tile_data));
+            }
+            return {
+              data: tile_data
+            };
+          }
+        }
+      }
+      return void 0;
+    });
+  }
+  var v2_default = {
+    getHeader,
+    getZxy
+  };
+  function toNum(low, high) {
+    return (high >>> 0) * 4294967296 + (low >>> 0);
+  }
+  function readVarintRemainder(l2, p2) {
+    const buf = p2.buf;
+    let h, b;
+    b = buf[p2.pos++];
+    h = (b & 112) >> 4;
+    if (b < 128)
+      return toNum(l2, h);
+    b = buf[p2.pos++];
+    h |= (b & 127) << 3;
+    if (b < 128)
+      return toNum(l2, h);
+    b = buf[p2.pos++];
+    h |= (b & 127) << 10;
+    if (b < 128)
+      return toNum(l2, h);
+    b = buf[p2.pos++];
+    h |= (b & 127) << 17;
+    if (b < 128)
+      return toNum(l2, h);
+    b = buf[p2.pos++];
+    h |= (b & 127) << 24;
+    if (b < 128)
+      return toNum(l2, h);
+    b = buf[p2.pos++];
+    h |= (b & 1) << 31;
+    if (b < 128)
+      return toNum(l2, h);
+    throw new Error("Expected varint not more than 10 bytes");
+  }
+  function readVarint(p2) {
+    const buf = p2.buf;
+    let val, b;
+    b = buf[p2.pos++];
+    val = b & 127;
+    if (b < 128)
+      return val;
+    b = buf[p2.pos++];
+    val |= (b & 127) << 7;
+    if (b < 128)
+      return val;
+    b = buf[p2.pos++];
+    val |= (b & 127) << 14;
+    if (b < 128)
+      return val;
+    b = buf[p2.pos++];
+    val |= (b & 127) << 21;
+    if (b < 128)
+      return val;
+    b = buf[p2.pos];
+    val |= (b & 15) << 28;
+    return readVarintRemainder(val, p2);
+  }
+  function rotate(n2, xy, rx, ry) {
+    if (ry == 0) {
+      if (rx == 1) {
+        xy[0] = n2 - 1 - xy[0];
+        xy[1] = n2 - 1 - xy[1];
+      }
+      const t2 = xy[0];
+      xy[0] = xy[1];
+      xy[1] = t2;
+    }
+  }
+  function zxyToTileId(z2, x2, y) {
+    let acc = 0;
+    let tz = 0;
+    while (tz < z2) {
+      acc += (1 << tz) * (1 << tz);
+      tz++;
+    }
+    const n2 = 1 << z2;
+    let rx = 0;
+    let ry = 0;
+    let d = 0;
+    const xy = [x2, y];
+    let s2 = n2 / 2 >> 0;
+    while (s2 > 0) {
+      rx = (xy[0] & s2) > 0 ? 1 : 0;
+      ry = (xy[1] & s2) > 0 ? 1 : 0;
+      d += s2 * s2 * (3 * rx ^ ry);
+      rotate(s2, xy, rx, ry);
+      s2 = s2 / 2 >> 0;
+    }
+    return acc + d;
+  }
+  var ENTRY_SIZE_BYTES = 32;
+  var Compression;
+  (function(Compression2) {
+    Compression2[Compression2["Unknown"] = 0] = "Unknown";
+    Compression2[Compression2["None"] = 1] = "None";
+    Compression2[Compression2["Gzip"] = 2] = "Gzip";
+    Compression2[Compression2["Brotli"] = 3] = "Brotli";
+    Compression2[Compression2["Zstd"] = 4] = "Zstd";
+  })(Compression || (Compression = {}));
+  function tryDecompress(buf, compression) {
+    if (compression === 1 || compression === 0) {
+      return buf;
+    } else if (compression === 2) {
+      return decompressSync(new Uint8Array(buf));
+    } else {
+      throw Error("Compression method not supported");
+    }
+  }
+  var TileType;
+  (function(TileType2) {
+    TileType2[TileType2["Unknown"] = 0] = "Unknown";
+    TileType2[TileType2["Mvt"] = 1] = "Mvt";
+    TileType2[TileType2["Png"] = 2] = "Png";
+    TileType2[TileType2["Jpeg"] = 3] = "Jpeg";
+    TileType2[TileType2["Webp"] = 4] = "Webp";
+  })(TileType || (TileType = {}));
+  var HEADER_SIZE_BYTES = 127;
+  function findTile(entries, tileId) {
+    let m = 0;
+    let n2 = entries.length - 1;
+    while (m <= n2) {
+      const k = n2 + m >> 1;
+      const cmp = tileId - entries[k].tileId;
+      if (cmp > 0) {
+        m = k + 1;
+      } else if (cmp < 0) {
+        n2 = k - 1;
+      } else {
+        return entries[k];
+      }
+    }
+    if (n2 >= 0) {
+      if (entries[n2].runLength === 0) {
+        return entries[n2];
+      }
+      if (tileId - entries[n2].tileId < entries[n2].runLength) {
+        return entries[n2];
+      }
+    }
+    return null;
+  }
+  var FetchSource = class {
+    constructor(url) {
+      this.url = url;
+    }
+    getKey() {
+      return this.url;
+    }
+    getBytes(offset, length, signal) {
+      return __async2(this, null, function* () {
+        let controller;
+        if (!signal) {
+          controller = new AbortController();
+          signal = controller.signal;
+        }
+        const resp = yield fetch(this.url, {
+          signal,
+          headers: { Range: "bytes=" + offset + "-" + (offset + length - 1) }
+        });
+        const contentLength = resp.headers.get("Content-Length");
+        if (!contentLength || +contentLength !== length) {
+          console.error("Content-Length mismatch indicates byte serving not supported; aborting.");
+          if (controller)
+            controller.abort();
+        }
+        const a2 = yield resp.arrayBuffer();
+        return {
+          data: a2,
+          etag: resp.headers.get("ETag") || void 0,
+          cacheControl: resp.headers.get("Cache-Control") || void 0,
+          expires: resp.headers.get("Expires") || void 0
         };
       });
-      this.step = 0;
-      this.leaves = new Map();
-      this.outstanding_requests = new Map();
+    }
+  };
+  function bytesToHeader(bytes, etag) {
+    const v = new DataView(bytes);
+    return {
+      specVersion: 3,
+      rootDirectoryOffset: Number(v.getBigUint64(8, true)),
+      rootDirectoryLength: Number(v.getBigUint64(16, true)),
+      jsonMetadataOffset: Number(v.getBigUint64(24, true)),
+      jsonMetadataLength: Number(v.getBigUint64(32, true)),
+      leafDirectoryOffset: Number(v.getBigUint64(40, true)),
+      leafDirectoryLength: Number(v.getBigUint64(48, true)),
+      tileDataOffset: Number(v.getBigUint64(56, true)),
+      tileDataLength: Number(v.getBigUint64(64, true)),
+      numAddressedTiles: Number(v.getBigUint64(72, true)),
+      numTileEntries: Number(v.getBigUint64(80, true)),
+      numTileContents: Number(v.getBigUint64(88, true)),
+      clustered: v.getUint8(96) === 1,
+      internalCompression: v.getUint8(97),
+      tileCompression: v.getUint8(98),
+      tileType: v.getUint8(99),
+      minZoom: v.getUint8(100),
+      maxZoom: v.getUint8(101),
+      minLon: v.getInt32(102, true) / 1e7,
+      minLat: v.getInt32(106, true) / 1e7,
+      maxLon: v.getInt32(110, true) / 1e7,
+      maxLat: v.getInt32(114, true) / 1e7,
+      centerZoom: v.getUint8(118),
+      centerLon: v.getInt32(119, true) / 1e7,
+      centerLat: v.getInt32(123, true) / 1e7,
+      etag
+    };
+  }
+  function deserializeIndex(buffer) {
+    const p2 = { buf: new Uint8Array(buffer), pos: 0 };
+    const numEntries = readVarint(p2);
+    const entries = [];
+    let lastId = 0;
+    for (let i2 = 0; i2 < numEntries; i2++) {
+      const v = readVarint(p2);
+      entries.push({ tileId: lastId + v, offset: 0, length: 0, runLength: 1 });
+      lastId += v;
+    }
+    for (let i2 = 0; i2 < numEntries; i2++) {
+      entries[i2].runLength = readVarint(p2);
+    }
+    for (let i2 = 0; i2 < numEntries; i2++) {
+      entries[i2].length = readVarint(p2);
+    }
+    for (let i2 = 0; i2 < numEntries; i2++) {
+      const v = readVarint(p2);
+      if (v === 0 && i2 > 0) {
+        entries[i2].offset = entries[i2 - 1].offset + entries[i2 - 1].length;
+      } else {
+        entries[i2].offset = v - 1;
+      }
+    }
+    return entries;
+  }
+  function detectVersion(a2) {
+    const v = new DataView(a2);
+    if (v.getUint16(2, true) === 2) {
+      console.warn("PMTiles spec version 2 has been deprecated; please see github.com/protomaps/PMTiles for tools to upgrade");
+      return 2;
+    } else if (v.getUint16(2, true) === 1) {
+      console.warn("PMTiles spec version 1 has been deprecated; please see github.com/protomaps/PMTiles for tools to upgrade");
+      return 1;
+    }
+    return 3;
+  }
+  var VersionMismatch = class extends Error {
+  };
+  function getHeaderAndRoot(source, prefetch) {
+    return __async2(this, null, function* () {
+      let resp = yield source.getBytes(0, 16384);
+      const v = new DataView(resp.data);
+      if (v.getUint16(0, true) !== 19792) {
+        throw new Error("Wrong magic number for PMTiles archive");
+      }
+      if (detectVersion(resp.data) < 3) {
+        return [yield v2_default.getHeader(source)];
+      }
+      const headerData = resp.data.slice(0, HEADER_SIZE_BYTES);
+      const header = bytesToHeader(headerData, resp.etag);
+      if (prefetch) {
+        const rootDirData = resp.data.slice(header.rootDirectoryOffset, header.rootDirectoryOffset + header.rootDirectoryLength);
+        const dirKey = source.getKey() + "|" + (header.etag || "") + "|" + header.rootDirectoryOffset + "|" + header.rootDirectoryLength;
+        const rootDir = deserializeIndex(tryDecompress(rootDirData, header.internalCompression));
+        return [header, [dirKey, ENTRY_SIZE_BYTES * rootDir.length, rootDir]];
+      }
+      return [header, void 0];
+    });
+  }
+  function getDirectory(source, offset, length, header) {
+    return __async2(this, null, function* () {
+      let resp = yield source.getBytes(offset, length);
+      if (header.etag && header.etag !== resp.etag) {
+        throw new VersionMismatch("ETag mismatch: " + header.etag);
+      }
+      const data = tryDecompress(resp.data, header.internalCompression);
+      const directory = deserializeIndex(data);
+      if (directory.length === 0) {
+        throw new Error("Empty directory is invalid");
+      }
+      return directory;
+    });
+  }
+  var SharedPromiseCache = class {
+    constructor(maxSizeBytes = 64e6, prefetch = true) {
+      this.cache = new Map();
+      this.sizeBytes = 0;
+      this.maxSizeBytes = maxSizeBytes;
+      this.counter = 1;
+      this.prefetch = prefetch;
+    }
+    getHeader(source) {
+      return __async2(this, null, function* () {
+        const cacheKey = source.getKey();
+        if (this.cache.has(cacheKey)) {
+          this.cache.get(cacheKey).lastUsed = this.counter++;
+          const data = yield this.cache.get(cacheKey).data;
+          return data;
+        }
+        const p2 = new Promise((resolve, reject) => {
+          getHeaderAndRoot(source, this.prefetch).then((res) => {
+            if (this.cache.has(cacheKey)) {
+              this.cache.get(cacheKey).size = HEADER_SIZE_BYTES;
+              this.sizeBytes += HEADER_SIZE_BYTES;
+            }
+            if (res[1]) {
+              this.cache.set(res[1][0], {
+                lastUsed: this.counter++,
+                size: res[1][1],
+                data: Promise.resolve(res[1][2])
+              });
+            }
+            resolve(res[0]);
+            this.prune();
+          }).catch((e2) => {
+            reject(e2);
+          });
+        });
+        this.cache.set(cacheKey, { lastUsed: this.counter++, data: p2, size: 0 });
+        return p2;
+      });
+    }
+    getDirectory(source, offset, length, header) {
+      return __async2(this, null, function* () {
+        const cacheKey = source.getKey() + "|" + (header.etag || "") + "|" + offset + "|" + length;
+        if (this.cache.has(cacheKey)) {
+          this.cache.get(cacheKey).lastUsed = this.counter++;
+          const data = yield this.cache.get(cacheKey).data;
+          return data;
+        }
+        const p2 = new Promise((resolve, reject) => {
+          getDirectory(source, offset, length, header).then((directory) => {
+            resolve(directory);
+            if (this.cache.has(cacheKey)) {
+              this.cache.get(cacheKey).size = ENTRY_SIZE_BYTES * directory.length;
+              this.sizeBytes += ENTRY_SIZE_BYTES * directory.length;
+            }
+            this.prune();
+          }).catch((e2) => {
+            reject(e2);
+          });
+        });
+        this.cache.set(cacheKey, { lastUsed: this.counter++, data: p2, size: 0 });
+        return p2;
+      });
+    }
+    getArrayBuffer(source, offset, length, header) {
+      return __async2(this, null, function* () {
+        const cacheKey = source.getKey() + "|" + (header.etag || "") + "|" + offset + "|" + length;
+        if (this.cache.has(cacheKey)) {
+          this.cache.get(cacheKey).lastUsed = this.counter++;
+          const data = yield this.cache.get(cacheKey).data;
+          return data;
+        }
+        const p2 = new Promise((resolve, reject) => {
+          source.getBytes(offset, length).then((resp) => {
+            if (header.etag && header.etag !== resp.etag) {
+              throw new VersionMismatch("ETag mismatch: " + header.etag);
+            }
+            resolve(resp.data);
+            if (this.cache.has(cacheKey)) {
+              this.cache.get(cacheKey).size = resp.data.byteLength;
+              this.sizeBytes += resp.data.byteLength;
+            }
+            this.prune();
+          }).catch((e2) => {
+            reject(e2);
+          });
+        });
+        this.cache.set(cacheKey, { lastUsed: this.counter++, data: p2, size: 0 });
+        return p2;
+      });
+    }
+    prune() {
+      while (this.sizeBytes > this.maxSizeBytes) {
+        let minUsed = Infinity;
+        let minKey = void 0;
+        this.cache.forEach((cache_value, key) => {
+          if (cache_value.lastUsed < minUsed) {
+            minUsed = cache_value.lastUsed;
+            minKey = key;
+          }
+        });
+        if (minKey) {
+          this.sizeBytes -= this.cache.get(minKey).size;
+          this.cache.delete(minKey);
+        }
+      }
+    }
+    invalidate(source) {
+      this.cache.delete(source.getKey());
+    }
+  };
+  var PMTiles = class {
+    constructor(source, cache) {
+      if (typeof source === "string") {
+        this.source = new FetchSource(source);
+      } else {
+        this.source = source;
+      }
+      if (cache) {
+        this.cache = cache;
+      } else {
+        this.cache = new SharedPromiseCache();
+      }
+    }
+    root_entries() {
+      return __async2(this, null, function* () {
+        const header = yield this.cache.getHeader(this.source);
+        if (header.specVersion < 3) {
+          return [];
+        }
+        let d_o = header.rootDirectoryOffset;
+        let d_l = header.rootDirectoryLength;
+        return yield this.cache.getDirectory(this.source, d_o, d_l, header);
+      });
+    }
+    getHeader() {
+      return __async2(this, null, function* () {
+        return yield this.cache.getHeader(this.source);
+      });
+    }
+    getZxyAttempt(z2, x2, y, signal) {
+      return __async2(this, null, function* () {
+        const tile_id = zxyToTileId(z2, x2, y);
+        const header = yield this.cache.getHeader(this.source);
+        if (header.specVersion < 3) {
+          return v2_default.getZxy(header, this.source, this.cache, z2, x2, y, signal);
+        }
+        if (z2 < header.minZoom || z2 > header.maxZoom) {
+          return void 0;
+        }
+        let d_o = header.rootDirectoryOffset;
+        let d_l = header.rootDirectoryLength;
+        for (let depth = 0; depth < 5; depth++) {
+          const directory = yield this.cache.getDirectory(this.source, d_o, d_l, header);
+          const entry = findTile(directory, tile_id);
+          if (entry) {
+            if (entry.runLength > 0) {
+              const resp = yield this.source.getBytes(header.tileDataOffset + entry.offset, entry.length, signal);
+              if (header.etag && header.etag !== resp.etag) {
+                throw new VersionMismatch("ETag mismatch: " + header.etag);
+              }
+              return {
+                data: tryDecompress(resp.data, header.tileCompression),
+                cacheControl: resp.cacheControl,
+                expires: resp.expires
+              };
+            } else {
+              d_o = header.leafDirectoryOffset + entry.offset;
+              d_l = entry.length;
+            }
+          } else {
+            return void 0;
+          }
+        }
+        throw Error("Maximum directory depth exceeded");
+      });
+    }
+    getZxy(z2, x2, y, signal) {
+      return __async2(this, null, function* () {
+        try {
+          return yield this.getZxyAttempt(z2, x2, y, signal);
+        } catch (e2) {
+          if (e2 instanceof VersionMismatch) {
+            this.cache.invalidate(this.source);
+            return yield this.getZxyAttempt(z2, x2, y, signal);
+          } else {
+            throw e2;
+          }
+        }
+      });
+    }
+    getMetadataAttempt() {
+      return __async2(this, null, function* () {
+        const header = yield this.cache.getHeader(this.source);
+        const resp = yield this.source.getBytes(header.jsonMetadataOffset, header.jsonMetadataLength);
+        if (header.etag && header.etag !== resp.etag) {
+          throw new VersionMismatch("Etag mismatch: " + header.etag);
+        }
+        const decompressed = tryDecompress(resp.data, header.internalCompression);
+        const dec = new TextDecoder("utf-8");
+        return JSON.parse(dec.decode(decompressed));
+      });
+    }
+    getMetadata() {
+      return __async2(this, null, function* () {
+        try {
+          return yield this.getMetadataAttempt();
+        } catch (e2) {
+          if (e2 instanceof VersionMismatch) {
+            this.cache.invalidate(this.source);
+            return yield this.getMetadataAttempt();
+          } else {
+            throw e2;
+          }
+        }
+      });
     }
   };
 
@@ -1957,9 +2855,9 @@ var protomaps = (() => {
   }
   var loadGeomAndBbox = (pbf, geometry, scale) => {
     pbf.pos = geometry;
-    var end = pbf.readVarint() + pbf.pos, cmd = 1, length = 0, x = 0, y = 0, x1 = Infinity, x2 = -Infinity, y1 = Infinity, y2 = -Infinity;
+    var end = pbf.readVarint() + pbf.pos, cmd = 1, length = 0, x2 = 0, y = 0, x1 = Infinity, x22 = -Infinity, y1 = Infinity, y2 = -Infinity;
     var lines = [];
-    var line;
+    var line = [];
     while (pbf.pos < end) {
       if (length <= 0) {
         var cmdLen = pbf.readVarint();
@@ -1968,22 +2866,22 @@ var protomaps = (() => {
       }
       length--;
       if (cmd === 1 || cmd === 2) {
-        x += pbf.readSVarint() * scale;
+        x2 += pbf.readSVarint() * scale;
         y += pbf.readSVarint() * scale;
-        if (x < x1)
-          x1 = x;
-        if (x > x2)
-          x2 = x;
+        if (x2 < x1)
+          x1 = x2;
+        if (x2 > x22)
+          x22 = x2;
         if (y < y1)
           y1 = y;
         if (y > y2)
           y2 = y;
         if (cmd === 1) {
-          if (line)
+          if (line.length > 0)
             lines.push(line);
           line = [];
         }
-        line.push(new import_point_geometry.default(x, y));
+        line.push(new import_point_geometry.default(x2, y));
       } else if (cmd === 7) {
         if (line)
           line.push(line[0].clone());
@@ -1992,7 +2890,7 @@ var protomaps = (() => {
     }
     if (line)
       lines.push(line);
-    return { geom: lines, bbox: { minX: x1, minY: y1, maxX: x2, maxY: y2 } };
+    return { geom: lines, bbox: { minX: x1, minY: y1, maxX: x22, maxY: y2 } };
   };
   function parseTile(buffer, tileSize) {
     let v = new import_vector_tile.VectorTile(new import_pbf.default(buffer));
@@ -2001,17 +2899,17 @@ var protomaps = (() => {
       let features = [];
       let layer = value;
       for (let i2 = 0; i2 < layer.length; i2++) {
-        let result2 = loadGeomAndBbox(layer.feature(i2)._pbf, layer.feature(i2)._geometry, tileSize / layer.extent);
+        let loaded = loadGeomAndBbox(layer.feature(i2)._pbf, layer.feature(i2)._geometry, tileSize / layer.extent);
         let numVertices = 0;
-        for (let part of result2.geom)
+        for (let part of loaded.geom)
           numVertices += part.length;
         features.push({
           id: layer.feature(i2).id,
           geomType: layer.feature(i2).type,
-          geom: result2.geom,
+          geom: loaded.geom,
           numVertices,
-          bbox: result2.bbox,
-          properties: layer.feature(i2).properties
+          bbox: loaded.bbox,
+          props: layer.feature(i2).properties
         });
       }
       result.set(key, features);
@@ -2019,56 +2917,55 @@ var protomaps = (() => {
     return result;
   }
   var PmtilesSource = class {
-    constructor(url) {
-      if (url.url) {
-        this.p = url;
-      } else {
+    constructor(url, shouldCancelZooms) {
+      if (typeof url == "string") {
         this.p = new PMTiles(url);
+      } else {
+        this.p = url;
       }
       this.controllers = [];
+      this.shouldCancelZooms = shouldCancelZooms;
     }
     get(c2, tileSize) {
       return __async(this, null, function* () {
-        this.controllers = this.controllers.filter((cont) => {
-          if (cont[0] != c2.z) {
-            cont[1].abort();
-            return false;
-          }
-          return true;
-        });
-        let result = yield this.p.getZxy(c2.z, c2.x, c2.y);
-        if (!result)
-          throw new Error(`Tile ${c2.z} ${c2.x} ${c2.y} not found in archive`);
+        if (this.shouldCancelZooms) {
+          this.controllers = this.controllers.filter((cont) => {
+            if (cont[0] != c2.z) {
+              cont[1].abort();
+              return false;
+            }
+            return true;
+          });
+        }
         const controller = new AbortController();
         this.controllers.push([c2.z, controller]);
         const signal = controller.signal;
-        return new Promise((resolve, reject) => {
-          fetch(this.p.url, { headers: { Range: "bytes=" + result[0] + "-" + (result[0] + result[1] - 1) }, signal }).then((resp) => {
-            return resp.arrayBuffer();
-          }).then((buffer) => {
-            let result2 = parseTile(buffer, tileSize);
-            resolve(result2);
-          }).catch((e2) => {
-            reject(e2);
-          });
-        });
+        let result = yield this.p.getZxy(c2.z, c2.x, c2.y, signal);
+        if (result) {
+          return parseTile(result.data, tileSize);
+        } else {
+          return new Map();
+        }
       });
     }
   };
   var ZxySource = class {
-    constructor(url) {
+    constructor(url, shouldCancelZooms) {
       this.url = url;
       this.controllers = [];
+      this.shouldCancelZooms = shouldCancelZooms;
     }
     get(c2, tileSize) {
       return __async(this, null, function* () {
-        this.controllers = this.controllers.filter((cont) => {
-          if (cont[0] != c2.z) {
-            cont[1].abort();
-            return false;
-          }
-          return true;
-        });
+        if (this.shouldCancelZooms) {
+          this.controllers = this.controllers.filter((cont) => {
+            if (cont[0] != c2.z) {
+              cont[1].abort();
+              return false;
+            }
+            return true;
+          });
+        }
         let url = this.url.replace("{z}", c2.z.toString()).replace("{x}", c2.x.toString()).replace("{y}", c2.y.toString());
         const controller = new AbortController();
         this.controllers.push([c2.z, controller]);
@@ -2095,6 +2992,75 @@ var protomaps = (() => {
     let sin = Math.sin(constrained_lat * d);
     return new import_point_geometry.default(R * latlng[1] * d, R * Math.log((1 + sin) / (1 - sin)) / 2);
   };
+  function sqr(x2) {
+    return x2 * x2;
+  }
+  function dist2(v, w) {
+    return sqr(v.x - w.x) + sqr(v.y - w.y);
+  }
+  function distToSegmentSquared(p2, v, w) {
+    var l2 = dist2(v, w);
+    if (l2 === 0)
+      return dist2(p2, v);
+    var t2 = ((p2.x - v.x) * (w.x - v.x) + (p2.y - v.y) * (w.y - v.y)) / l2;
+    t2 = Math.max(0, Math.min(1, t2));
+    return dist2(p2, new import_point_geometry.default(v.x + t2 * (w.x - v.x), v.y + t2 * (w.y - v.y)));
+  }
+  function isInRing(point, ring) {
+    var inside = false;
+    for (var i2 = 0, j = ring.length - 1; i2 < ring.length; j = i2++) {
+      var xi = ring[i2].x, yi = ring[i2].y;
+      var xj = ring[j].x, yj = ring[j].y;
+      var intersect = yi > point.y != yj > point.y && point.x < (xj - xi) * (point.y - yi) / (yj - yi) + xi;
+      if (intersect)
+        inside = !inside;
+    }
+    return inside;
+  }
+  function isCCW(ring) {
+    var area = 0;
+    for (var i2 = 0; i2 < ring.length; i2++) {
+      let j = (i2 + 1) % ring.length;
+      area += ring[i2].x * ring[j].y;
+      area -= ring[j].x * ring[i2].y;
+    }
+    return area < 0;
+  }
+  function pointInPolygon(point, geom) {
+    var isInCurrentExterior = false;
+    for (let ring of geom) {
+      if (isCCW(ring)) {
+        if (isInRing(point, ring))
+          isInCurrentExterior = false;
+      } else {
+        if (isInCurrentExterior)
+          return true;
+        if (isInRing(point, ring))
+          isInCurrentExterior = true;
+      }
+    }
+    return isInCurrentExterior;
+  }
+  function pointMinDistToPoints(point, geom) {
+    let min = Infinity;
+    for (let l2 of geom) {
+      let dist = Math.sqrt(dist2(point, l2[0]));
+      if (dist < min)
+        min = dist;
+    }
+    return min;
+  }
+  function pointMinDistToLines(point, geom) {
+    let min = Infinity;
+    for (let l2 of geom) {
+      for (var i2 = 0; i2 < l2.length - 1; i2++) {
+        let dist = Math.sqrt(distToSegmentSquared(point, l2[i2], l2[i2 + 1]));
+        if (dist < min)
+          min = dist;
+      }
+    }
+    return min;
+  }
   var TileCache = class {
     constructor(source, tileSize) {
       this.source = source;
@@ -2102,7 +3068,7 @@ var protomaps = (() => {
       this.inflight = new Map();
       this.tileSize = tileSize;
     }
-    queryFeatures(lng, lat, zoom) {
+    queryFeatures(lng, lat, zoom, brushSize) {
       let projected = project([lat, lng]);
       var normalized = new import_point_geometry.default((projected.x + MAXCOORD) / (MAXCOORD * 2), 1 - (projected.y + MAXCOORD) / (MAXCOORD * 2));
       if (normalized.x > 1)
@@ -2114,13 +3080,21 @@ var protomaps = (() => {
       let retval = [];
       let entry = this.cache.get(idx);
       if (entry) {
-        const center_bbox_x = (on_zoom.x - tile_x) * this.tileSize;
-        const center_bbox_y = (on_zoom.y - tile_y) * this.tileSize;
-        let query_bbox = { minX: center_bbox_x - 8, minY: center_bbox_y - 8, maxX: center_bbox_x + 8, maxY: center_bbox_y + 8 };
+        const center = new import_point_geometry.default((on_zoom.x - tile_x) * this.tileSize, (on_zoom.y - tile_y) * this.tileSize);
         for (let [layer_name, layer_arr] of entry.data.entries()) {
           for (let feature of layer_arr) {
-            if (query_bbox.maxX >= feature.bbox.minX && feature.bbox.maxX >= query_bbox.minX && (query_bbox.maxY >= feature.bbox.minY && feature.bbox.maxY >= query_bbox.minY)) {
-              retval.push(feature);
+            if (feature.geomType == 1) {
+              if (pointMinDistToPoints(center, feature.geom) < brushSize) {
+                retval.push({ feature, layerName: layer_name });
+              }
+            } else if (feature.geomType == 2) {
+              if (pointMinDistToLines(center, feature.geom) < brushSize) {
+                retval.push({ feature, layerName: layer_name });
+              }
+            } else {
+              if (pointInPolygon(center, feature.geom)) {
+                retval.push({ feature, layerName: layer_name });
+              }
             }
           }
         }
@@ -2152,8 +3126,10 @@ var protomaps = (() => {
                   let min_used = Infinity;
                   let min_key = void 0;
                   this.cache.forEach((value, key) => {
-                    if (value.used < min_used)
+                    if (value.used < min_used) {
+                      min_used = value.used;
                       min_key = key;
+                    }
                   });
                   if (min_key)
                     this.cache.delete(min_key);
@@ -2173,7 +3149,6 @@ var protomaps = (() => {
   };
 
   // src/view.ts
-  var import_point_geometry2 = __toModule(require_point_geometry());
   var transformGeom = (geom, scale, translate) => {
     let retval = [];
     for (let arr2 of geom) {
@@ -2185,6 +3160,14 @@ var protomaps = (() => {
     }
     return retval;
   };
+  var wrap = (val, z2) => {
+    let dim = 1 << z2;
+    if (val < 0)
+      val = dim + val;
+    if (val >= dim)
+      val = val % dim;
+    return val;
+  };
   var View = class {
     constructor(tileCache, maxDataLevel, levelDiff) {
       this.tileCache = tileCache;
@@ -2192,11 +3175,12 @@ var protomaps = (() => {
       this.levelDiff = levelDiff;
     }
     dataTilesForBounds(display_zoom, bounds) {
+      let fractional = Math.pow(2, display_zoom) / Math.pow(2, Math.ceil(display_zoom));
       let needed = [];
       var scale = 1;
       var dim = this.tileCache.tileSize;
       if (display_zoom < this.levelDiff) {
-        scale = 1 / (1 << this.levelDiff - display_zoom);
+        scale = 1 / (1 << this.levelDiff - display_zoom) * fractional;
         needed.push({
           data_tile: { z: 0, x: 0, y: 0 },
           origin: new import_point_geometry2.default(0, 0),
@@ -2205,24 +3189,30 @@ var protomaps = (() => {
         });
       } else if (display_zoom <= this.levelDiff + this.maxDataLevel) {
         let f2 = 1 << this.levelDiff;
-        let mintile_x = Math.floor(bounds.minX / f2 / 256);
-        let mintile_y = Math.floor(bounds.minY / f2 / 256);
-        let maxtile_x = Math.floor(bounds.maxX / f2 / 256);
-        let maxtile_y = Math.floor(bounds.maxY / f2 / 256);
+        let basetile_size = 256 * fractional;
+        let data_zoom = Math.ceil(display_zoom) - this.levelDiff;
+        let mintile_x = Math.floor(bounds.minX / f2 / basetile_size);
+        let mintile_y = Math.floor(bounds.minY / f2 / basetile_size);
+        let maxtile_x = Math.floor(bounds.maxX / f2 / basetile_size);
+        let maxtile_y = Math.floor(bounds.maxY / f2 / basetile_size);
         for (var tx = mintile_x; tx <= maxtile_x; tx++) {
           for (var ty = mintile_y; ty <= maxtile_y; ty++) {
-            let origin = new import_point_geometry2.default(tx * f2 * 256, ty * f2 * 256);
+            let origin = new import_point_geometry2.default(tx * f2 * basetile_size, ty * f2 * basetile_size);
             needed.push({
-              data_tile: { z: display_zoom - this.levelDiff, x: tx, y: ty },
+              data_tile: {
+                z: data_zoom,
+                x: wrap(tx, data_zoom),
+                y: wrap(ty, data_zoom)
+              },
               origin,
-              scale: 1,
-              dim
+              scale: fractional,
+              dim: dim * fractional
             });
           }
         }
       } else {
         let f2 = 1 << this.levelDiff;
-        scale = 1 << display_zoom - this.maxDataLevel - this.levelDiff;
+        scale = (1 << Math.ceil(display_zoom) - this.maxDataLevel - this.levelDiff) * fractional;
         let mintile_x = Math.floor(bounds.minX / f2 / 256 / scale);
         let mintile_y = Math.floor(bounds.minY / f2 / 256 / scale);
         let maxtile_x = Math.floor(bounds.maxX / f2 / 256 / scale);
@@ -2231,7 +3221,11 @@ var protomaps = (() => {
           for (var ty = mintile_y; ty <= maxtile_y; ty++) {
             let origin = new import_point_geometry2.default(tx * f2 * 256 * scale, ty * f2 * 256 * scale);
             needed.push({
-              data_tile: { z: this.maxDataLevel, x: tx, y: ty },
+              data_tile: {
+                z: this.maxDataLevel,
+                x: wrap(tx, this.maxDataLevel),
+                y: wrap(ty, this.maxDataLevel)
+              },
               origin,
               scale,
               dim: dim * scale
@@ -2304,66 +3298,111 @@ var protomaps = (() => {
       });
     }
     queryFeatures(lng, lat, display_zoom) {
-      return this.tileCache.queryFeatures(lng, lat, Math.min(display_zoom - this.levelDiff, this.maxDataLevel));
+      let rounded_zoom = Math.round(display_zoom);
+      let data_zoom = Math.min(rounded_zoom - this.levelDiff, this.maxDataLevel);
+      let brush_size = 16 / (1 << rounded_zoom - data_zoom);
+      return this.tileCache.queryFeatures(lng, lat, data_zoom, brush_size);
     }
+  };
+  var sourcesToViews = (options) => {
+    let sourceToViews = (o2) => {
+      let level_diff = o2.levelDiff === void 0 ? 2 : o2.levelDiff;
+      let maxDataZoom = o2.maxDataZoom || 14;
+      let source;
+      if (typeof o2.url === "string") {
+        if (o2.url.endsWith(".pmtiles")) {
+          source = new PmtilesSource(o2.url, true);
+        } else {
+          source = new ZxySource(o2.url, true);
+        }
+      } else {
+        source = new PmtilesSource(o2.url, true);
+      }
+      let cache = new TileCache(source, 256 * 1 << level_diff);
+      return new View(cache, maxDataZoom, level_diff);
+    };
+    let sources = new Map();
+    if (options.sources) {
+      for (const key in options.sources) {
+        sources.set(key, sourceToViews(options.sources[key]));
+      }
+    } else {
+      sources.set("", sourceToViews(options));
+    }
+    return sources;
   };
 
   // src/painter.ts
   var import_point_geometry3 = __toModule(require_point_geometry());
-  function painter(ctx, prepared_tiles, label_data, rules, bbox, origin, clip, debug) {
+  function painter(ctx, z2, prepared_tilemap, label_data, rules, bbox, origin, clip, debug) {
     let start = performance.now();
     ctx.save();
     ctx.miterLimit = 2;
-    for (var prepared_tile of prepared_tiles) {
-      let po = prepared_tile.origin;
-      let ps = prepared_tile.scale;
-      ctx.save();
-      if (clip) {
-        ctx.beginPath();
-        ctx.rect(po.x - origin.x, po.y - origin.y, prepared_tile.dim, prepared_tile.dim);
-        ctx.clip();
-      }
-      ctx.translate(po.x - origin.x, po.y - origin.y);
-      for (var rule of rules) {
-        if (rule.minzoom && prepared_tile.z < rule.minzoom)
-          continue;
-        if (rule.maxzoom && prepared_tile.z > rule.maxzoom)
-          continue;
+    for (var rule of rules) {
+      if (rule.minzoom && z2 < rule.minzoom)
+        continue;
+      if (rule.maxzoom && z2 > rule.maxzoom)
+        continue;
+      let prepared_tiles = prepared_tilemap.get(rule.dataSource || "");
+      if (!prepared_tiles)
+        continue;
+      for (let prepared_tile of prepared_tiles) {
         var layer = prepared_tile.data.get(rule.dataLayer);
         if (layer === void 0)
           continue;
-        rule.symbolizer.before(ctx, prepared_tile.z);
+        if (rule.symbolizer.before)
+          rule.symbolizer.before(ctx, prepared_tile.z);
+        let po = prepared_tile.origin;
+        let dim = prepared_tile.dim;
+        let ps = prepared_tile.scale;
+        ctx.save();
+        if (clip) {
+          ctx.beginPath();
+          let minX = Math.max(po.x - origin.x, bbox.minX - origin.x);
+          let minY = Math.max(po.y - origin.y, bbox.minY - origin.y);
+          let maxX = Math.min(po.x - origin.x + dim, bbox.maxX - origin.x);
+          let maxY = Math.min(po.y - origin.y + dim, bbox.maxY - origin.y);
+          ctx.rect(minX, minY, maxX - minX, maxY - minY);
+          ctx.clip();
+        }
+        ctx.translate(po.x - origin.x, po.y - origin.y);
         for (var feature of layer) {
           let geom = feature.geom;
           let fbox = feature.bbox;
           if (fbox.maxX * ps + po.x < bbox.minX || fbox.minX * ps + po.x > bbox.maxX || fbox.minY * ps + po.y > bbox.maxY || fbox.maxY * ps + po.y < bbox.minY) {
             continue;
           }
-          let properties = feature.properties;
-          if (rule.filter && !rule.filter(properties))
+          if (rule.filter && !rule.filter(prepared_tile.z, feature))
             continue;
           if (ps != 1) {
             geom = transformGeom(geom, ps, new import_point_geometry3.default(0, 0));
           }
-          rule.symbolizer.draw(ctx, geom, properties);
+          rule.symbolizer.draw(ctx, geom, prepared_tile.z, feature);
         }
+        ctx.restore();
       }
-      ctx.restore();
     }
-    let matches = label_data.searchBbox(bbox, Infinity);
-    for (var label of matches) {
-      ctx.save();
-      ctx.translate(label.anchor.x - origin.x, label.anchor.y - origin.y);
-      label.draw(ctx);
-      ctx.restore();
-      if (debug) {
-        ctx.lineWidth = 0.5;
-        ctx.strokeStyle = debug;
-        ctx.fillStyle = debug;
-        ctx.globalAlpha = 1;
-        ctx.fillRect(label.anchor.x - origin.x - 2, label.anchor.y - origin.y - 2, 4, 4);
-        for (let bbox2 of label.bboxes) {
-          ctx.strokeRect(bbox2.minX - origin.x, bbox2.minY - origin.y, bbox2.maxX - bbox2.minX, bbox2.maxY - bbox2.minY);
+    if (clip) {
+      ctx.beginPath();
+      ctx.rect(bbox.minX - origin.x, bbox.minY - origin.y, bbox.maxX - bbox.minX, bbox.maxY - bbox.minY);
+      ctx.clip();
+    }
+    if (label_data) {
+      let matches = label_data.searchBbox(bbox, Infinity);
+      for (var label of matches) {
+        ctx.save();
+        ctx.translate(label.anchor.x - origin.x, label.anchor.y - origin.y);
+        label.draw(ctx);
+        ctx.restore();
+        if (debug) {
+          ctx.lineWidth = 0.5;
+          ctx.strokeStyle = debug;
+          ctx.fillStyle = debug;
+          ctx.globalAlpha = 1;
+          ctx.fillRect(label.anchor.x - origin.x - 2, label.anchor.y - origin.y - 2, 4, 4);
+          for (let bbox2 of label.bboxes) {
+            ctx.strokeRect(bbox2.minX - origin.x, bbox2.minY - origin.y, bbox2.maxX - bbox2.minX, bbox2.maxY - bbox2.minY);
+          }
         }
       }
     }
@@ -2372,6 +3411,7 @@ var protomaps = (() => {
   }
 
   // src/labeler.ts
+  var import_point_geometry4 = __toModule(require_point_geometry());
   var import_rbush = __toModule(require_rbush_min());
   var covering = (display_zoom, tile_width, bbox) => {
     let res = 256;
@@ -2382,20 +3422,34 @@ var protomaps = (() => {
     let maxy = Math.floor(bbox.maxY / res);
     let leveldiff = Math.log2(f2);
     let retval = [];
-    for (let x = minx; x <= maxx; x++) {
+    for (let x2 = minx; x2 <= maxx; x2++) {
+      let wrapped_x = x2 % (1 << display_zoom);
       for (let y = miny; y <= maxy; y++) {
         retval.push({
-          display: toIndex({ z: display_zoom, x, y }),
-          key: toIndex({ z: display_zoom - leveldiff, x: Math.floor(x / f2), y: Math.floor(y / f2) })
+          display: toIndex({ z: display_zoom, x: wrapped_x, y }),
+          key: toIndex({
+            z: display_zoom - leveldiff,
+            x: Math.floor(wrapped_x / f2),
+            y: Math.floor(y / f2)
+          })
         });
       }
     }
     return retval;
   };
   var Index = class {
-    constructor() {
+    constructor(dim, maxLabeledTiles) {
       this.tree = new import_rbush.default();
       this.current = new Map();
+      this.dim = dim;
+      this.maxLabeledTiles = maxLabeledTiles;
+    }
+    hasPrefix(tileKey) {
+      for (let key of this.current.keys()) {
+        if (key.startsWith(tileKey))
+          return true;
+      }
+      return false;
     }
     has(tileKey) {
       return this.current.has(tileKey);
@@ -2442,29 +3496,109 @@ var protomaps = (() => {
       }
       return false;
     }
+    deduplicationCollides(label) {
+      if (!label.deduplicationKey || !label.deduplicationDistance)
+        return false;
+      let dist = label.deduplicationDistance;
+      let test_bbox = {
+        minX: label.anchor.x - dist,
+        minY: label.anchor.y - dist,
+        maxX: label.anchor.x + dist,
+        maxY: label.anchor.y + dist
+      };
+      for (let collision of this.tree.search(test_bbox)) {
+        if (collision.indexed_label.deduplicationKey === label.deduplicationKey) {
+          if (collision.indexed_label.anchor.dist(label.anchor) < dist) {
+            return true;
+          }
+        }
+      }
+      return false;
+    }
+    makeEntry(tileKey) {
+      if (this.current.get(tileKey)) {
+        console.log("consistency error 1");
+      }
+      let newSet = new Set();
+      this.current.set(tileKey, newSet);
+    }
     insert(label, order, tileKey) {
       let indexed_label = {
         anchor: label.anchor,
         bboxes: label.bboxes,
         draw: label.draw,
         order,
-        tileKey
+        tileKey,
+        deduplicationKey: label.deduplicationKey,
+        deduplicationDistance: label.deduplicationDistance
       };
       let entry = this.current.get(tileKey);
-      if (entry) {
-        entry.add(indexed_label);
-      } else {
+      if (!entry) {
         let newSet = new Set();
-        newSet.add(indexed_label);
         this.current.set(tileKey, newSet);
+        entry = newSet;
       }
+      entry.add(indexed_label);
+      var wrapsLeft = false;
+      var wrapsRight = false;
       for (let bbox of label.bboxes) {
         var b = bbox;
         b.indexed_label = indexed_label;
         this.tree.insert(b);
+        if (bbox.minX < 0)
+          wrapsLeft = true;
+        if (bbox.maxX > this.dim)
+          wrapsRight = true;
+      }
+      if (wrapsLeft || wrapsRight) {
+        var shift2 = wrapsLeft ? this.dim : -this.dim;
+        var new_bboxes = [];
+        for (let bbox of label.bboxes) {
+          new_bboxes.push({
+            minX: bbox.minX + shift2,
+            minY: bbox.minY,
+            maxX: bbox.maxX + shift2,
+            maxY: bbox.maxY
+          });
+        }
+        let duplicate_label = {
+          anchor: new import_point_geometry4.default(label.anchor.x + shift2, label.anchor.y),
+          bboxes: new_bboxes,
+          draw: label.draw,
+          order,
+          tileKey
+        };
+        let entry2 = this.current.get(tileKey);
+        if (entry2)
+          entry2.add(duplicate_label);
+        for (let bbox of new_bboxes) {
+          var b = bbox;
+          b.indexed_label = duplicate_label;
+          this.tree.insert(b);
+        }
       }
     }
-    prune(keyToRemove) {
+    pruneOrNoop(key_added) {
+      let added = key_added.split(":");
+      let max_key = void 0;
+      let max_dist = 0;
+      let keys_for_ds = 0;
+      for (var existing_key of this.current.keys()) {
+        let existing = existing_key.split(":");
+        if (existing[3] === added[3]) {
+          keys_for_ds++;
+          let dist = Math.sqrt(Math.pow(+existing[0] - +added[0], 2) + Math.pow(+existing[1] - +added[1], 2));
+          if (dist > max_dist) {
+            max_dist = dist;
+            max_key = existing_key;
+          }
+        }
+        if (max_key && keys_for_ds > this.maxLabeledTiles) {
+          this.pruneKey(max_key);
+        }
+      }
+    }
+    pruneKey(keyToRemove) {
       let indexed_labels = this.current.get(keyToRemove);
       if (!indexed_labels)
         return;
@@ -2495,16 +3629,25 @@ var protomaps = (() => {
     }
   };
   var Labeler = class {
-    constructor(z2, scratch, labelRules2, callback) {
-      this.index = new Index();
+    constructor(z2, scratch, labelRules2, maxLabeledTiles, callback) {
+      this.index = new Index(256 * 1 << z2, maxLabeledTiles);
       this.z = z2;
       this.scratch = scratch;
       this.labelRules = labelRules2;
       this.callback = callback;
     }
-    layout(pt) {
+    layout(prepared_tilemap) {
       let start = performance.now();
-      let key = toIndex(pt.data_tile);
+      let keys_adding = new Set();
+      for (let [k, prepared_tiles] of prepared_tilemap) {
+        for (let prepared_tile of prepared_tiles) {
+          let key2 = toIndex(prepared_tile.data_tile) + ":" + k;
+          if (!this.index.has(key2)) {
+            this.index.makeEntry(key2);
+            keys_adding.add(key2);
+          }
+        }
+      }
       let tiles_invalidated = new Set();
       for (let [order, rule] of this.labelRules.entries()) {
         if (rule.visible == false)
@@ -2513,57 +3656,73 @@ var protomaps = (() => {
           continue;
         if (rule.maxzoom && this.z > rule.maxzoom)
           continue;
-        let layer = pt.data.get(rule.dataLayer);
-        if (layer === void 0)
+        let dsName = rule.dataSource || "";
+        let prepared_tiles = prepared_tilemap.get(dsName);
+        if (!prepared_tiles)
           continue;
-        let feats = layer;
-        if (rule.sort)
-          feats.sort((a2, b) => {
-            if (rule.sort) {
-              return rule.sort(a2.properties, b.properties);
-            }
-            return 0;
-          });
-        let layout = {
-          index: this.index,
-          zoom: this.z,
-          scratch: this.scratch,
-          order
-        };
-        for (let feature of feats) {
-          if (rule.filter && !rule.filter(feature.properties))
+        for (let prepared_tile of prepared_tiles) {
+          let key2 = toIndex(prepared_tile.data_tile) + ":" + dsName;
+          if (!keys_adding.has(key2))
             continue;
-          let transformed = transformGeom(feature.geom, pt.scale, pt.origin);
-          let labels = rule.symbolizer.place(layout, transformed, feature);
-          if (!labels)
+          let layer = prepared_tile.data.get(rule.dataLayer);
+          if (layer === void 0)
             continue;
-          for (let label of labels) {
-            var label_added = false;
-            if (this.index.labelCollides(label, Infinity)) {
-              if (!this.index.labelCollides(label, order)) {
-                let conflicts = this.index.searchLabel(label, Infinity);
-                for (let conflict of conflicts) {
-                  this.index.removeLabel(conflict);
-                  for (let bbox of conflict.bboxes) {
-                    this.findInvalidatedTiles(tiles_invalidated, pt.dim, bbox, key);
+          let feats = layer;
+          if (rule.sort)
+            feats.sort((a2, b) => {
+              if (rule.sort) {
+                return rule.sort(a2.props, b.props);
+              }
+              return 0;
+            });
+          let layout = {
+            index: this.index,
+            zoom: this.z,
+            scratch: this.scratch,
+            order,
+            overzoom: this.z - prepared_tile.data_tile.z
+          };
+          for (let feature of feats) {
+            if (rule.filter && !rule.filter(this.z, feature))
+              continue;
+            let transformed = transformGeom(feature.geom, prepared_tile.scale, prepared_tile.origin);
+            let labels = rule.symbolizer.place(layout, transformed, feature);
+            if (!labels)
+              continue;
+            for (let label of labels) {
+              var label_added = false;
+              if (label.deduplicationKey && this.index.deduplicationCollides(label)) {
+                continue;
+              }
+              if (this.index.labelCollides(label, Infinity)) {
+                if (!this.index.labelCollides(label, order)) {
+                  let conflicts = this.index.searchLabel(label, Infinity);
+                  for (let conflict of conflicts) {
+                    this.index.removeLabel(conflict);
+                    for (let bbox of conflict.bboxes) {
+                      this.findInvalidatedTiles(tiles_invalidated, prepared_tile.dim, bbox, key2);
+                    }
                   }
+                  this.index.insert(label, order, key2);
+                  label_added = true;
                 }
-                this.index.insert(label, order, key);
+              } else {
+                this.index.insert(label, order, key2);
                 label_added = true;
               }
-            } else {
-              this.index.insert(label, order, key);
-              label_added = true;
-            }
-            if (label_added) {
-              for (let bbox of label.bboxes) {
-                if (bbox.maxX > pt.origin.x + pt.dim || bbox.minX < pt.origin.x || bbox.minY < pt.origin.y || bbox.maxY > pt.origin.y + pt.dim) {
-                  this.findInvalidatedTiles(tiles_invalidated, pt.dim, bbox, key);
+              if (label_added) {
+                for (let bbox of label.bboxes) {
+                  if (bbox.maxX > prepared_tile.origin.x + prepared_tile.dim || bbox.minX < prepared_tile.origin.x || bbox.minY < prepared_tile.origin.y || bbox.maxY > prepared_tile.origin.y + prepared_tile.dim) {
+                    this.findInvalidatedTiles(tiles_invalidated, prepared_tile.dim, bbox, key2);
+                  }
                 }
               }
             }
           }
         }
+      }
+      for (var key of keys_adding) {
+        this.index.pruneOrNoop(key);
       }
       if (tiles_invalidated.size > 0 && this.callback) {
         this.callback(tiles_invalidated);
@@ -2573,53 +3732,43 @@ var protomaps = (() => {
     findInvalidatedTiles(tiles_invalidated, dim, bbox, key) {
       let touched = covering(this.z, dim, bbox);
       for (let s2 of touched) {
-        if (s2.key != key && this.index.has(s2.key)) {
+        if (s2.key != key && this.index.hasPrefix(s2.key)) {
           tiles_invalidated.add(s2.display);
         }
       }
     }
-    pruneCache(added) {
-      if (this.index.size() > 16) {
-        let max_key = void 0;
-        let max_dist = 0;
-        for (let key of this.index.keys()) {
-          let split = key.split(":");
-          let dist = Math.sqrt(Math.pow(+split[0] - added.data_tile.x, 2) + Math.pow(+split[1] - added.data_tile.y, 2));
-          if (dist > max_dist) {
-            max_dist = dist;
-            max_key = key;
-          }
+    add(prepared_tilemap) {
+      var all_added = true;
+      for (let [k, prepared_tiles] of prepared_tilemap) {
+        for (let prepared_tile of prepared_tiles) {
+          if (!this.index.has(toIndex(prepared_tile.data_tile) + ":" + k))
+            all_added = false;
         }
-        if (max_key)
-          this.index.prune(max_key);
       }
-    }
-    add(prepared_tile) {
-      let idx = toIndex(prepared_tile.data_tile);
-      if (this.index.has(idx)) {
+      if (all_added) {
         return 0;
       } else {
-        let timing = this.layout(prepared_tile);
-        this.pruneCache(prepared_tile);
+        let timing = this.layout(prepared_tilemap);
         return timing;
       }
     }
   };
   var Labelers = class {
-    constructor(scratch, labelRules2, callback) {
+    constructor(scratch, labelRules2, maxLabeledTiles, callback) {
       this.labelers = new Map();
       this.scratch = scratch;
       this.labelRules = labelRules2;
+      this.maxLabeledTiles = maxLabeledTiles;
       this.callback = callback;
     }
-    add(prepared_tile) {
-      var labeler = this.labelers.get(prepared_tile.z);
+    add(z2, prepared_tilemap) {
+      var labeler = this.labelers.get(z2);
       if (labeler) {
-        return labeler.add(prepared_tile);
+        return labeler.add(prepared_tilemap);
       } else {
-        labeler = new Labeler(prepared_tile.z, this.scratch, this.labelRules, this.callback);
-        this.labelers.set(prepared_tile.z, labeler);
-        return labeler.add(prepared_tile);
+        labeler = new Labeler(z2, this.scratch, this.labelRules, this.maxLabeledTiles, this.callback);
+        this.labelers.set(z2, labeler);
+        return labeler.add(prepared_tilemap);
       }
     }
     getIndex(z2) {
@@ -2699,630 +3848,6 @@ var protomaps = (() => {
     naturalLabel: "#4c4c4c",
     roadsLabel: "#C4C4C4",
     poisLabel: "#959393"
-  };
-
-  // src/symbolizer.ts
-  var import_point_geometry4 = __toModule(require_point_geometry());
-  var import_polylabel = __toModule(require_polylabel());
-
-  // src/text.ts
-  function linebreak(str) {
-    if (str.length <= 15)
-      return [str];
-    let space_before = str.lastIndexOf(" ", 14);
-    let space_after = str.indexOf(" ", 14);
-    if (space_before == -1 && space_after == -1) {
-      return [str];
-    }
-    let first;
-    let after;
-    if (space_after == -1 || space_before >= 0 && 14 - space_before < space_after - 14) {
-      first = str.substring(0, space_before);
-      after = str.substring(space_before + 1, str.length);
-    } else {
-      first = str.substring(0, space_after);
-      after = str.substring(space_after + 1, str.length);
-    }
-    return [first, ...linebreak(after)];
-  }
-  var CJK_CHARS = "\u3005-\u3007\u3021-\u3029\u3031-\u3035\u3038-\u303C\u3220-\u3229\u3248-\u324F\u3251-\u325F\u3280-\u3289\u32B1-\u32BF\u3400-\u4DB5\u4E00-\u9FEA\uF900-\uFA6D\uFA70-\uFAD9\u2000";
-  var cjk_test = new RegExp("^[" + CJK_CHARS + "]+$");
-  var TextSpec = class {
-    constructor(options = {}) {
-      this.properties = options.properties || ["name"];
-      this.textTransform = options.textTransform;
-    }
-    str(z2, f2) {
-      var retval;
-      for (let property of this.properties) {
-        if (f2.hasOwnProperty(property)) {
-          retval = f2[property];
-          break;
-        }
-      }
-      if (retval && this.textTransform === "uppercase")
-        retval = retval.toUpperCase();
-      return retval;
-    }
-  };
-  var FontSpec = class {
-    constructor(options) {
-      if (options.font) {
-        this.font = options.font;
-      } else {
-        this.family = options.fontFamily || "sans-serif";
-        this.size = options.fontSize || 12;
-        this.weight = options.fontWeight;
-        this.style = options.fontStyle;
-      }
-    }
-    str(z2, f2) {
-      if (this.font) {
-        if (typeof this.font === "function") {
-          return this.font(z2, f2);
-        } else {
-          return this.font;
-        }
-      } else {
-        var style = "";
-        if (this.style) {
-          if (typeof this.style === "function") {
-            style = this.style(z2, f2) + " ";
-          } else {
-            style = this.style + " ";
-          }
-        }
-        var weight = "";
-        if (this.weight) {
-          if (typeof this.weight === "function") {
-            weight = this.weight(z2, f2) + " ";
-          } else {
-            weight = this.weight + " ";
-          }
-        }
-        var size;
-        if (typeof this.size === "function") {
-          size = this.size(z2, f2);
-        } else {
-          size = this.size;
-        }
-        var family;
-        if (typeof this.family === "function") {
-          family = this.family(z2, f2);
-        } else {
-          family = this.family;
-        }
-        return `${style}${weight}${size}px ${family}`;
-      }
-    }
-  };
-
-  // src/line.ts
-  var import_xy = __toModule(require_xy());
-  function simpleLabel(mls, minimum) {
-    let longestStart;
-    let longestEnd;
-    let longestLength = 0;
-    for (let ls of mls) {
-      let segments = (0, import_xy.default)(ls, Math.PI / 2 / 18);
-      for (let segment of segments) {
-        if (segment.length >= minimum && segment.length > longestLength) {
-          longestLength = segment.length;
-          longestStart = ls[segment.beginIndex];
-          longestEnd = ls[segment.endIndex - 1];
-        }
-      }
-    }
-    if (!longestStart)
-      return void 0;
-    if (longestStart.x == longestEnd.x && longestStart.y == longestEnd.y) {
-      return void 0;
-    }
-    return { start: longestStart, end: longestEnd };
-  }
-  function lineCells(a2, b, length, spacing) {
-    let dx = b.x - a2.x;
-    let dy = b.y - a2.y;
-    let dist = Math.sqrt(Math.pow(b.x - a2.x, 2) + Math.pow(b.y - a2.y, 2));
-    let retval = [];
-    for (var i2 = spacing; i2 < length; i2 += 2 * spacing) {
-      let factor = i2 * 1 / dist;
-      retval.push({ x: a2.x + factor * dx, y: a2.y + factor * dy });
-    }
-    return retval;
-  }
-
-  // src/symbolizer.ts
-  var createPattern = (width, height, fn) => {
-    const canvas = document.createElement("canvas");
-    const ctx = canvas.getContext("2d");
-    canvas.width = width;
-    canvas.height = height;
-    fn(canvas, ctx);
-    return canvas;
-  };
-  var PolygonSymbolizer = class {
-    constructor(options) {
-      this.fill = options.fill || "#000000";
-      this.opacity = options.opacity || 1;
-      this.pattern = options.pattern;
-    }
-    before(ctx) {
-      if (this.pattern) {
-        ctx.fillStyle = ctx.createPattern(this.pattern, "repeat");
-      } else {
-        ctx.fillStyle = this.fill;
-      }
-      ctx.globalAlpha = this.opacity;
-    }
-    draw(ctx, geom, properties) {
-      ctx.beginPath();
-      for (var poly of geom) {
-        for (var p2 = 0; p2 < poly.length - 1; p2++) {
-          let pt = poly[p2];
-          if (p2 == 0)
-            ctx.moveTo(pt.x, pt.y);
-          else
-            ctx.lineTo(pt.x, pt.y);
-        }
-      }
-      ctx.fill();
-    }
-  };
-  function arr(base, a2) {
-    return (z2) => {
-      let b = z2 - base;
-      if (b >= 0 && b < a2.length) {
-        return a2[b];
-      }
-      return 0;
-    };
-  }
-  function exp(base, stops) {
-    return (z2) => {
-      if (z2 <= stops[0][0])
-        return stops[0][1];
-      if (z2 >= stops[stops.length - 1][0])
-        return stops[stops.length - 1][1];
-      let idx = 0;
-      while (stops[idx + 1][0] < z2)
-        idx++;
-      let difference = stops[idx + 1][0] - stops[idx][0];
-      let progress = z2 - stops[idx][0];
-      var factor;
-      if (difference === 0)
-        factor = 0;
-      else if (base === 1)
-        factor = progress / difference;
-      else
-        factor = (Math.pow(base, progress) - 1) / (Math.pow(base, difference) - 1);
-      return factor * (stops[idx + 1][1] - stops[idx][1]) + stops[idx][1];
-    };
-  }
-  function isFunction(obj) {
-    return !!(obj && obj.constructor && obj.call && obj.apply);
-  }
-  var LineSymbolizer = class {
-    constructor(options) {
-      this.color = options.color || "#000000";
-      this.width = options.width || 1;
-      this.opacity = options.opacity || 1;
-      this.skip = false;
-      this.dash = options.dash;
-      this.dashColor = options.dashColor || "black";
-      this.dashWidth = options.dashWidth || 1;
-    }
-    before(ctx, z2) {
-      ctx.strokeStyle = this.color;
-      ctx.globalAlpha = this.opacity;
-      if (isFunction(this.width) && this.width.length == 1) {
-        let width = this.width(z2);
-        this.skip = width === 0;
-        ctx.lineWidth = width;
-      } else {
-        ctx.lineWidth = this.width;
-      }
-    }
-    draw(ctx, geom, properties) {
-      if (this.skip)
-        return;
-      ctx.beginPath();
-      for (var ls of geom) {
-        for (var p2 = 0; p2 < ls.length; p2++) {
-          let pt = ls[p2];
-          if (p2 == 0)
-            ctx.moveTo(pt.x, pt.y);
-          else
-            ctx.lineTo(pt.x, pt.y);
-        }
-      }
-      if (this.dash) {
-        ctx.save();
-        ctx.lineWidth = this.dashWidth;
-        ctx.strokeStyle = this.dashColor;
-        ctx.setLineDash(this.dash);
-        ctx.stroke();
-        ctx.restore();
-      } else {
-        ctx.stroke();
-      }
-    }
-  };
-  var IconSymbolizer = class {
-    constructor(options) {
-      this.sprites = options.sprites;
-      this.name = options.name;
-    }
-    place(layout, geom, feature) {
-      let pt = geom[0];
-      let a2 = new import_point_geometry4.default(geom[0][0].x, geom[0][0].y);
-      let bbox = {
-        minX: a2.x - 32,
-        minY: a2.y - 32,
-        maxX: a2.x + 32,
-        maxY: a2.y + 32
-      };
-      let draw = (ctx) => {
-        ctx.globalAlpha = 1;
-        let r2 = this.sprites.get(this.name);
-        ctx.drawImage(r2.canvas, r2.x, r2.y, r2.w, r2.h, -8, -8, r2.w, r2.h);
-      };
-      return [{ anchor: a2, bboxes: [bbox], draw }];
-    }
-  };
-  var CircleSymbolizer = class {
-    constructor(options) {
-      this.radius = options.radius || 3;
-      this.fill = options.fill || "black";
-      this.stroke = options.stroke || "white";
-      this.width = options.width || 0;
-    }
-    place(layout, geom, feature) {
-      let pt = geom[0];
-      let a2 = new import_point_geometry4.default(geom[0][0].x, geom[0][0].y);
-      let bbox = {
-        minX: a2.x - this.radius,
-        minY: a2.y - this.radius,
-        maxX: a2.x + this.radius,
-        maxY: a2.y + this.radius
-      };
-      let draw = (ctx) => {
-        ctx.globalAlpha = 1;
-        if (this.width > 0) {
-          ctx.fillStyle = this.stroke;
-          ctx.beginPath();
-          ctx.arc(0, 0, this.radius + this.width, 0, 2 * Math.PI);
-          ctx.fill();
-        }
-        ctx.fillStyle = this.fill;
-        ctx.beginPath();
-        ctx.arc(0, 0, this.radius, 0, 2 * Math.PI);
-        ctx.fill();
-      };
-      return [{ anchor: a2, bboxes: [bbox], draw }];
-    }
-  };
-  var ShieldSymbolizer = class {
-    constructor(options) {
-      this.font = new FontSpec(options);
-      this.text = new TextSpec(options);
-      this.fill = options.fill || "black";
-      this.stroke = options.stroke || "white";
-      this.background = options.background || "white";
-      this.padding = options.padding || 0;
-    }
-    place(layout, geom, feature) {
-      let property = this.text.str(layout.zoom, feature.properties);
-      if (!property)
-        return void 0;
-      let font = this.font.str(layout.zoom, feature.properties);
-      layout.scratch.font = font;
-      let metrics = layout.scratch.measureText(property);
-      let width = metrics.width;
-      let ascent = metrics.actualBoundingBoxAscent;
-      let descent = metrics.actualBoundingBoxDescent;
-      let pt = geom[0];
-      let a2 = new import_point_geometry4.default(geom[0][0].x, geom[0][0].y);
-      let p2 = this.padding;
-      let bbox = {
-        minX: a2.x - width / 2 - p2,
-        minY: a2.y - ascent - p2,
-        maxX: a2.x + width / 2 + p2,
-        maxY: a2.y + descent + p2
-      };
-      let draw = (ctx) => {
-        ctx.globalAlpha = 1;
-        ctx.fillStyle = this.background;
-        ctx.fillRect(-width / 2 - p2, -ascent - p2, width + 2 * p2, ascent + descent + 2 * p2);
-        ctx.fillStyle = this.fill;
-        ctx.font = font;
-        ctx.fillText(property, -width / 2, 0);
-      };
-      return [{ anchor: a2, bboxes: [bbox], draw }];
-    }
-  };
-  var FlexSymbolizer = class {
-    constructor(list, options) {
-      this.list = list;
-    }
-    place(layout, geom, feature) {
-      var labels = this.list[0].place(layout, geom, feature);
-      if (!labels)
-        return void 0;
-      var label = labels[0];
-      let anchor = label.anchor;
-      let bbox = label.bboxes[0];
-      let height = bbox.maxY - bbox.minY;
-      let draws = [{ draw: label.draw, translate: { x: 0, y: 0 } }];
-      let newGeom = [[{ x: geom[0][0].x, y: geom[0][0].y + height }]];
-      for (let i2 = 1; i2 < this.list.length; i2++) {
-        labels = this.list[i2].place(layout, newGeom, feature);
-        if (labels) {
-          label = labels[0];
-          bbox = mergeBbox(bbox, label.bboxes[0]);
-          draws.push({ draw: label.draw, translate: { x: 0, y: height } });
-        }
-      }
-      let draw = (ctx) => {
-        for (let sub of draws) {
-          ctx.save();
-          ctx.translate(sub.translate.x, sub.translate.y);
-          sub.draw(ctx);
-          ctx.restore();
-        }
-      };
-      return [{ anchor, bboxes: [bbox], draw }];
-    }
-  };
-  var mergeBbox = (b1, b2) => {
-    return {
-      minX: Math.min(b1.minX, b2.minX),
-      minY: Math.min(b1.minY, b2.minY),
-      maxX: Math.max(b1.maxX, b2.maxX),
-      maxY: Math.max(b1.maxY, b2.maxY)
-    };
-  };
-  var GroupSymbolizer = class {
-    constructor(list) {
-      this.list = list;
-    }
-    place(layout, geom, feature) {
-      let first = this.list[0];
-      if (!first)
-        return void 0;
-      var labels = first.place(layout, geom, feature);
-      if (!labels)
-        return void 0;
-      var label = labels[0];
-      let anchor = label.anchor;
-      let bbox = label.bboxes[0];
-      let draws = [label.draw];
-      for (let i2 = 1; i2 < this.list.length; i2++) {
-        labels = this.list[i2].place(layout, geom, feature);
-        if (!labels)
-          return void 0;
-        label = labels[0];
-        bbox = mergeBbox(bbox, label.bboxes[0]);
-        draws.push(label.draw);
-      }
-      let draw = (ctx) => {
-        draws.forEach((d) => d(ctx));
-      };
-      return [{ anchor, bboxes: [bbox], draw }];
-    }
-  };
-  var CenteredTextSymbolizer = class {
-    constructor(options) {
-      this.font = new FontSpec(options);
-      this.text = new TextSpec(options);
-      this.fill = options.fill;
-      this.stroke = options.stroke || "black";
-      this.width = options.width || 0;
-    }
-    place(layout, geom, feature) {
-      if (feature.geomType !== GeomType.Point)
-        return void 0;
-      let property = this.text.str(layout.zoom, feature.properties);
-      if (!property)
-        return void 0;
-      let font = this.font.str(layout.zoom, feature.properties);
-      layout.scratch.font = font;
-      let metrics = layout.scratch.measureText(property);
-      let width = metrics.width;
-      let ascent = metrics.actualBoundingBoxAscent;
-      let descent = metrics.actualBoundingBoxDescent;
-      let a2 = new import_point_geometry4.default(geom[0][0].x, geom[0][0].y);
-      let bbox = {
-        minX: a2.x - width / 2,
-        minY: a2.y - ascent,
-        maxX: a2.x + width / 2,
-        maxY: a2.y + descent
-      };
-      let textX = -width / 2;
-      let draw = (ctx) => {
-        ctx.globalAlpha = 1;
-        ctx.font = font;
-        if (this.width) {
-          ctx.lineWidth = this.width * 2;
-          ctx.strokeStyle = this.stroke;
-          ctx.strokeText(property, textX, 0);
-        }
-        ctx.fillStyle = this.fill;
-        ctx.fillText(property, textX, 0);
-      };
-      return [{ anchor: a2, bboxes: [bbox], draw }];
-    }
-  };
-  var OffsetTextSymbolizer = class {
-    constructor(options) {
-      this.font = new FontSpec(options);
-      this.text = new TextSpec(options);
-      this.fill = options.fill;
-      this.stroke = options.stroke || "black";
-      this.width = options.width || 0;
-      this.offset = options.offset || 0;
-    }
-    place(layout, geom, feature) {
-      if (feature.geomType !== GeomType.Point)
-        return void 0;
-      let property = this.text.str(layout.zoom, feature.properties);
-      if (!property)
-        return void 0;
-      let font = this.font.str(layout.zoom, feature.properties);
-      layout.scratch.font = font;
-      let metrics = layout.scratch.measureText(property);
-      let width = metrics.width;
-      let ascent = metrics.actualBoundingBoxAscent;
-      let descent = metrics.actualBoundingBoxDescent;
-      let a2 = new import_point_geometry4.default(geom[0][0].x, geom[0][0].y);
-      let offset = this.offset;
-      var text_origin = new import_point_geometry4.default(offset, -offset);
-      let draw = (ctx) => {
-        ctx.globalAlpha = 1;
-        ctx.font = font;
-        if (this.width) {
-          ctx.lineWidth = this.width * 2;
-          ctx.strokeStyle = this.stroke;
-          ctx.strokeText(property, text_origin.x, text_origin.y);
-        }
-        ctx.fillStyle = this.fill;
-        ctx.fillText(property, text_origin.x, text_origin.y);
-      };
-      var bbox = {
-        minX: a2.x + text_origin.x,
-        minY: a2.y - ascent + text_origin.y,
-        maxX: a2.x + width + text_origin.x,
-        maxY: a2.y + descent + text_origin.y
-      };
-      if (!layout.index.bboxCollides(bbox, layout.order))
-        return [{ anchor: a2, bboxes: [bbox], draw }];
-      text_origin = new import_point_geometry4.default(-width - offset, -offset);
-      bbox = {
-        minX: a2.x + text_origin.x,
-        minY: a2.y - ascent + text_origin.y,
-        maxX: a2.x + width + text_origin.x,
-        maxY: a2.y + descent + text_origin.y
-      };
-      if (!layout.index.bboxCollides(bbox, layout.order))
-        return [{ anchor: a2, bboxes: [bbox], draw }];
-      return void 0;
-    }
-  };
-  var LineLabelSymbolizer = class {
-    constructor(options) {
-      this.font = new FontSpec(options);
-      this.text = new TextSpec(options);
-      this.fill = options.fill || "black";
-      this.stroke = options.stroke || "black";
-      this.width = options.width || 0;
-      this.offset = options.offset || 0;
-    }
-    place(layout, geom, feature) {
-      let name = this.text.str(layout.zoom, feature.properties);
-      if (!name)
-        return void 0;
-      if (name.length > 20)
-        return void 0;
-      let fbbox = feature.bbox;
-      let area = (fbbox.maxY - fbbox.minY) * (fbbox.maxX - fbbox.minX);
-      if (area < 400)
-        return void 0;
-      let font = this.font.str(layout.zoom, feature.properties);
-      layout.scratch.font = font;
-      let metrics = layout.scratch.measureText(name);
-      let width = metrics.width;
-      let result = simpleLabel(geom, width);
-      if (!result)
-        return void 0;
-      let dx = result.end.x - result.start.x;
-      let dy = result.end.y - result.start.y;
-      let Q = 8;
-      let cells = lineCells(result.start, result.end, width, 8);
-      let bboxes = cells.map((c2) => {
-        return {
-          minX: c2.x - Q,
-          minY: c2.y - Q,
-          maxX: c2.x + Q,
-          maxY: c2.y + Q
-        };
-      });
-      let draw = (ctx) => {
-        ctx.globalAlpha = 1;
-        ctx.rotate(Math.atan2(dy, dx));
-        if (dx < 0) {
-          ctx.scale(-1, -1);
-          ctx.translate(-width, 0);
-        }
-        ctx.translate(0, -this.offset);
-        ctx.font = font;
-        if (this.width) {
-          ctx.lineWidth = this.width;
-          ctx.strokeStyle = this.stroke;
-          ctx.strokeText(name, 0, 0);
-        }
-        ctx.fillStyle = this.fill;
-        ctx.fillText(name, 0, 0);
-      };
-      return [{ anchor: result.start, bboxes, draw }];
-    }
-  };
-  var PolygonLabelSymbolizer = class {
-    constructor(options) {
-      this.font = new FontSpec(options);
-      this.text = new TextSpec(options);
-      this.fill = options.fill || "black";
-      this.stroke = options.stroke || "black";
-      this.width = options.width || 0;
-    }
-    place(layout, geom, feature) {
-      let fbbox = feature.bbox;
-      let area = (fbbox.maxY - fbbox.minY) * (fbbox.maxX - fbbox.minX);
-      if (area < 2e4)
-        return void 0;
-      let property = this.text.str(layout.zoom, feature.properties);
-      if (!property)
-        return void 0;
-      let first_poly = geom[0];
-      let found = (0, import_polylabel.default)([first_poly.map((c2) => [c2.x, c2.y])]);
-      let a2 = new import_point_geometry4.default(found[0], found[1]);
-      let font = this.font.str(layout.zoom, feature.properties);
-      layout.scratch.font = font;
-      let lines = linebreak(property);
-      let lineHeight = 14;
-      var longestLine;
-      var longestLineLen = 0;
-      for (let line of lines) {
-        if (line.length > longestLineLen) {
-          longestLineLen = line.length;
-          longestLine = line;
-        }
-      }
-      let metrics = layout.scratch.measureText(longestLine);
-      let width = metrics.width;
-      let bbox = {
-        minX: a2.x - width / 2,
-        minY: a2.y - metrics.actualBoundingBoxAscent,
-        maxX: a2.x + width / 2,
-        maxY: a2.y + (lineHeight * lines.length - metrics.actualBoundingBoxAscent)
-      };
-      let fill = this.fill;
-      let draw = (ctx) => {
-        ctx.globalAlpha = 1;
-        ctx.font = font;
-        var y = 0;
-        for (let line of lines) {
-          if (this.width) {
-            ctx.lineWidth = this.width;
-            ctx.strokeStyle = this.stroke;
-            ctx.strokeText(line, -width / 2, y);
-          }
-          ctx.fillStyle = fill;
-          ctx.fillText(line, -width / 2, y);
-          y += lineHeight;
-        }
-      };
-      return [{ anchor: a2, bboxes: [bbox], draw }];
-    }
   };
 
   // node_modules/color2k/dist/index.module.js
@@ -3413,6 +3938,1044 @@ var protomaps = (() => {
     return `hsla(${(n2 % 360).toFixed()}, ${t(0, 100, 100 * r2).toFixed()}%, ${t(0, 100, 100 * e2).toFixed()}%, ${parseFloat(t(0, 1, o2).toFixed(3))})`;
   }
 
+  // src/symbolizer.ts
+  var import_point_geometry6 = __toModule(require_point_geometry());
+  var import_unitbezier = __toModule(require_unitbezier_d());
+  var import_polylabel = __toModule(require_polylabel());
+
+  // src/attribute.ts
+  var StringAttr = class {
+    constructor(c2, defaultValue) {
+      this.str = c2 != null ? c2 : defaultValue;
+      this.per_feature = typeof this.str == "function" && this.str.length == 2;
+    }
+    get(z2, f2) {
+      if (typeof this.str === "function") {
+        return this.str(z2, f2);
+      } else {
+        return this.str;
+      }
+    }
+  };
+  var NumberAttr = class {
+    constructor(c2, defaultValue = 1) {
+      this.value = c2 != null ? c2 : defaultValue;
+      this.per_feature = typeof this.value == "function" && this.value.length == 2;
+    }
+    get(z2, f2) {
+      if (typeof this.value == "function") {
+        return this.value(z2, f2);
+      } else {
+        return this.value;
+      }
+    }
+  };
+  var TextAttr = class {
+    constructor(options) {
+      var _a2;
+      this.label_props = (_a2 = options == null ? void 0 : options.label_props) != null ? _a2 : ["name"];
+      this.textTransform = options == null ? void 0 : options.textTransform;
+    }
+    get(z2, f2) {
+      let retval;
+      let label_props;
+      if (typeof this.label_props == "function") {
+        label_props = this.label_props(z2, f2);
+      } else {
+        label_props = this.label_props;
+      }
+      for (let property of label_props) {
+        if (f2.props.hasOwnProperty(property) && typeof f2.props[property] === "string") {
+          retval = f2.props[property];
+          break;
+        }
+      }
+      let transform;
+      if (typeof this.textTransform === "function") {
+        transform = this.textTransform(z2, f2);
+      } else {
+        transform = this.textTransform;
+      }
+      if (retval && transform === "uppercase")
+        retval = retval.toUpperCase();
+      else if (retval && transform === "lowercase")
+        retval = retval.toLowerCase();
+      else if (retval && transform === "capitalize") {
+        const wordsArray = retval.toLowerCase().split(" ");
+        const capsArray = wordsArray.map((word) => {
+          return word[0].toUpperCase() + word.slice(1);
+        });
+        retval = capsArray.join(" ");
+      }
+      return retval;
+    }
+  };
+  var FontAttr = class {
+    constructor(options) {
+      var _a2, _b2;
+      if (options == null ? void 0 : options.font) {
+        this.font = options.font;
+      } else {
+        this.family = (_a2 = options == null ? void 0 : options.fontFamily) != null ? _a2 : "sans-serif";
+        this.size = (_b2 = options == null ? void 0 : options.fontSize) != null ? _b2 : 12;
+        this.weight = options == null ? void 0 : options.fontWeight;
+        this.style = options == null ? void 0 : options.fontStyle;
+      }
+    }
+    get(z2, f2) {
+      if (this.font) {
+        if (typeof this.font === "function") {
+          return this.font(z2, f2);
+        } else {
+          return this.font;
+        }
+      } else {
+        var style = "";
+        if (this.style) {
+          if (typeof this.style === "function") {
+            style = this.style(z2, f2) + " ";
+          } else {
+            style = this.style + " ";
+          }
+        }
+        var weight = "";
+        if (this.weight) {
+          if (typeof this.weight === "function") {
+            weight = this.weight(z2, f2) + " ";
+          } else {
+            weight = this.weight + " ";
+          }
+        }
+        var size;
+        if (typeof this.size === "function") {
+          size = this.size(z2, f2);
+        } else {
+          size = this.size;
+        }
+        var family;
+        if (typeof this.family === "function") {
+          family = this.family(z2, f2);
+        } else {
+          family = this.family;
+        }
+        return `${style}${weight}${size}px ${family}`;
+      }
+    }
+  };
+  var ArrayAttr = class {
+    constructor(c2, defaultValue = []) {
+      this.value = c2 != null ? c2 : defaultValue;
+      this.per_feature = typeof this.value == "function" && this.value.length == 2;
+    }
+    get(z2, f2) {
+      if (typeof this.value == "function") {
+        return this.value(z2, f2);
+      } else {
+        return this.value;
+      }
+    }
+  };
+
+  // src/line.ts
+  var import_point_geometry5 = __toModule(require_point_geometry());
+  var linelabel = (pts, max_angle_delta, targetLen) => {
+    var chunks = [];
+    var a2, b, c2, i2 = 0, n2 = 0, d = 0;
+    var abmag = 0, bcmag = 0;
+    var abx = 0, aby = 0;
+    var bcx = 0, bcy = 0;
+    var dt = 0;
+    var i_start = 0;
+    var d_start = 0;
+    if (pts.length < 2)
+      return [];
+    if (pts.length === 2) {
+      d = Math.sqrt(Math.pow(pts[1].x - pts[0].x, 2) + Math.pow(pts[1].y - pts[0].y, 2));
+      return [
+        {
+          length: d,
+          beginIndex: 0,
+          beginDistance: 0,
+          endIndex: 2,
+          endDistance: d
+        }
+      ];
+    }
+    abmag = Math.sqrt(Math.pow(pts[1].x - pts[0].x, 2) + Math.pow(pts[1].y - pts[0].y, 2));
+    for (i2 = 1, n2 = pts.length - 1; i2 < n2; i2++) {
+      a2 = pts[i2 - 1];
+      b = pts[i2];
+      c2 = pts[i2 + 1];
+      abx = b.x - a2.x;
+      aby = b.y - a2.y;
+      bcx = c2.x - b.x;
+      bcy = c2.y - b.y;
+      bcmag = Math.sqrt(bcx * bcx + bcy * bcy);
+      d += abmag;
+      dt = Math.acos((abx * bcx + aby * bcy) / (abmag * bcmag));
+      if (dt > max_angle_delta || d - d_start > targetLen) {
+        chunks.push({
+          length: d - d_start,
+          beginDistance: d_start,
+          beginIndex: i_start,
+          endIndex: i2 + 1,
+          endDistance: d
+        });
+        i_start = i2;
+        d_start = d;
+      }
+      abmag = bcmag;
+    }
+    if (i2 - i_start > 0) {
+      chunks.push({
+        length: d - d_start + bcmag,
+        beginIndex: i_start,
+        beginDistance: d_start,
+        endIndex: i2 + 1,
+        endDistance: d + bcmag
+      });
+    }
+    return chunks;
+  };
+  function simpleLabel(mls, minimum, repeatDistance, cellSize) {
+    let longestStart;
+    let longestEnd;
+    let longestLength = 0;
+    let candidates = [];
+    var lastLabeledDistance = -Infinity;
+    for (let ls of mls) {
+      let segments = linelabel(ls, Math.PI / 45, minimum);
+      for (let segment of segments) {
+        if (segment.length >= minimum + cellSize) {
+          let start = new import_point_geometry5.default(ls[segment.beginIndex].x, ls[segment.beginIndex].y);
+          let end = ls[segment.endIndex - 1];
+          let normalized = new import_point_geometry5.default((end.x - start.x) / segment.length, (end.y - start.y) / segment.length);
+          for (var i2 = cellSize; i2 < segment.length - minimum; i2 += repeatDistance) {
+            candidates.push({
+              start: start.add(normalized.mult(i2)),
+              end: start.add(normalized.mult(i2 + minimum))
+            });
+          }
+        }
+      }
+    }
+    return candidates;
+  }
+  function lineCells(a2, b, length, spacing) {
+    let dx = b.x - a2.x;
+    let dy = b.y - a2.y;
+    let dist = Math.sqrt(Math.pow(b.x - a2.x, 2) + Math.pow(b.y - a2.y, 2));
+    let retval = [];
+    for (var i2 = 0; i2 < length + spacing; i2 += 2 * spacing) {
+      let factor = i2 * 1 / dist;
+      retval.push({ x: a2.x + factor * dx, y: a2.y + factor * dy });
+    }
+    return retval;
+  }
+
+  // src/text.ts
+  function linebreak(str, maxUnits) {
+    if (str.length <= maxUnits)
+      return [str];
+    let endIndex = maxUnits - 1;
+    let space_before = str.lastIndexOf(" ", endIndex);
+    let space_after = str.indexOf(" ", endIndex);
+    if (space_before == -1 && space_after == -1) {
+      return [str];
+    }
+    let first;
+    let after;
+    if (space_after == -1 || space_before >= 0 && endIndex - space_before < space_after - endIndex) {
+      first = str.substring(0, space_before);
+      after = str.substring(space_before + 1, str.length);
+    } else {
+      first = str.substring(0, space_after);
+      after = str.substring(space_after + 1, str.length);
+    }
+    return [first, ...linebreak(after, maxUnits)];
+  }
+  var CJK_CHARS = "\u3005-\u3007\u3021-\u3029\u3031-\u3035\u3038-\u303C\u3220-\u3229\u3248-\u324F\u3251-\u325F\u3280-\u3289\u32B1-\u32BF\u3400-\u4DB5\u4E00-\u9FEA\uF900-\uFA6D\uFA70-\uFAD9\u2000";
+  var cjk_test = new RegExp("^[" + CJK_CHARS + "]+$");
+
+  // src/symbolizer.ts
+  var MAX_VERTICES_PER_DRAW_CALL = 5400;
+  var Justify;
+  (function(Justify2) {
+    Justify2[Justify2["Left"] = 1] = "Left";
+    Justify2[Justify2["Center"] = 2] = "Center";
+    Justify2[Justify2["Right"] = 3] = "Right";
+  })(Justify || (Justify = {}));
+  var TextPlacements;
+  (function(TextPlacements2) {
+    TextPlacements2[TextPlacements2["N"] = 1] = "N";
+    TextPlacements2[TextPlacements2["NE"] = 2] = "NE";
+    TextPlacements2[TextPlacements2["E"] = 3] = "E";
+    TextPlacements2[TextPlacements2["SE"] = 4] = "SE";
+    TextPlacements2[TextPlacements2["S"] = 5] = "S";
+    TextPlacements2[TextPlacements2["SW"] = 6] = "SW";
+    TextPlacements2[TextPlacements2["W"] = 7] = "W";
+    TextPlacements2[TextPlacements2["NW"] = 8] = "NW";
+  })(TextPlacements || (TextPlacements = {}));
+  var createPattern = (width, height, fn) => {
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+    canvas.width = width;
+    canvas.height = height;
+    if (ctx !== null)
+      fn(canvas, ctx);
+    return canvas;
+  };
+  var PolygonSymbolizer = class {
+    constructor(options) {
+      var _a2;
+      this.pattern = options.pattern;
+      this.fill = new StringAttr(options.fill, "black");
+      this.opacity = new NumberAttr(options.opacity, 1);
+      this.stroke = new StringAttr(options.stroke, "black");
+      this.width = new NumberAttr(options.width, 0);
+      this.per_feature = (_a2 = this.fill.per_feature || this.opacity.per_feature || this.stroke.per_feature || this.width.per_feature || options.per_feature) != null ? _a2 : false;
+      this.do_stroke = false;
+    }
+    before(ctx, z2) {
+      if (!this.per_feature) {
+        ctx.globalAlpha = this.opacity.get(z2);
+        ctx.fillStyle = this.fill.get(z2);
+        ctx.strokeStyle = this.stroke.get(z2);
+        let width = this.width.get(z2);
+        if (width > 0)
+          this.do_stroke = true;
+        ctx.lineWidth = width;
+      }
+      if (this.pattern) {
+        const patten = ctx.createPattern(this.pattern, "repeat");
+        if (patten)
+          ctx.fillStyle = patten;
+      }
+    }
+    draw(ctx, geom, z2, f2) {
+      var do_stroke = false;
+      if (this.per_feature) {
+        ctx.globalAlpha = this.opacity.get(z2, f2);
+        ctx.fillStyle = this.fill.get(z2, f2);
+        var width = this.width.get(z2, f2);
+        if (width) {
+          do_stroke = true;
+          ctx.strokeStyle = this.stroke.get(z2, f2);
+          ctx.lineWidth = width;
+        }
+      }
+      let drawPath = () => {
+        ctx.fill();
+        if (do_stroke || this.do_stroke) {
+          ctx.stroke();
+        }
+      };
+      var vertices_in_path = 0;
+      ctx.beginPath();
+      for (var poly of geom) {
+        if (vertices_in_path + poly.length > MAX_VERTICES_PER_DRAW_CALL) {
+          drawPath();
+          vertices_in_path = 0;
+          ctx.beginPath();
+        }
+        for (var p2 = 0; p2 < poly.length; p2++) {
+          let pt = poly[p2];
+          if (p2 == 0)
+            ctx.moveTo(pt.x, pt.y);
+          else
+            ctx.lineTo(pt.x, pt.y);
+        }
+        vertices_in_path += poly.length;
+      }
+      if (vertices_in_path > 0)
+        drawPath();
+    }
+  };
+  function arr(base, a2) {
+    return (z2) => {
+      let b = z2 - base;
+      if (b >= 0 && b < a2.length) {
+        return a2[b];
+      }
+      return 0;
+    };
+  }
+  function getStopIndex(input, stops) {
+    let idx = 0;
+    while (stops[idx + 1][0] < input)
+      idx++;
+    return idx;
+  }
+  function interpolate(factor, start, end) {
+    return factor * (end - start) + start;
+  }
+  function computeInterpolationFactor(z2, idx, base, stops) {
+    const difference = stops[idx + 1][0] - stops[idx][0];
+    const progress = z2 - stops[idx][0];
+    if (difference === 0)
+      return 0;
+    else if (base === 1)
+      return progress / difference;
+    else
+      return (Math.pow(base, progress) - 1) / (Math.pow(base, difference) - 1);
+  }
+  function exp(base, stops) {
+    return (z2) => {
+      if (stops.length < 1)
+        return 0;
+      if (z2 <= stops[0][0])
+        return stops[0][1];
+      if (z2 >= stops[stops.length - 1][0])
+        return stops[stops.length - 1][1];
+      const idx = getStopIndex(z2, stops);
+      const factor = computeInterpolationFactor(z2, idx, base, stops);
+      return interpolate(factor, stops[idx][1], stops[idx + 1][1]);
+    };
+  }
+  function step(output0, stops) {
+    return (z2) => {
+      if (stops.length < 1)
+        return 0;
+      let retval = output0;
+      for (let i2 = 0; i2 < stops.length; i2++) {
+        if (z2 >= stops[i2][0])
+          retval = stops[i2][1];
+      }
+      return retval;
+    };
+  }
+  function linear(stops) {
+    return exp(1, stops);
+  }
+  function cubicBezier(x1, y1, x2, y2, stops) {
+    return (z2) => {
+      if (stops.length < 1)
+        return 0;
+      const bezier = new import_unitbezier.default(x1, y1, x2, y2);
+      const idx = getStopIndex(z2, stops);
+      const factor = bezier.solve(computeInterpolationFactor(z2, idx, 1, stops));
+      return interpolate(factor, stops[idx][1], stops[idx + 1][1]);
+    };
+  }
+  var LineSymbolizer = class {
+    constructor(options) {
+      var _a2;
+      this.color = new StringAttr(options.color, "black");
+      this.width = new NumberAttr(options.width);
+      this.opacity = new NumberAttr(options.opacity);
+      this.dash = options.dash ? new ArrayAttr(options.dash) : null;
+      this.dashColor = new StringAttr(options.dashColor, "black");
+      this.dashWidth = new NumberAttr(options.dashWidth, 1);
+      this.lineCap = new StringAttr(options.lineCap, "butt");
+      this.lineJoin = new StringAttr(options.lineJoin, "miter");
+      this.skip = false;
+      this.per_feature = !!(((_a2 = this.dash) == null ? void 0 : _a2.per_feature) || this.color.per_feature || this.opacity.per_feature || this.width.per_feature || this.lineCap.per_feature || this.lineJoin.per_feature || options.per_feature);
+    }
+    before(ctx, z2) {
+      if (!this.per_feature) {
+        ctx.strokeStyle = this.color.get(z2);
+        ctx.lineWidth = this.width.get(z2);
+        ctx.globalAlpha = this.opacity.get(z2);
+        ctx.lineCap = this.lineCap.get(z2);
+        ctx.lineJoin = this.lineJoin.get(z2);
+      }
+    }
+    draw(ctx, geom, z2, f2) {
+      if (this.skip)
+        return;
+      let strokePath = () => {
+        if (this.per_feature) {
+          ctx.globalAlpha = this.opacity.get(z2, f2);
+          ctx.lineCap = this.lineCap.get(z2, f2);
+          ctx.lineJoin = this.lineJoin.get(z2, f2);
+        }
+        if (this.dash) {
+          ctx.save();
+          if (this.per_feature) {
+            ctx.lineWidth = this.dashWidth.get(z2, f2);
+            ctx.strokeStyle = this.dashColor.get(z2, f2);
+            ctx.setLineDash(this.dash.get(z2, f2));
+          } else {
+            ctx.setLineDash(this.dash.get(z2));
+          }
+          ctx.stroke();
+          ctx.restore();
+        } else {
+          ctx.save();
+          if (this.per_feature) {
+            ctx.lineWidth = this.width.get(z2, f2);
+            ctx.strokeStyle = this.color.get(z2, f2);
+          }
+          ctx.stroke();
+          ctx.restore();
+        }
+      };
+      var vertices_in_path = 0;
+      ctx.beginPath();
+      for (var ls of geom) {
+        if (vertices_in_path + ls.length > MAX_VERTICES_PER_DRAW_CALL) {
+          strokePath();
+          vertices_in_path = 0;
+          ctx.beginPath();
+        }
+        for (var p2 = 0; p2 < ls.length; p2++) {
+          let pt = ls[p2];
+          if (p2 == 0)
+            ctx.moveTo(pt.x, pt.y);
+          else
+            ctx.lineTo(pt.x, pt.y);
+        }
+        vertices_in_path += ls.length;
+      }
+      if (vertices_in_path > 0)
+        strokePath();
+    }
+  };
+  var IconSymbolizer = class {
+    constructor(options) {
+      this.name = options.name;
+      this.sheet = options.sheet;
+      this.dpr = window.devicePixelRatio;
+    }
+    place(layout, geom, feature) {
+      let pt = geom[0];
+      let a2 = new import_point_geometry6.default(geom[0][0].x, geom[0][0].y);
+      let loc = this.sheet.get(this.name);
+      let width = loc.w / this.dpr;
+      let height = loc.h / this.dpr;
+      let bbox = {
+        minX: a2.x - width / 2,
+        minY: a2.y - height / 2,
+        maxX: a2.x + width / 2,
+        maxY: a2.y + height / 2
+      };
+      let draw = (ctx) => {
+        ctx.globalAlpha = 1;
+        ctx.drawImage(this.sheet.canvas, loc.x, loc.y, loc.w, loc.h, -loc.w / 2 / this.dpr, -loc.h / 2 / this.dpr, loc.w / 2, loc.h / 2);
+      };
+      return [{ anchor: a2, bboxes: [bbox], draw }];
+    }
+  };
+  var CircleSymbolizer = class {
+    constructor(options) {
+      this.radius = new NumberAttr(options.radius, 3);
+      this.fill = new StringAttr(options.fill, "black");
+      this.stroke = new StringAttr(options.stroke, "white");
+      this.width = new NumberAttr(options.width, 0);
+      this.opacity = new NumberAttr(options.opacity);
+    }
+    draw(ctx, geom, z2, f2) {
+      ctx.globalAlpha = this.opacity.get(z2, f2);
+      let radius = this.radius.get(z2, f2);
+      let width = this.width.get(z2, f2);
+      if (width > 0) {
+        ctx.strokeStyle = this.stroke.get(z2, f2);
+        ctx.lineWidth = width;
+        ctx.beginPath();
+        ctx.arc(geom[0][0].x, geom[0][0].y, radius + width / 2, 0, 2 * Math.PI);
+        ctx.stroke();
+      }
+      ctx.fillStyle = this.fill.get(z2, f2);
+      ctx.beginPath();
+      ctx.arc(geom[0][0].x, geom[0][0].y, radius, 0, 2 * Math.PI);
+      ctx.fill();
+    }
+    place(layout, geom, feature) {
+      let pt = geom[0];
+      let a2 = new import_point_geometry6.default(geom[0][0].x, geom[0][0].y);
+      let radius = this.radius.get(layout.zoom, feature);
+      let bbox = {
+        minX: a2.x - radius,
+        minY: a2.y - radius,
+        maxX: a2.x + radius,
+        maxY: a2.y + radius
+      };
+      let draw = (ctx) => {
+        this.draw(ctx, [[new import_point_geometry6.default(0, 0)]], layout.zoom, feature);
+      };
+      return [{ anchor: a2, bboxes: [bbox], draw }];
+    }
+  };
+  var ShieldSymbolizer = class {
+    constructor(options) {
+      this.font = new FontAttr(options);
+      this.text = new TextAttr(options);
+      this.fill = new StringAttr(options.fill, "black");
+      this.background = new StringAttr(options.background, "white");
+      this.padding = new NumberAttr(options.padding, 0);
+    }
+    place(layout, geom, f2) {
+      let property = this.text.get(layout.zoom, f2);
+      if (!property)
+        return void 0;
+      let font = this.font.get(layout.zoom, f2);
+      layout.scratch.font = font;
+      let metrics = layout.scratch.measureText(property);
+      let width = metrics.width;
+      let ascent = metrics.actualBoundingBoxAscent;
+      let descent = metrics.actualBoundingBoxDescent;
+      let pt = geom[0];
+      let a2 = new import_point_geometry6.default(geom[0][0].x, geom[0][0].y);
+      let p2 = this.padding.get(layout.zoom, f2);
+      let bbox = {
+        minX: a2.x - width / 2 - p2,
+        minY: a2.y - ascent - p2,
+        maxX: a2.x + width / 2 + p2,
+        maxY: a2.y + descent + p2
+      };
+      let draw = (ctx) => {
+        ctx.globalAlpha = 1;
+        ctx.fillStyle = this.background.get(layout.zoom, f2);
+        ctx.fillRect(-width / 2 - p2, -ascent - p2, width + 2 * p2, ascent + descent + 2 * p2);
+        ctx.fillStyle = this.fill.get(layout.zoom, f2);
+        ctx.font = font;
+        ctx.fillText(property, -width / 2, 0);
+      };
+      return [{ anchor: a2, bboxes: [bbox], draw }];
+    }
+  };
+  var FlexSymbolizer = class {
+    constructor(list) {
+      this.list = list;
+    }
+    place(layout, geom, feature) {
+      var labels = this.list[0].place(layout, geom, feature);
+      if (!labels)
+        return void 0;
+      var label = labels[0];
+      let anchor = label.anchor;
+      let bbox = label.bboxes[0];
+      let height = bbox.maxY - bbox.minY;
+      let draws = [{ draw: label.draw, translate: { x: 0, y: 0 } }];
+      let newGeom = [[new import_point_geometry6.default(geom[0][0].x, geom[0][0].y + height)]];
+      for (let i2 = 1; i2 < this.list.length; i2++) {
+        labels = this.list[i2].place(layout, newGeom, feature);
+        if (labels) {
+          label = labels[0];
+          bbox = mergeBbox(bbox, label.bboxes[0]);
+          draws.push({ draw: label.draw, translate: { x: 0, y: height } });
+        }
+      }
+      let draw = (ctx) => {
+        for (let sub of draws) {
+          ctx.save();
+          ctx.translate(sub.translate.x, sub.translate.y);
+          sub.draw(ctx);
+          ctx.restore();
+        }
+      };
+      return [{ anchor, bboxes: [bbox], draw }];
+    }
+  };
+  var mergeBbox = (b1, b2) => {
+    return {
+      minX: Math.min(b1.minX, b2.minX),
+      minY: Math.min(b1.minY, b2.minY),
+      maxX: Math.max(b1.maxX, b2.maxX),
+      maxY: Math.max(b1.maxY, b2.maxY)
+    };
+  };
+  var GroupSymbolizer = class {
+    constructor(list) {
+      this.list = list;
+    }
+    place(layout, geom, feature) {
+      let first = this.list[0];
+      if (!first)
+        return void 0;
+      var labels = first.place(layout, geom, feature);
+      if (!labels)
+        return void 0;
+      var label = labels[0];
+      let anchor = label.anchor;
+      let bbox = label.bboxes[0];
+      let draws = [label.draw];
+      for (let i2 = 1; i2 < this.list.length; i2++) {
+        labels = this.list[i2].place(layout, geom, feature);
+        if (!labels)
+          return void 0;
+        label = labels[0];
+        bbox = mergeBbox(bbox, label.bboxes[0]);
+        draws.push(label.draw);
+      }
+      let draw = (ctx) => {
+        draws.forEach((d) => d(ctx));
+      };
+      return [{ anchor, bboxes: [bbox], draw }];
+    }
+  };
+  var CenteredSymbolizer = class {
+    constructor(symbolizer) {
+      this.symbolizer = symbolizer;
+    }
+    place(layout, geom, feature) {
+      let a2 = geom[0][0];
+      let placed = this.symbolizer.place(layout, [[new import_point_geometry6.default(0, 0)]], feature);
+      if (!placed || placed.length == 0)
+        return void 0;
+      let first_label = placed[0];
+      let bbox = first_label.bboxes[0];
+      let width = bbox.maxX - bbox.minX;
+      let height = bbox.maxY - bbox.minY;
+      let centered = {
+        minX: a2.x - width / 2,
+        maxX: a2.x + width / 2,
+        minY: a2.y - height / 2,
+        maxY: a2.y + height / 2
+      };
+      let draw = (ctx) => {
+        ctx.translate(-width / 2, height / 2 - bbox.maxY);
+        first_label.draw(ctx, { justify: 2 });
+      };
+      return [{ anchor: a2, bboxes: [centered], draw }];
+    }
+  };
+  var Padding = class {
+    constructor(padding, symbolizer) {
+      this.padding = new NumberAttr(padding, 0);
+      this.symbolizer = symbolizer;
+    }
+    place(layout, geom, feature) {
+      let placed = this.symbolizer.place(layout, geom, feature);
+      if (!placed || placed.length == 0)
+        return void 0;
+      let padding = this.padding.get(layout.zoom, feature);
+      for (var label of placed) {
+        for (var bbox of label.bboxes) {
+          bbox.minX -= padding;
+          bbox.minY -= padding;
+          bbox.maxX += padding;
+          bbox.maxY += padding;
+        }
+      }
+      return placed;
+    }
+  };
+  var TextSymbolizer = class {
+    constructor(options) {
+      this.font = new FontAttr(options);
+      this.text = new TextAttr(options);
+      this.fill = new StringAttr(options.fill, "black");
+      this.stroke = new StringAttr(options.stroke, "black");
+      this.width = new NumberAttr(options.width, 0);
+      this.lineHeight = new NumberAttr(options.lineHeight, 1);
+      this.letterSpacing = new NumberAttr(options.letterSpacing, 0);
+      this.maxLineCodeUnits = new NumberAttr(options.maxLineChars, 15);
+      this.justify = options.justify;
+    }
+    place(layout, geom, feature) {
+      let property = this.text.get(layout.zoom, feature);
+      if (!property)
+        return void 0;
+      let font = this.font.get(layout.zoom, feature);
+      layout.scratch.font = font;
+      let letterSpacing = this.letterSpacing.get(layout.zoom, feature);
+      let lines = linebreak(property, this.maxLineCodeUnits.get(layout.zoom, feature));
+      var longestLine = "";
+      var longestLineLen = 0;
+      for (let line of lines) {
+        if (line.length > longestLineLen) {
+          longestLineLen = line.length;
+          longestLine = line;
+        }
+      }
+      let metrics = layout.scratch.measureText(longestLine);
+      let width = metrics.width + letterSpacing * (longestLineLen - 1);
+      let ascent = metrics.actualBoundingBoxAscent;
+      let descent = metrics.actualBoundingBoxDescent;
+      let lineHeight = (ascent + descent) * this.lineHeight.get(layout.zoom, feature);
+      let a2 = new import_point_geometry6.default(geom[0][0].x, geom[0][0].y);
+      let bbox = {
+        minX: a2.x,
+        minY: a2.y - ascent,
+        maxX: a2.x + width,
+        maxY: a2.y + descent + (lines.length - 1) * lineHeight
+      };
+      let draw = (ctx, extra) => {
+        ctx.globalAlpha = 1;
+        ctx.font = font;
+        ctx.fillStyle = this.fill.get(layout.zoom, feature);
+        let textStrokeWidth = this.width.get(layout.zoom, feature);
+        var y = 0;
+        for (let line of lines) {
+          var startX = 0;
+          if (this.justify == 2 || extra && extra.justify == 2) {
+            startX = (width - ctx.measureText(line).width) / 2;
+          } else if (this.justify == 3 || extra && extra.justify == 3) {
+            startX = width - ctx.measureText(line).width;
+          }
+          if (textStrokeWidth) {
+            ctx.lineWidth = textStrokeWidth * 2;
+            ctx.strokeStyle = this.stroke.get(layout.zoom, feature);
+            if (letterSpacing > 0) {
+              var xPos = startX;
+              for (var letter of line) {
+                ctx.strokeText(letter, xPos, y);
+                xPos += ctx.measureText(letter).width + letterSpacing;
+              }
+            } else {
+              ctx.strokeText(line, startX, y);
+            }
+          }
+          if (letterSpacing > 0) {
+            var xPos = startX;
+            for (var letter of line) {
+              ctx.fillText(letter, xPos, y);
+              xPos += ctx.measureText(letter).width + letterSpacing;
+            }
+          } else {
+            ctx.fillText(line, startX, y);
+          }
+          y += lineHeight;
+        }
+      };
+      return [{ anchor: a2, bboxes: [bbox], draw }];
+    }
+  };
+  var CenteredTextSymbolizer = class {
+    constructor(options) {
+      this.centered = new CenteredSymbolizer(new TextSymbolizer(options));
+    }
+    place(layout, geom, feature) {
+      return this.centered.place(layout, geom, feature);
+    }
+  };
+  var OffsetSymbolizer = class {
+    constructor(symbolizer, options) {
+      var _a2, _b2, _c;
+      this.symbolizer = symbolizer;
+      this.offsetX = new NumberAttr(options.offsetX, 0);
+      this.offsetY = new NumberAttr(options.offsetY, 0);
+      this.justify = (_a2 = options.justify) != null ? _a2 : void 0;
+      this.placements = (_b2 = options.placements) != null ? _b2 : [
+        2,
+        6,
+        8,
+        4,
+        1,
+        3,
+        5,
+        7
+      ];
+      this.ddValues = (_c = options.ddValues) != null ? _c : () => {
+        return {};
+      };
+    }
+    place(layout, geom, feature) {
+      if (feature.geomType !== GeomType.Point)
+        return void 0;
+      let anchor = geom[0][0];
+      let placed = this.symbolizer.place(layout, [[new import_point_geometry6.default(0, 0)]], feature);
+      if (!placed || placed.length == 0)
+        return void 0;
+      let first_label = placed[0];
+      let fb = first_label.bboxes[0];
+      let offsetXValue = this.offsetX;
+      let offsetYValue = this.offsetY;
+      let justifyValue = this.justify;
+      let placements = this.placements;
+      const {
+        offsetX: ddOffsetX,
+        offsetY: ddOffsetY,
+        justify: ddJustify,
+        placements: ddPlacements
+      } = this.ddValues(layout.zoom, feature) || {};
+      if (ddOffsetX)
+        offsetXValue = new NumberAttr(ddOffsetX, 0);
+      if (ddOffsetY)
+        offsetYValue = new NumberAttr(ddOffsetY, 0);
+      if (ddJustify)
+        justifyValue = ddJustify;
+      if (ddPlacements)
+        placements = ddPlacements;
+      const offsetX = offsetXValue.get(layout.zoom, feature);
+      const offsetY = offsetYValue.get(layout.zoom, feature);
+      let getBbox = (a2, o2) => {
+        return {
+          minX: a2.x + o2.x + fb.minX,
+          minY: a2.y + o2.y + fb.minY,
+          maxX: a2.x + o2.x + fb.maxX,
+          maxY: a2.y + o2.y + fb.maxY
+        };
+      };
+      var origin = new import_point_geometry6.default(offsetX, offsetY);
+      var justify;
+      let draw = (ctx) => {
+        ctx.translate(origin.x, origin.y);
+        first_label.draw(ctx, { justify });
+      };
+      const placeLabelInPoint = (a2, o2) => {
+        const bbox = getBbox(a2, o2);
+        if (!layout.index.bboxCollides(bbox, layout.order))
+          return [{ anchor, bboxes: [bbox], draw }];
+      };
+      for (let placement of placements) {
+        const xAxisOffset = this.computeXAxisOffset(offsetX, fb, placement);
+        const yAxisOffset = this.computeYAxisOffset(offsetY, fb, placement);
+        justify = this.computeJustify(justifyValue, placement);
+        origin = new import_point_geometry6.default(xAxisOffset, yAxisOffset);
+        return placeLabelInPoint(anchor, origin);
+      }
+      return void 0;
+    }
+    computeXAxisOffset(offsetX, fb, placement) {
+      const labelWidth = fb.maxX;
+      const labelHalfWidth = labelWidth / 2;
+      if ([1, 5].includes(placement))
+        return offsetX - labelHalfWidth;
+      if ([8, 7, 6].includes(placement))
+        return offsetX - labelWidth;
+      return offsetX;
+    }
+    computeYAxisOffset(offsetY, fb, placement) {
+      const labelHalfHeight = Math.abs(fb.minY);
+      const labelBottom = fb.maxY;
+      const labelCenterHeight = (fb.minY + fb.maxY) / 2;
+      if ([3, 7].includes(placement))
+        return offsetY - labelCenterHeight;
+      if ([8, 2, 1].includes(placement))
+        return offsetY - labelBottom;
+      if ([6, 4, 5].includes(placement))
+        return offsetY + labelHalfHeight;
+      return offsetY;
+    }
+    computeJustify(fixedJustify, placement) {
+      if (fixedJustify)
+        return fixedJustify;
+      if ([1, 5].includes(placement))
+        return 2;
+      if ([2, 3, 4].includes(placement))
+        return 1;
+      return 3;
+    }
+  };
+  var OffsetTextSymbolizer = class {
+    constructor(options) {
+      this.symbolizer = new OffsetSymbolizer(new TextSymbolizer(options), options);
+    }
+    place(layout, geom, feature) {
+      return this.symbolizer.place(layout, geom, feature);
+    }
+  };
+  var LineLabelPlacement;
+  (function(LineLabelPlacement2) {
+    LineLabelPlacement2[LineLabelPlacement2["Above"] = 1] = "Above";
+    LineLabelPlacement2[LineLabelPlacement2["Center"] = 2] = "Center";
+    LineLabelPlacement2[LineLabelPlacement2["Below"] = 3] = "Below";
+  })(LineLabelPlacement || (LineLabelPlacement = {}));
+  var LineLabelSymbolizer = class {
+    constructor(options) {
+      var _a2;
+      this.font = new FontAttr(options);
+      this.text = new TextAttr(options);
+      this.fill = new StringAttr(options.fill, "black");
+      this.stroke = new StringAttr(options.stroke, "black");
+      this.width = new NumberAttr(options.width, 0);
+      this.offset = new NumberAttr(options.offset, 0);
+      this.position = (_a2 = options.position) != null ? _a2 : 1;
+      this.maxLabelCodeUnits = new NumberAttr(options.maxLabelChars, 40);
+      this.repeatDistance = new NumberAttr(options.repeatDistance, 250);
+    }
+    place(layout, geom, feature) {
+      let name = this.text.get(layout.zoom, feature);
+      if (!name)
+        return void 0;
+      if (name.length > this.maxLabelCodeUnits.get(layout.zoom, feature))
+        return void 0;
+      let MIN_LABELABLE_DIM = 20;
+      let fbbox = feature.bbox;
+      if (fbbox.maxY - fbbox.minY < MIN_LABELABLE_DIM && fbbox.maxX - fbbox.minX < MIN_LABELABLE_DIM)
+        return void 0;
+      let font = this.font.get(layout.zoom, feature);
+      layout.scratch.font = font;
+      let metrics = layout.scratch.measureText(name);
+      let width = metrics.width;
+      let height = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
+      var repeatDistance = this.repeatDistance.get(layout.zoom, feature);
+      if (layout.overzoom > 4)
+        repeatDistance *= 1 << layout.overzoom - 4;
+      let cell_size = height * 2;
+      let label_candidates = simpleLabel(geom, width, repeatDistance, cell_size);
+      if (label_candidates.length == 0)
+        return void 0;
+      let labels = [];
+      for (let candidate of label_candidates) {
+        let dx = candidate.end.x - candidate.start.x;
+        let dy = candidate.end.y - candidate.start.y;
+        let cells = lineCells(candidate.start, candidate.end, width, cell_size / 2);
+        let bboxes = cells.map((c2) => {
+          return {
+            minX: c2.x - cell_size / 2,
+            minY: c2.y - cell_size / 2,
+            maxX: c2.x + cell_size / 2,
+            maxY: c2.y + cell_size / 2
+          };
+        });
+        let draw = (ctx) => {
+          ctx.globalAlpha = 1;
+          ctx.rotate(Math.atan2(dy, dx));
+          if (dx < 0) {
+            ctx.scale(-1, -1);
+            ctx.translate(-width, 0);
+          }
+          let heightPlacement = 0;
+          if (this.position === 3)
+            heightPlacement += height;
+          else if (this.position === 2)
+            heightPlacement += height / 2;
+          ctx.translate(0, heightPlacement - this.offset.get(layout.zoom, feature));
+          ctx.font = font;
+          let lineWidth = this.width.get(layout.zoom, feature);
+          if (lineWidth) {
+            ctx.lineWidth = lineWidth;
+            ctx.strokeStyle = this.stroke.get(layout.zoom, feature);
+            ctx.strokeText(name, 0, 0);
+          }
+          ctx.fillStyle = this.fill.get(layout.zoom, feature);
+          ctx.fillText(name, 0, 0);
+        };
+        labels.push({
+          anchor: candidate.start,
+          bboxes,
+          draw,
+          deduplicationKey: name,
+          deduplicationDistance: repeatDistance
+        });
+      }
+      return labels;
+    }
+  };
+  var PolygonLabelSymbolizer = class {
+    constructor(options) {
+      this.symbolizer = new TextSymbolizer(options);
+    }
+    place(layout, geom, feature) {
+      let fbbox = feature.bbox;
+      let area = (fbbox.maxY - fbbox.minY) * (fbbox.maxX - fbbox.minX);
+      if (area < 2e4)
+        return void 0;
+      let placed = this.symbolizer.place(layout, [[new import_point_geometry6.default(0, 0)]], feature);
+      if (!placed || placed.length == 0)
+        return void 0;
+      let first_label = placed[0];
+      let fb = first_label.bboxes[0];
+      let first_poly = geom[0];
+      let found = (0, import_polylabel.default)([first_poly.map((c2) => [c2.x, c2.y])]);
+      let a2 = new import_point_geometry6.default(found[0], found[1]);
+      let bbox = {
+        minX: a2.x - (fb.maxX - fb.minX) / 2,
+        minY: a2.y - (fb.maxY - fb.minY) / 2,
+        maxX: a2.x + (fb.maxX - fb.minX) / 2,
+        maxY: a2.y + (fb.maxY - fb.minY) / 2
+      };
+      let draw = (ctx) => {
+        ctx.translate(first_label.anchor.x - (fb.maxX - fb.minX) / 2, first_label.anchor.y);
+        first_label.draw(ctx);
+      };
+      return [{ anchor: a2, bboxes: [bbox], draw }];
+    }
+  };
+
   // src/default_style/style.ts
   var doShading = (params, shade) => {
     let shadeHsl = p(shade);
@@ -3438,8 +5001,8 @@ var protomaps = (() => {
         symbolizer: new PolygonSymbolizer({
           fill: params.glacier
         }),
-        filter: (f2) => {
-          return f2.natural == "glacier";
+        filter: (z2, f2) => {
+          return f2.props.natural == "glacier";
         }
       },
       {
@@ -3447,8 +5010,8 @@ var protomaps = (() => {
         symbolizer: new PolygonSymbolizer({
           fill: params.residential
         }),
-        filter: (f2) => {
-          return f2.landuse == "residential" || f2.place == "neighbourhood";
+        filter: (z2, f2) => {
+          return f2.props.landuse == "residential" || f2.props.place == "neighbourhood";
         }
       },
       {
@@ -3456,8 +5019,8 @@ var protomaps = (() => {
         symbolizer: new PolygonSymbolizer({
           fill: params.hospital
         }),
-        filter: (f2) => {
-          return f2.amenity == "hospital";
+        filter: (z2, f2) => {
+          return f2.props.amenity == "hospital";
         }
       },
       {
@@ -3465,8 +5028,8 @@ var protomaps = (() => {
         symbolizer: new PolygonSymbolizer({
           fill: params.cemetery
         }),
-        filter: (f2) => {
-          return f2.landuse == "cemetery";
+        filter: (z2, f2) => {
+          return f2.props.landuse == "cemetery";
         }
       },
       {
@@ -3474,8 +5037,8 @@ var protomaps = (() => {
         symbolizer: new PolygonSymbolizer({
           fill: params.school
         }),
-        filter: (f2) => {
-          return f2.amenity == "school" || f2.amenity == "kindergarten" || f2.amenity == "university" || f2.amenity == "college";
+        filter: (z2, f2) => {
+          return f2.props.amenity == "school" || f2.props.amenity == "kindergarten" || f2.props.amenity == "university" || f2.props.amenity == "college";
         }
       },
       {
@@ -3483,8 +5046,8 @@ var protomaps = (() => {
         symbolizer: new PolygonSymbolizer({
           fill: params.industrial
         }),
-        filter: (f2) => {
-          return f2.landuse == "industrial";
+        filter: (z2, f2) => {
+          return f2.props.landuse == "industrial";
         }
       },
       {
@@ -3492,8 +5055,8 @@ var protomaps = (() => {
         symbolizer: new PolygonSymbolizer({
           fill: params.wood
         }),
-        filter: (f2) => {
-          return f2.natural == "wood";
+        filter: (z2, f2) => {
+          return f2.props.natural == "wood";
         }
       },
       {
@@ -3501,8 +5064,8 @@ var protomaps = (() => {
         symbolizer: new PolygonSymbolizer({
           fill: params.grass
         }),
-        filter: (f2) => {
-          return f2.landuse == "grass";
+        filter: (z2, f2) => {
+          return f2.props.landuse == "grass";
         }
       },
       {
@@ -3510,8 +5073,8 @@ var protomaps = (() => {
         symbolizer: new PolygonSymbolizer({
           fill: params.park
         }),
-        filter: (f2) => {
-          return f2.leisure == "park";
+        filter: (z2, f2) => {
+          return f2.props.leisure == "park";
         }
       },
       {
@@ -3525,8 +5088,8 @@ var protomaps = (() => {
         symbolizer: new PolygonSymbolizer({
           fill: params.sand
         }),
-        filter: (f2) => {
-          return f2.natural == "sand";
+        filter: (z2, f2) => {
+          return f2.props.natural == "sand";
         }
       },
       {
@@ -3539,80 +5102,116 @@ var protomaps = (() => {
         dataLayer: "roads",
         symbolizer: new LineSymbolizer({
           color: params.highwayCasing,
-          width: exp(1.4, [[5, 1.5], [11, 4], [16, 9], [20, 40]])
+          width: exp(1.4, [
+            [5, 1.5],
+            [11, 4],
+            [16, 9],
+            [20, 40]
+          ])
         }),
-        filter: (f2) => {
-          return f2["pmap:kind"] == "highway";
+        filter: (z2, f2) => {
+          return f2.props["pmap:kind"] == "highway";
         }
       },
       {
         dataLayer: "roads",
         symbolizer: new LineSymbolizer({
           color: params.majorRoadCasing,
-          width: exp(1.4, [[9, 3], [12, 4], [17, 8], [20, 22]])
+          width: exp(1.4, [
+            [9, 3],
+            [12, 4],
+            [17, 8],
+            [20, 22]
+          ])
         }),
-        filter: (f2) => {
-          return f2["pmap:kind"] == "major_road";
+        filter: (z2, f2) => {
+          return f2.props["pmap:kind"] == "major_road";
         }
       },
       {
         dataLayer: "roads",
         symbolizer: new LineSymbolizer({
           color: params.mediumRoadCasing,
-          width: exp(1.4, [[13, 3], [17, 6], [20, 18]])
+          width: exp(1.4, [
+            [13, 3],
+            [17, 6],
+            [20, 18]
+          ])
         }),
-        filter: (f2) => {
-          return f2["pmap:kind"] == "medium_road";
+        filter: (z2, f2) => {
+          return f2.props["pmap:kind"] == "medium_road";
         }
       },
       {
         dataLayer: "roads",
         symbolizer: new LineSymbolizer({
           color: params.minorRoadCasing,
-          width: exp(1.4, [[14, 2], [17, 5], [20, 15]])
+          width: exp(1.4, [
+            [14, 2],
+            [17, 5],
+            [20, 15]
+          ])
         }),
-        filter: (f2) => {
-          return f2["pmap:kind"] == "minor_road";
+        filter: (z2, f2) => {
+          return f2.props["pmap:kind"] == "minor_road";
         }
       },
       {
         dataLayer: "roads",
         symbolizer: new LineSymbolizer({
           color: params.minorRoad,
-          width: exp(1.4, [[14, 1], [17, 3], [20, 13]])
+          width: exp(1.4, [
+            [14, 1],
+            [17, 3],
+            [20, 13]
+          ])
         }),
-        filter: (f2) => {
-          return f2["pmap:kind"] == "minor_road";
+        filter: (z2, f2) => {
+          return f2.props["pmap:kind"] == "minor_road";
         }
       },
       {
         dataLayer: "roads",
         symbolizer: new LineSymbolizer({
           color: params.mediumRoad,
-          width: exp(1.4, [[13, 2], [17, 4], [20, 15]])
+          width: exp(1.4, [
+            [13, 2],
+            [17, 4],
+            [20, 15]
+          ])
         }),
-        filter: (f2) => {
-          return f2["pmap:kind"] == "medium_road";
+        filter: (z2, f2) => {
+          return f2.props["pmap:kind"] == "medium_road";
         }
       },
       {
         dataLayer: "roads",
         symbolizer: new LineSymbolizer({
           color: params.majorRoad,
-          width: exp(1.4, [[9, 2], [12, 3], [17, 6], [20, 20]])
+          width: exp(1.4, [
+            [9, 2],
+            [12, 3],
+            [17, 6],
+            [20, 20]
+          ])
         }),
-        filter: (f2) => {
-          return f2["pmap:kind"] == "major_road";
+        filter: (z2, f2) => {
+          return f2.props["pmap:kind"] == "major_road";
         }
       },
       {
         dataLayer: "roads",
         symbolizer: new LineSymbolizer({
           color: params.highway,
-          width: exp(1.4, [[5, 0.5], [11, 2.5], [16, 7], [20, 30]])
+          width: exp(1.4, [
+            [5, 0.5],
+            [11, 2.5],
+            [16, 7],
+            [20, 30]
+          ])
         }),
-        filter: (f2) => {
-          return f2["pmap:kind"] == "highway";
+        filter: (z2, f2) => {
+          return f2.props["pmap:kind"] == "highway";
         }
       },
       {
@@ -3645,59 +5244,60 @@ var protomaps = (() => {
           symbolizer,
           new OffsetTextSymbolizer({
             fill,
-            properties: language2
+            label_props: language2
           })
-        ], {});
+        ]);
       } else {
         return new FlexSymbolizer([
           symbolizer,
           new CenteredTextSymbolizer({
             fill,
-            properties: language2
+            label_props: language2
           })
-        ], {});
+        ]);
       }
     };
     return [
       {
         dataLayer: "places",
         symbolizer: languageStack(new CenteredTextSymbolizer({
-          properties: nametags,
+          label_props: nametags,
           fill: params.countryLabel,
-          font: (z2, p2) => {
+          lineHeight: 1.5,
+          font: (z2, f2) => {
             if (z2 < 6)
               return "200 14px sans-serif";
             return "200 20px sans-serif";
           },
           textTransform: "uppercase"
         }), params.countryLabel),
-        filter: (f2) => {
-          return f2["pmap:kind"] == "country";
+        filter: (z2, f2) => {
+          return f2.props["pmap:kind"] == "country";
         }
       },
       {
         dataLayer: "places",
         symbolizer: languageStack(new CenteredTextSymbolizer({
-          properties: nametags,
+          label_props: nametags,
           fill: params.stateLabel,
           font: "300 16px sans-serif"
         }), params.stateLabel),
-        filter: (f2) => {
-          return f2["pmap:kind"] == "state";
+        filter: (z2, f2) => {
+          return f2.props["pmap:kind"] == "state";
         }
       },
       {
         id: "cities_high",
         dataLayer: "places",
-        filter: (f2) => {
-          return f2["pmap:kind"] == "city";
+        filter: (z2, f2) => {
+          return f2.props["pmap:kind"] == "city";
         },
         minzoom: 7,
         symbolizer: languageStack(new CenteredTextSymbolizer({
-          properties: nametags,
+          label_props: nametags,
           fill: params.cityLabel,
-          font: (z2, p2) => {
-            if (p2["pmap:rank"] == 1) {
+          font: (z2, f2) => {
+            if ((f2 == null ? void 0 : f2.props["pmap:rank"]) === 1) {
               if (z2 > 8)
                 return "600 20px sans-serif";
               return "600 12px sans-serif";
@@ -3715,8 +5315,8 @@ var protomaps = (() => {
       {
         id: "cities_low",
         dataLayer: "places",
-        filter: (f2) => {
-          return f2["pmap:kind"] == "city";
+        filter: (z2, f2) => {
+          return f2.props["pmap:kind"] == "city";
         },
         maxzoom: 6,
         symbolizer: new GroupSymbolizer([
@@ -3725,11 +5325,12 @@ var protomaps = (() => {
             fill: params.cityLabel
           }),
           languageStack(new OffsetTextSymbolizer({
-            properties: nametags,
+            label_props: nametags,
             fill: params.cityLabel,
-            offset: 2,
-            font: (z2, p2) => {
-              if (p2["pmap:rank"] == 1) {
+            offsetX: 2,
+            offsetY: 2,
+            font: (z2, f2) => {
+              if ((f2 == null ? void 0 : f2.props["pmap:rank"]) === 1) {
                 if (z2 > 8)
                   return "600 20px sans-serif";
                 return "600 12px sans-serif";
@@ -3749,19 +5350,19 @@ var protomaps = (() => {
         id: "neighbourhood",
         dataLayer: "places",
         symbolizer: languageStack(new CenteredTextSymbolizer({
-          properties: nametags,
+          label_props: nametags,
           fill: params.neighbourhoodLabel,
           font: "500 10px sans-serif",
           textTransform: "uppercase"
         }), params.neighbourhoodLabel),
-        filter: (f2) => {
-          return f2["pmap:kind"] == "neighbourhood";
+        filter: (z2, f2) => {
+          return f2.props["pmap:kind"] == "neighbourhood";
         }
       },
       {
         dataLayer: "landuse",
         symbolizer: languageStack(new PolygonLabelSymbolizer({
-          properties: nametags,
+          label_props: nametags,
           fill: params.landuseLabel,
           font: "300 12px sans-serif"
         }), params.landuseLabel)
@@ -3769,7 +5370,7 @@ var protomaps = (() => {
       {
         dataLayer: "water",
         symbolizer: languageStack(new PolygonLabelSymbolizer({
-          properties: nametags,
+          label_props: nametags,
           fill: params.waterLabel,
           font: "italic 600 12px sans-serif"
         }), params.waterLabel)
@@ -3777,7 +5378,7 @@ var protomaps = (() => {
       {
         dataLayer: "natural",
         symbolizer: languageStack(new PolygonLabelSymbolizer({
-          properties: nametags,
+          label_props: nametags,
           fill: params.naturalLabel,
           font: "italic 300 12px sans-serif"
         }), params.naturalLabel)
@@ -3785,7 +5386,7 @@ var protomaps = (() => {
       {
         dataLayer: "roads",
         symbolizer: languageStack(new LineLabelSymbolizer({
-          properties: nametags,
+          label_props: nametags,
           fill: params.roadsLabel,
           font: "500 12px sans-serif"
         }), params.roadsLabel),
@@ -3794,14 +5395,14 @@ var protomaps = (() => {
       {
         dataLayer: "roads",
         symbolizer: new ShieldSymbolizer({
-          properties: ["ref"],
+          label_props: ["ref"],
           font: "600 9px sans-serif",
           background: params.highway,
           padding: 2,
           fill: params.neighbourhoodLabel
         }),
-        filter: (f2) => {
-          return f2["pmap:kind"] == "highway";
+        filter: (z2, f2) => {
+          return f2.props["pmap:kind"] == "highway";
         }
       },
       {
@@ -3812,14 +5413,73 @@ var protomaps = (() => {
             fill: params.poisLabel
           }),
           languageStack(new OffsetTextSymbolizer({
-            properties: nametags,
+            label_props: nametags,
             fill: params.poisLabel,
-            offset: 2,
+            offsetX: 2,
+            offsetY: 2,
             font: "300 10px sans-serif"
           }), params.poisLabel)
         ])
       }
     ];
+  };
+
+  // src/xray.ts
+  var xray_symbolizers = (dataSource, dataLayer, color) => {
+    return [
+      {
+        dataSource,
+        dataLayer,
+        symbolizer: new CircleSymbolizer({
+          opacity: 0.2,
+          fill: color,
+          radius: 4
+        }),
+        filter: (z2, f2) => {
+          return f2.geomType == GeomType.Point;
+        }
+      },
+      {
+        dataSource,
+        dataLayer,
+        symbolizer: new LineSymbolizer({
+          opacity: 0.2,
+          color,
+          width: 2
+        }),
+        filter: (z2, f2) => {
+          return f2.geomType == GeomType.Line;
+        }
+      },
+      {
+        dataSource,
+        dataLayer,
+        symbolizer: new PolygonSymbolizer({
+          opacity: 0.2,
+          fill: color,
+          stroke: color,
+          width: 1
+        }),
+        filter: (z2, f2) => {
+          return f2.geomType == GeomType.Polygon;
+        }
+      }
+    ];
+  };
+  var xray_rules = (prepared_tilemap, xray) => {
+    var rules = [];
+    for (var [dataSource, tiles] of prepared_tilemap) {
+      for (var tile of tiles) {
+        for (var dataLayer of tile.data.keys()) {
+          if (dataSource === xray.dataSource && dataLayer === xray.dataLayer) {
+          } else {
+            rules = rules.concat(xray_symbolizers(dataSource, dataLayer, "steelblue"));
+          }
+        }
+      }
+    }
+    rules = rules.concat(xray_symbolizers(xray.dataSource || "", xray.dataLayer, "red"));
+    return rules;
   };
 
   // src/frontends/static.ts
@@ -3828,50 +5488,110 @@ var protomaps = (() => {
   var MAXCOORD2 = R2 * Math.PI;
   var project2 = (latlng) => {
     let d = Math.PI / 180;
-    let constrained_lat = Math.max(Math.min(MAX_LATITUDE2, latlng[0]), -MAX_LATITUDE2);
+    let constrained_lat = Math.max(Math.min(MAX_LATITUDE2, latlng.y), -MAX_LATITUDE2);
     let sin = Math.sin(constrained_lat * d);
-    return new import_point_geometry5.default(R2 * latlng[1] * d, R2 * Math.log((1 + sin) / (1 - sin)) / 2);
+    return new import_point_geometry7.default(R2 * latlng.x * d, R2 * Math.log((1 + sin) / (1 - sin)) / 2);
+  };
+  var unproject = (point) => {
+    var d = 180 / Math.PI;
+    return {
+      lat: (2 * Math.atan(Math.exp(point.y / R2)) - Math.PI / 2) * d,
+      lng: point.x * d / R2
+    };
+  };
+  var instancedProject = (origin, display_zoom) => {
+    return (latlng) => {
+      let projected = project2(latlng);
+      let normalized = new import_point_geometry7.default((projected.x + MAXCOORD2) / (MAXCOORD2 * 2), 1 - (projected.y + MAXCOORD2) / (MAXCOORD2 * 2));
+      return normalized.mult((1 << display_zoom) * 256).sub(origin);
+    };
+  };
+  var instancedUnproject = (origin, display_zoom) => {
+    return (point) => {
+      let normalized = new import_point_geometry7.default(point.x, point.y).add(origin).div((1 << display_zoom) * 256);
+      let projected = new import_point_geometry7.default(normalized.x * (MAXCOORD2 * 2) - MAXCOORD2, (1 - normalized.y) * (MAXCOORD2 * 2) - MAXCOORD2);
+      return unproject(projected);
+    };
+  };
+  var getZoom = (degrees_lng, css_pixels) => {
+    let d = css_pixels * (360 / degrees_lng);
+    return Math.log2(d / 256);
   };
   var Static = class {
     constructor(options) {
       let theme = options.dark ? dark : light;
       this.paint_rules = options.paint_rules || paintRules(theme, options.shade);
       this.label_rules = options.label_rules || labelRules(theme, options.shade, options.language1, options.language2);
-      let source;
-      if (options.url.url) {
-        source = new PmtilesSource(options.url);
-      } else if (options.url.endsWith(".pmtiles")) {
-        source = new PmtilesSource(options.url);
-      } else {
-        source = new ZxySource(options.url);
-      }
-      let cache = new TileCache(source, 1024);
-      this.view = new View(cache, 14, 2);
-      this.debug = options.debug || false;
+      this.backgroundColor = options.backgroundColor;
+      this.views = sourcesToViews(options);
+      this.debug = options.debug || "";
+      this.xray = options.xray;
     }
     drawContext(ctx, width, height, latlng, display_zoom) {
       return __async(this, null, function* () {
         let center = project2(latlng);
-        let normalized_center = new import_point_geometry5.default((center.x + MAXCOORD2) / (MAXCOORD2 * 2), 1 - (center.y + MAXCOORD2) / (MAXCOORD2 * 2));
-        let origin = normalized_center.clone().mult((1 << display_zoom) * 256).sub(new import_point_geometry5.default(width / 2, height / 2));
-        let bbox = { minX: origin.x, minY: origin.y, maxX: origin.x + width, maxY: origin.y + height };
-        let prepared_tiles = yield this.view.getBbox(display_zoom, bbox);
-        let start = performance.now();
-        let labeler = new Labeler(display_zoom, ctx, this.label_rules, void 0);
-        for (var prepared_tile of prepared_tiles) {
-          yield labeler.add(prepared_tile);
+        let normalized_center = new import_point_geometry7.default((center.x + MAXCOORD2) / (MAXCOORD2 * 2), 1 - (center.y + MAXCOORD2) / (MAXCOORD2 * 2));
+        let origin = normalized_center.clone().mult(Math.pow(2, display_zoom) * 256).sub(new import_point_geometry7.default(width / 2, height / 2));
+        let bbox = {
+          minX: origin.x,
+          minY: origin.y,
+          maxX: origin.x + width,
+          maxY: origin.y + height
+        };
+        let promises = [];
+        for (const [k, v] of this.views) {
+          let promise = v.getBbox(display_zoom, bbox);
+          promises.push({ key: k, promise });
         }
-        let p2 = painter(ctx, prepared_tiles, labeler.index, this.paint_rules, bbox, origin, true, this.debug);
+        let tile_responses = yield Promise.all(promises.map((o2) => {
+          return o2.promise.then((v) => {
+            return { status: "fulfilled", value: v, key: o2.key };
+          }, (error) => {
+            return { status: "rejected", value: [], reason: error, key: o2.key };
+          });
+        }));
+        let prepared_tilemap = new Map();
+        for (const tile_response of tile_responses) {
+          if (tile_response.status === "fulfilled") {
+            prepared_tilemap.set(tile_response.key, tile_response.value);
+          }
+        }
+        let start = performance.now();
+        let labeler = new Labeler(display_zoom, ctx, this.label_rules, 16, void 0);
+        let layout_time = labeler.add(prepared_tilemap);
+        if (this.backgroundColor) {
+          ctx.save();
+          ctx.fillStyle = this.backgroundColor;
+          ctx.fillRect(0, 0, width, height);
+          ctx.restore();
+        }
+        let paint_rules = this.paint_rules;
+        if (this.xray) {
+          paint_rules = xray_rules(prepared_tilemap, this.xray);
+        }
+        let p2 = painter(ctx, display_zoom, prepared_tilemap, this.xray ? null : labeler.index, paint_rules, bbox, origin, true, this.debug);
         if (this.debug) {
           ctx.save();
           ctx.translate(-origin.x, -origin.y);
-          for (var prepared_tile of prepared_tiles) {
-            ctx.strokeStyle = "black";
-            ctx.strokeRect(prepared_tile.origin.x, prepared_tile.origin.y, prepared_tile.dim, prepared_tile.dim);
+          ctx.strokeStyle = this.debug;
+          ctx.fillStyle = this.debug;
+          ctx.font = "12px sans-serif";
+          let idx = 0;
+          for (const [k, v] of prepared_tilemap) {
+            for (let prepared_tile of v) {
+              ctx.strokeRect(prepared_tile.origin.x, prepared_tile.origin.y, prepared_tile.dim, prepared_tile.dim);
+              let dt = prepared_tile.data_tile;
+              ctx.fillText(k + (k ? " " : "") + dt.z + " " + dt.x + " " + dt.y, prepared_tile.origin.x + 4, prepared_tile.origin.y + 14 * (1 + idx));
+            }
+            idx++;
           }
           ctx.restore();
         }
-        return performance.now() - start;
+        return {
+          elapsed: performance.now() - start,
+          project: instancedProject(origin, display_zoom),
+          unproject: instancedUnproject(origin, display_zoom)
+        };
       });
     }
     drawCanvas(_0, _1, _2) {
@@ -3879,43 +5599,35 @@ var protomaps = (() => {
         let dpr = window.devicePixelRatio;
         let width = canvas.clientWidth;
         let height = canvas.clientHeight;
-        if (!canvas.sizeSet) {
+        if (!(canvas.width == width * dpr && canvas.height == height * dpr)) {
           canvas.width = width * dpr;
           canvas.height = height * dpr;
-          canvas.sizeSet = true;
         }
-        canvas.lang = options.lang;
+        if (options.lang)
+          canvas.lang = options.lang;
         let ctx = canvas.getContext("2d");
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
         return this.drawContext(ctx, width, height, latlng, display_zoom);
       });
     }
+    drawContextBounds(ctx, top_left, bottom_right, width, height) {
+      return __async(this, null, function* () {
+        let delta_degrees = bottom_right.x - top_left.x;
+        let center = new import_point_geometry7.default((top_left.x + bottom_right.x) / 2, (top_left.y + bottom_right.y) / 2);
+        return this.drawContext(ctx, width, height, center, getZoom(delta_degrees, width));
+      });
+    }
+    drawCanvasBounds(_0, _1, _2, _3) {
+      return __async(this, arguments, function* (canvas, top_left, bottom_right, width, options = {}) {
+        let delta_degrees = bottom_right.x - top_left.x;
+        let center = new import_point_geometry7.default((top_left.x + bottom_right.x) / 2, (top_left.y + bottom_right.y) / 2);
+        return this.drawCanvas(canvas, center, getZoom(delta_degrees, width), options);
+      });
+    }
   };
 
   // src/frontends/leaflet.ts
-  var import_point_geometry6 = __toModule(require_point_geometry());
-  var CanvasPool = class {
-    constructor(lang) {
-      this.lang = lang;
-      this.unused = [];
-    }
-    get(tile_size) {
-      if (this.unused.length) {
-        let tile = this.unused.shift();
-        tile.removed = false;
-        return tile;
-      }
-      let element = L.DomUtil.create("canvas", "leaflet-tile");
-      element.width = tile_size;
-      element.height = tile_size;
-      element.lang = this.lang;
-      return element;
-    }
-    put(elem) {
-      L.DomUtil.removeClass(elem, "leaflet-tile-loaded");
-      this.unused.push(elem);
-    }
-  };
+  var import_point_geometry8 = __toModule(require_point_geometry());
   var timer = (duration) => {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
@@ -3923,29 +5635,32 @@ var protomaps = (() => {
       }, duration);
     });
   };
-  var leafletLayer = (options) => {
+  var reflect = (promise) => {
+    return promise.then((v) => {
+      return { status: "fulfilled", value: v };
+    }, (error) => {
+      return { status: "rejected", reason: error };
+    });
+  };
+  var leafletLayer = (options = {}) => {
     class LeafletLayer extends L.GridLayer {
-      constructor(options2) {
+      constructor(options2 = {}) {
         if (options2.noWrap && !options2.bounds)
-          options2.bounds = [[-90, -180], [90, 180]];
-        if (!options2.attribution)
+          options2.bounds = [
+            [-90, -180],
+            [90, 180]
+          ];
+        if (options2.attribution == null)
           options2.attribution = '<a href="https://protomaps.com">Protomaps</a> \xA9 <a href="https://openstreetmap.org/copyright">OpenStreetMap</a>';
         super(options2);
         let theme = options2.dark ? dark : light;
         this.paint_rules = options2.paint_rules || paintRules(theme, options2.shade);
         this.label_rules = options2.label_rules || labelRules(theme, options2.shade, options2.language1, options2.language2);
+        this.backgroundColor = options2.backgroundColor;
         this.lastRequestedZ = void 0;
-        let source;
-        if (options2.url.url) {
-          source = new PmtilesSource(options2.url);
-        } else if (options2.url.endsWith(".pmtiles")) {
-          source = new PmtilesSource(options2.url);
-        } else {
-          source = new ZxySource(options2.url);
-        }
+        this.xray = options2.xray;
         this.tasks = options2.tasks || [];
-        let cache = new TileCache(source, 1024);
-        this.view = new View(cache, 14, 2);
+        this.views = sourcesToViews(options2);
         this.debug = options2.debug;
         let scratch = document.createElement("canvas").getContext("2d");
         this.scratch = scratch;
@@ -3954,9 +5669,11 @@ var protomaps = (() => {
             this.rerenderTile(t2);
           });
         };
-        this.labelers = new Labelers(this.scratch, this.label_rules, this.onTilesInvalidated);
+        this.labelers = new Labelers(this.scratch, this.label_rules, 16, this.onTilesInvalidated);
         this.tile_size = 256 * window.devicePixelRatio;
-        this.pool = new CanvasPool(options2.lang);
+        this.tileDelay = options2.tileDelay || 3;
+        this.lang = options2.lang;
+        this.inspector = this.inspect(this);
       }
       setDefaultStyle(darkOption, shade, language1, language2) {
         let theme = darkOption ? dark : light;
@@ -3967,69 +5684,106 @@ var protomaps = (() => {
       }) {
         return __async(this, null, function* () {
           this.lastRequestedZ = coords.z;
-          var prepared_tile;
-          try {
-            prepared_tile = yield this.view.getDisplayTile(coords);
-          } catch (e2) {
-            if (e2.name == "AbortError")
-              return;
-            else
-              throw e2;
+          let promises = [];
+          for (const [k, v] of this.views) {
+            let promise = v.getDisplayTile(coords);
+            promises.push({ key: k, promise });
+          }
+          let tile_responses = yield Promise.all(promises.map((o2) => {
+            return o2.promise.then((v) => {
+              return { status: "fulfilled", value: v, key: o2.key };
+            }, (error) => {
+              return { status: "rejected", reason: error, key: o2.key };
+            });
+          }));
+          let prepared_tilemap = new Map();
+          for (const tile_response of tile_responses) {
+            if (tile_response.status === "fulfilled") {
+              prepared_tilemap.set(tile_response.key, [tile_response.value]);
+            } else {
+              if (tile_response.reason.name === "AbortError") {
+              } else {
+                console.error(tile_response.reason);
+              }
+            }
           }
           if (element.key != key)
             return;
           if (this.lastRequestedZ !== coords.z)
             return;
-          yield Promise.allSettled(this.tasks);
+          yield Promise.all(this.tasks.map(reflect));
           if (element.key != key)
             return;
           if (this.lastRequestedZ !== coords.z)
             return;
-          let layout_time = yield this.labelers.add(prepared_tile);
+          let layout_time = this.labelers.add(coords.z, prepared_tilemap);
           if (element.key != key)
             return;
           if (this.lastRequestedZ !== coords.z)
             return;
-          let label_data = this.labelers.getIndex(prepared_tile.z);
+          let label_data = this.labelers.getIndex(coords.z);
           if (!this._map)
             return;
           let center = this._map.getCenter().wrap();
           let pixelBounds = this._getTiledPixelBounds(center), tileRange = this._pxBoundsToTileRange(pixelBounds), tileCenter = tileRange.getCenter();
-          let priority = coords.distanceTo(tileCenter) * 5;
+          let priority = coords.distanceTo(tileCenter) * this.tileDelay;
           yield timer(priority);
           if (element.key != key)
             return;
           if (this.lastRequestedZ !== coords.z)
             return;
           let BUF = 16;
-          let bbox = { minX: 256 * coords.x - BUF, minY: 256 * coords.y - BUF, maxX: 256 * (coords.x + 1) + BUF, maxY: 256 * (coords.y + 1) + BUF };
-          let origin = new import_point_geometry6.default(256 * coords.x, 256 * coords.y);
+          let bbox = {
+            minX: 256 * coords.x - BUF,
+            minY: 256 * coords.y - BUF,
+            maxX: 256 * (coords.x + 1) + BUF,
+            maxY: 256 * (coords.y + 1) + BUF
+          };
+          let origin = new import_point_geometry8.default(256 * coords.x, 256 * coords.y);
+          element.width = this.tile_size;
+          element.height = this.tile_size;
           let ctx = element.getContext("2d");
           ctx.setTransform(this.tile_size / 256, 0, 0, this.tile_size / 256, 0, 0);
           ctx.clearRect(0, 0, 256, 256);
-          let painting_time = painter(ctx, [prepared_tile], label_data, this.paint_rules, bbox, origin, false, this.debug);
+          if (this.backgroundColor) {
+            ctx.save();
+            ctx.fillStyle = this.backgroundColor;
+            ctx.fillRect(0, 0, 256, 256);
+            ctx.restore();
+          }
+          var painting_time = 0;
+          let paint_rules = this.paint_rules;
+          if (this.xray) {
+            paint_rules = xray_rules(prepared_tilemap, this.xray);
+          }
+          painting_time = painter(ctx, coords.z, prepared_tilemap, this.xray ? null : label_data, paint_rules, bbox, origin, false, this.debug);
           if (this.debug) {
-            let data_tile = prepared_tile.data_tile;
             ctx.save();
             ctx.fillStyle = this.debug;
             ctx.font = "600 12px sans-serif";
             ctx.fillText(coords.z + " " + coords.x + " " + coords.y, 4, 14);
-            ctx.font = "200 12px sans-serif";
-            ctx.fillText(data_tile.z + " " + data_tile.x + " " + data_tile.y, 4, 28);
+            ctx.font = "12px sans-serif";
+            let ypos = 28;
+            for (let [k, v] of prepared_tilemap) {
+              let dt = v[0].data_tile;
+              ctx.fillText(k + (k ? " " : "") + dt.z + " " + dt.x + " " + dt.y, 4, ypos);
+              ypos += 14;
+            }
             ctx.font = "600 10px sans-serif";
             if (painting_time > 8) {
-              ctx.fillText(painting_time.toFixed() + " ms paint", 4, 42);
+              ctx.fillText(painting_time.toFixed() + " ms paint", 4, ypos);
+              ypos += 14;
             }
             if (layout_time > 8) {
-              ctx.fillText(layout_time.toFixed() + " ms layout", 4, 56);
+              ctx.fillText(layout_time.toFixed() + " ms layout", 4, ypos);
             }
             ctx.strokeStyle = this.debug;
-            ctx.lineWidth = coords.x / 4 === data_tile.x ? 1.5 : 0.5;
+            ctx.lineWidth = 0.5;
             ctx.beginPath();
             ctx.moveTo(0, 0);
             ctx.lineTo(0, 256);
             ctx.stroke();
-            ctx.lineWidth = coords.y / 4 === data_tile.y ? 1.5 : 0.5;
+            ctx.lineWidth = 0.5;
             ctx.beginPath();
             ctx.moveTo(0, 0);
             ctx.lineTo(256, 0);
@@ -4048,7 +5802,7 @@ var protomaps = (() => {
         }
       }
       clearLayout() {
-        this.labelers = new Labelers(this.scratch, this.label_rules, this.onTilesInvalidated);
+        this.labelers = new Labelers(this.scratch, this.label_rules, 16, this.onTilesInvalidated);
       }
       rerenderTiles() {
         for (let unwrapped_k in this._tiles) {
@@ -4058,7 +5812,8 @@ var protomaps = (() => {
         }
       }
       createTile(coords, showTile) {
-        let element = this.pool.get(this.tile_size);
+        let element = L.DomUtil.create("canvas", "leaflet-tile");
+        element.lang = this.lang;
         let key = this._tileCoordsToKey(coords);
         element.key = key;
         this.renderTile(coords, element, key, () => {
@@ -4073,8 +5828,9 @@ var protomaps = (() => {
         }
         tile.el.removed = true;
         tile.el.key = void 0;
+        L.DomUtil.removeClass(tile.el, "leaflet-tile-loaded");
+        tile.el.width = tile.el.height = 0;
         L.DomUtil.remove(tile.el);
-        this.pool.put(tile.el);
         delete this._tiles[key];
         this.fire("tileunload", {
           tile: tile.el,
@@ -4082,14 +5838,51 @@ var protomaps = (() => {
         });
       }
       queryFeatures(lng, lat) {
-        return this.view.queryFeatures(lng, lat, this._map.getZoom());
+        let featuresBySourceName = new Map();
+        for (var [sourceName, view] of this.views) {
+          featuresBySourceName.set(sourceName, view.queryFeatures(lng, lat, this._map.getZoom()));
+        }
+        return featuresBySourceName;
+      }
+      inspect(layer) {
+        return (ev) => {
+          let typeGlyphs = ["\u25CE", "\u27CD", "\u25FB"];
+          let wrapped = layer._map.wrapLatLng(ev.latlng);
+          let resultsBySourceName = layer.queryFeatures(wrapped.lng, wrapped.lat);
+          var content = "";
+          let firstRow = true;
+          for (var [sourceName, results] of resultsBySourceName) {
+            for (var result of results) {
+              if (this.xray && this.xray !== true) {
+                if (!((this.xray.dataSource || "") === sourceName && this.xray.dataLayer === result.layerName)) {
+                  continue;
+                }
+              }
+              content = content + `<div style="margin-top:${firstRow ? 0 : 0.5}em">${typeGlyphs[result.feature.geomType - 1]} <b>${sourceName} ${sourceName ? "/" : ""} ${result.layerName}</b> ${result.feature.id || ""}</div>`;
+              for (const prop in result.feature.props) {
+                content = content + `<div style="font-size:0.9em">${prop} = ${result.feature.props[prop]}</div>`;
+              }
+              firstRow = false;
+            }
+          }
+          if (firstRow) {
+            content = "No features.";
+          }
+          L.popup().setLatLng(ev.latlng).setContent('<div style="max-height:400px;overflow-y:scroll;padding-right:8px">' + content + "</div>").openOn(layer._map);
+        };
+      }
+      addInspector(map) {
+        return map.on("click", this.inspector);
+      }
+      removeInspector(map) {
+        return map.off("click", this.inspector);
       }
     }
     return new LeafletLayer(options);
   };
 
-  // node_modules/protosprites/index.js
-  var potpack = (boxes) => {
+  // node_modules/potpack/index.mjs
+  function potpack(boxes) {
     let area = 0;
     let maxWidth = 0;
     for (const box of boxes) {
@@ -4138,15 +5931,22 @@ var protomaps = (() => {
       h: height,
       fill: area / (width * height) || 0
     };
+  }
+
+  // src/task.ts
+  var Font = (name, url, weight) => {
+    let ff = new FontFace(name, "url(" + url + ")", { weight });
+    document.fonts.add(ff);
+    return ff.load();
   };
-  var mkimg = (src) => {
+  var mkimg = (src) => __async(void 0, null, function* () {
     return new Promise((resolve, reject) => {
       let img = new Image();
       img.onload = () => resolve(img);
       img.onerror = () => reject("Invalid SVG");
       img.src = src;
     });
-  };
+  });
   var MISSING = `
 <svg width="20px" height="20px" viewBox="0 0 50 50" version="1.1" xmlns="http://www.w3.org/2000/svg">
     <rect width="50" height="50" fill="#cccccc"/>
@@ -4155,10 +5955,12 @@ var protomaps = (() => {
     </g>
 </svg>
 `;
-  var Protosprites = class {
+  var Sheet = class {
     constructor(src) {
       this.src = src;
-      this.canvas = null;
+      this.canvas = document.createElement("canvas");
+      this.mapping = new Map();
+      this.missingBox = { x: 0, y: 0, w: 0, h: 0 };
     }
     load() {
       return __async(this, null, function* () {
@@ -4169,87 +5971,98 @@ var protomaps = (() => {
           src = yield c2.text();
         }
         let tree = new window.DOMParser().parseFromString(src, "text/html");
-        let icons = tree.body.children;
-        this.mapping = {};
+        let icons = Array.from(tree.body.children);
         let missingImg = yield mkimg("data:image/svg+xml;base64," + btoa(MISSING));
         let boxes = [
-          { w: missingImg.width * scale, h: missingImg.height * scale, img: missingImg }
+          {
+            w: missingImg.width * scale,
+            h: missingImg.height * scale,
+            img: missingImg,
+            id: ""
+          }
         ];
         let serializer = new XMLSerializer();
         for (let ps of icons) {
           var svg64 = btoa(serializer.serializeToString(ps));
           var image64 = "data:image/svg+xml;base64," + svg64;
           let img = yield mkimg(image64);
-          boxes.push({ w: img.width * scale, h: img.height * scale, img, id: ps.id });
+          boxes.push({
+            w: img.width * scale,
+            h: img.height * scale,
+            img,
+            id: ps.id
+          });
         }
         let packresult = potpack(boxes);
-        this.canvas = document.createElement("canvas");
         this.canvas.width = packresult.w;
         this.canvas.height = packresult.h;
         let ctx = this.canvas.getContext("2d");
-        for (let box of boxes) {
-          ctx.drawImage(box.img, box.x, box.y, box.w, box.h);
-          if (box.id)
-            this.mapping[box.id] = { x: box.x, y: box.y, w: box.w, h: box.h };
-          else
-            this.missingBox = { x: box.x, y: box.y, w: box.w, h: box.h };
+        if (ctx) {
+          for (let box of boxes) {
+            if (box.x !== void 0 && box.y !== void 0) {
+              ctx.drawImage(box.img, box.x, box.y, box.w, box.h);
+              if (box.id)
+                this.mapping.set(box.id, {
+                  x: box.x,
+                  y: box.y,
+                  w: box.w,
+                  h: box.h
+                });
+              else
+                this.missingBox = { x: box.x, y: box.y, w: box.w, h: box.h };
+            }
+          }
         }
         return this;
       });
     }
     get(name) {
-      let result = this.mapping[name];
+      let result = this.mapping.get(name);
       if (!result)
         result = this.missingBox;
-      result.canvas = this.canvas;
       return result;
     }
   };
 
-  // src/task.ts
-  var Font = (name, url, weight) => {
-    let ff = new FontFace(name, "url(" + url + ")", { weight });
-    document.fonts.add(ff);
-    return ff.load();
-  };
-  var Sprites = (url) => {
-    return new Protosprites(url);
-  };
-
   // src/compat/json_style.ts
+  function number(val, defaultValue) {
+    return typeof val === "number" ? val : defaultValue;
+  }
   function filterFn(arr2) {
     if (arr2.includes("$type")) {
-      return (f2) => true;
+      return (z2) => true;
     } else if (arr2[0] == "==") {
-      return (f2) => f2[arr2[1]] === arr2[2];
+      return (z2, f2) => f2.props[arr2[1]] === arr2[2];
     } else if (arr2[0] == "!=") {
-      return (f2) => f2[arr2[1]] !== arr2[2];
+      return (z2, f2) => f2.props[arr2[1]] !== arr2[2];
     } else if (arr2[0] == "!") {
       let sub = filterFn(arr2[1]);
-      return (f2) => !sub(f2);
+      return (z2, f2) => !sub(z2, f2);
     } else if (arr2[0] === "<") {
-      return (f2) => f2[arr2[1]] < arr2[2];
+      return (z2, f2) => number(f2.props[arr2[1]], Infinity) < arr2[2];
     } else if (arr2[0] === "<=") {
-      return (f2) => f2[arr2[1]] <= arr2[2];
+      return (z2, f2) => number(f2.props[arr2[1]], Infinity) <= arr2[2];
     } else if (arr2[0] === ">") {
-      return (f2) => f2[arr2[1]] > arr2[2];
+      return (z2, f2) => number(f2.props[arr2[1]], -Infinity) > arr2[2];
     } else if (arr2[0] === ">=") {
-      return (f2) => f2[arr2[1]] >= arr2[2];
+      return (z2, f2) => number(f2.props[arr2[1]], -Infinity) >= arr2[2];
     } else if (arr2[0] === "in") {
-      return (f2) => arr2.slice(2, arr2.length).includes(f2[arr2[1]]);
+      return (z2, f2) => arr2.slice(2, arr2.length).includes(f2.props[arr2[1]]);
     } else if (arr2[0] === "!in") {
-      return (f2) => !arr2.slice(2, arr2.length).includes(f2[arr2[1]]);
+      return (z2, f2) => !arr2.slice(2, arr2.length).includes(f2.props[arr2[1]]);
     } else if (arr2[0] === "has") {
-      return (f2) => f2.hasOwnProperty(arr2[1]);
+      return (z2, f2) => f2.props.hasOwnProperty(arr2[1]);
+    } else if (arr2[0] === "!has") {
+      return (z2, f2) => !f2.props.hasOwnProperty(arr2[1]);
     } else if (arr2[0] === "all") {
       let parts = arr2.slice(1, arr2.length).map((e2) => filterFn(e2));
-      return (f2) => parts.every((p2) => {
-        return p2(f2);
+      return (z2, f2) => parts.every((p2) => {
+        return p2(z2, f2);
       });
     } else if (arr2[0] === "any") {
       let parts = arr2.slice(1, arr2.length).map((e2) => filterFn(e2));
-      return (f2) => parts.some((p2) => {
-        return p2(f2);
+      return (z2, f2) => parts.some((p2) => {
+        return p2(z2, f2);
       });
     } else {
       console.log("Unimplemented filter: ", arr2[0]);
@@ -4258,7 +6071,7 @@ var protomaps = (() => {
   }
   function numberFn(obj) {
     if (obj.base && obj.stops) {
-      return (z2, f2) => {
+      return (z2) => {
         return exp(obj.base, obj.stops)(z2 - 1);
       };
     } else if (obj[0] == "interpolate" && obj[1][0] == "exponential" && obj[2] == "zoom") {
@@ -4273,13 +6086,15 @@ var protomaps = (() => {
     } else if (obj[0] == "step" && obj[1][0] == "get") {
       let slice = obj.slice(2);
       let prop = obj[1][1];
-      return (z2, props) => {
-        let val = props[prop];
-        if (val < slice[1])
-          return slice[0];
-        for (i2 = 1; i2 < slice.length; i2 += 2) {
-          if (val <= slice[i2])
-            return slice[i2 + 1];
+      return (z2, f2) => {
+        let val = f2 == null ? void 0 : f2.props[prop];
+        if (typeof val === "number") {
+          if (val < slice[1])
+            return slice[0];
+          for (i2 = 1; i2 < slice.length; i2 += 2) {
+            if (val <= slice[i2])
+              return slice[i2 + 1];
+          }
         }
         return slice[slice.length - 1];
       };
@@ -4294,15 +6109,15 @@ var protomaps = (() => {
     if (typeof obj == "number") {
       return obj;
     }
-    return numberFn(obj);
+    return (z2, f2) => f2 ? numberFn(obj)(z2, f2) : defaultValue;
   }
   function widthFn(width_obj, gap_obj) {
     let w = numberOrFn(width_obj, 1);
     let g = numberOrFn(gap_obj);
-    return (z2) => {
-      let tmp = typeof w == "number" ? w : w(z2, {});
+    return (z2, f2) => {
+      let tmp = typeof w == "number" ? w : w(z2, f2);
       if (g) {
-        return tmp + (typeof g == "number" ? g : g(z2, {}));
+        return tmp + (typeof g == "number" ? g : g(z2, f2));
       }
       return tmp;
     };
@@ -4324,23 +6139,23 @@ var protomaps = (() => {
     if (fontfaces.length && fontfaces[0].style)
       style = fontfaces[0].style + " ";
     if (typeof text_size == "number") {
-      return `${style}${weight}${text_size}px ${fontfaces.map((f2) => f2.face).join(", ")}`;
+      return (z2) => `${style}${weight}${text_size}px ${fontfaces.map((f2) => f2.face).join(", ")}`;
     } else if (text_size.stops) {
       var base = 1.4;
       if (text_size.base)
         base = text_size.base;
       let t2 = numberFn(text_size);
-      return (z2) => {
-        return `${style}${weight}${t2(z2, {})}px ${fontfaces.map((f2) => f2.face).join(", ")}`;
+      return (z2, f2) => {
+        return `${style}${weight}${t2(z2, f2)}px ${fontfaces.map((f3) => f3.face).join(", ")}`;
       };
     } else if (text_size[0] == "step") {
       let t2 = numberFn(text_size);
-      return (z2, p2) => {
-        return `${style}${weight}${t2(z2, p2)}px ${fontfaces.map((f2) => f2.face).join(", ")}`;
+      return (z2, f2) => {
+        return `${style}${weight}${t2(z2, f2)}px ${fontfaces.map((f3) => f3.face).join(", ")}`;
       };
     } else {
       console.log("Can't parse font: ", obj);
-      return (z2, p2) => "12px sans-serif";
+      return (z2) => "12px sans-serif";
     }
   }
   function json_style(obj, fontsubmap) {
@@ -4414,7 +6229,8 @@ var protomaps = (() => {
               fill: layer.paint["text-color"],
               width: layer.paint["text-halo-width"],
               stroke: layer.paint["text-halo-color"],
-              textTransform: layer.layout["text-transform"]
+              textTransform: layer.layout["text-transform"],
+              label_props: layer.layout["text-field"] ? [layer.layout["text-field"]] : void 0
             })
           });
         } else {
@@ -4426,10 +6242,22 @@ var protomaps = (() => {
               fill: layer.paint["text-color"],
               stroke: layer.paint["text-halo-color"],
               width: layer.paint["text-halo-width"],
-              textTransform: layer.layout["text-transform"]
+              textTransform: layer.layout["text-transform"],
+              label_props: layer.layout["text-field"] ? [layer.layout["text-field"]] : void 0
             })
           });
         }
+      } else if (layer.type == "circle") {
+        paint_rules.push({
+          dataLayer: layer["source-layer"],
+          filter,
+          symbolizer: new CircleSymbolizer({
+            radius: layer.paint["circle-radius"],
+            fill: layer.paint["circle-color"],
+            stroke: layer.paint["circle-stroke-color"],
+            width: layer.paint["circle-stroke-width"]
+          })
+        });
       }
     }
     label_rules.reverse();
