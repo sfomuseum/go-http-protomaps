@@ -63,8 +63,8 @@ func AppendResourcesHandlerWithPrefix(next http.Handler, opts *ProtomapsOptions,
 		next = leaflet.AppendResourcesHandlerWithPrefix(next, opts.LeafletOptions, prefix)
 	}
 
-	js := opts.JS
-	css := opts.CSS
+	js := make([]string, len(opts.JS))
+	css := make([]string, len(opts.CSS))
 
 	attrs := map[string]string{
 		"protomaps-tile-url": opts.TileURL,
@@ -72,11 +72,11 @@ func AppendResourcesHandlerWithPrefix(next http.Handler, opts *ProtomapsOptions,
 
 	if prefix != "" {
 
-		for i, path := range js {
+		for i, path := range opts.JS {
 			js[i] = appendPrefix(prefix, path)
 		}
 
-		for i, path := range css {
+		for i, path := range opts.CSS {
 			css[i] = appendPrefix(prefix, path)
 		}
 
