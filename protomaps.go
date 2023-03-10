@@ -50,10 +50,6 @@ func DefaultProtomapsOptions() *ProtomapsOptions {
 // AppendResourcesHandler will rewrite any HTML produced by previous handler to include the necessary markup to load Protomaps JavaScript files and related assets.
 func AppendResourcesHandler(next http.Handler, opts *ProtomapsOptions) http.Handler {
 
-	if APPEND_LEAFLET_RESOURCES {
-		next = leaflet.AppendResourcesHandler(next, opts.LeafletOptions)
-	}
-
 	return AppendResourcesHandlerWithPrefix(next, opts, "")
 }
 
@@ -75,7 +71,7 @@ func AppendResourcesHandlerWithPrefix(next http.Handler, opts *ProtomapsOptions,
 // Append all the files in the net/http FS instance containing the embedded Protomaps assets to an *http.ServeMux instance.
 func AppendAssetHandlers(mux *http.ServeMux) error {
 
-	return aa_static.AppendStaticAssetHandlers(mux, static.FS)
+	return AppendAssetHandlersWithPrefix(mux, "")
 }
 
 // Append all the files in the net/http FS instance containing the embedded Protomaps assets to an *http.ServeMux instance ensuring that all URLs are prepended with prefix.
@@ -86,7 +82,7 @@ func AppendAssetHandlersWithPrefix(mux *http.ServeMux, prefix string) error {
 		err := leaflet.AppendAssetHandlersWithPrefix(mux, prefix)
 
 		if err != nil {
-			return err
+			return fmt.Errorf("Failed to append Leaflet assets, %w", err)
 		}
 	}
 
