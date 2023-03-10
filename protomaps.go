@@ -57,12 +57,14 @@ func AppendResourcesHandler(next http.Handler, opts *ProtomapsOptions) http.Hand
 func AppendResourcesHandlerWithPrefix(next http.Handler, opts *ProtomapsOptions, prefix string) http.Handler {
 
 	if APPEND_LEAFLET_RESOURCES {
+		opts.LeafletOptions.AppendJavaScriptAtEOF = opts.AppendJavaScriptAtEOF
 		next = leaflet.AppendResourcesHandlerWithPrefix(next, opts.LeafletOptions, prefix)
 	}
 
 	static_opts := aa_static.DefaultResourcesOptions()
 	static_opts.CSS = opts.CSS
 	static_opts.JS = opts.JS
+	static_opts.DataAttributes["protomaps-tile-url"] = opts.TileURL
 	static_opts.AppendJavaScriptAtEOF = opts.AppendJavaScriptAtEOF
 
 	return aa_static.AppendResourcesHandlerWithPrefix(next, static_opts, prefix)

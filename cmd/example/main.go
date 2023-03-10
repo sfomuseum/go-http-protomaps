@@ -23,6 +23,8 @@ func main() {
 
 	append_leaflet := flag.Bool("append-leaflet", true, "Append Leaflet.js assets and resources bundled with the go-http-protomaps package.")
 
+	js_eof := flag.Bool("javascript-at-eof", false, "Append JavaScript resources to end of HTML file.")
+
 	flag.Parse()
 
 	ctx := context.Background()
@@ -90,6 +92,7 @@ func main() {
 	pm_opts.TileURL = *tile_url
 
 	pm_opts.LeafletOptions.EnableHash()
+	pm_opts.AppendJavaScriptAtEOF = *js_eof
 
 	index_handler = protomaps.AppendResourcesHandler(index_handler, pm_opts)
 	mux.Handle("/", index_handler)

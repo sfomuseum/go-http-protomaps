@@ -14,12 +14,17 @@
 	 window.addEventListener("load", function load(event){
 	     
 	     var tile_url = document.body.getAttribute("data-protomaps-tile-url");
-	     // console.log(tile_url);
+
+	     if (! tile_url){
+		 alert("Missing tile URL");
+		 return false;
+	     }
 	     
 	     const map = L.map('map');
 	     map.setView([37.61799, -122.370943], 14);	   
-	     
+
 	     var layer = protomaps.leafletLayer({url:tile_url})
+	     
 	     layer.addTo(map);	     
 	     layer.addInspector(map);
 	     
