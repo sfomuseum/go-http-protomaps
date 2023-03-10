@@ -11,18 +11,25 @@
     <body>
         <div id="map"></div>
         <script type="text/javascript">
+	 window.addEventListener("load", function load(event){
+	     
+	     var tile_url = document.body.getAttribute("data-protomaps-tile-url");
 
-	 var tile_url = document.body.getAttribute("data-protomaps-tile-url");
-	 
-         const map = L.map('map');
-	 map.setView([37.61799, -122.370943], 14);
+	     if (! tile_url){
+		 alert("Missing tile URL");
+		 return false;
+	     }
+	     
+	     const map = L.map('map');
+	     map.setView([37.61799, -122.370943], 14);	   
 
-	 console.log(tile_url);
-	 
-	 var layer = protomaps.leafletLayer({url:tile_url})
-	 layer.addTo(map);	     
-	 
-	 new L.Hash(map);
+	     var layer = protomaps.leafletLayer({url:tile_url})
+	     
+	     layer.addTo(map);	     
+	     layer.addInspector(map);
+	     
+	     new L.Hash(map);
+	 });	 
         </script>
     </body>
 </html>
