@@ -3,7 +3,7 @@ module github.com/sfomuseum/go-http-protomaps
 go 1.18
 
 require (
-	github.com/aaronland/go-http-leaflet v0.3.0
+	github.com/aaronland/go-http-leaflet v0.4.0
 	github.com/aaronland/go-http-server v1.0.1
 	github.com/aaronland/go-http-static v0.0.3
 	github.com/sfomuseum/go-http-rollup v0.0.2
