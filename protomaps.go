@@ -8,11 +8,11 @@ import (
 	"net/url"
 	"path/filepath"
 	"strings"
-	
+
 	"github.com/aaronland/go-http-leaflet"
 	aa_static "github.com/aaronland/go-http-static"
 	"github.com/sfomuseum/go-http-protomaps/static"
-	"github.com/sfomuseum/go-http-rollup"	
+	"github.com/sfomuseum/go-http-rollup"
 )
 
 // ProtomapsOptions provides a list of JavaScript and CSS link to include with HTML output as well as a URL referencing a specific Protomaps PMTiles database to include a data attribute.
@@ -29,9 +29,9 @@ type ProtomapsOptions struct {
 	// rather than in the <head> HTML element. Default is false
 	AppendJavaScriptAtEOF bool
 	// Rollup (minify and bundle) JavaScript and CSS assets.
-	RollupAssets          bool
-	Prefix                string
-	Logger                *log.Logger
+	RollupAssets bool
+	Prefix       string
+	Logger       *log.Logger
 	// By default the go-http-protomaps package will also include and reference Leaflet.js resources using the aaronland/go-http-leaflet package. If you want or need to disable this behaviour set this variable to false.
 	AppendLeafletResources bool
 	// By default the go-http-protomaps package will also include and reference Leaflet.js assets using the aaronland/go-http-leaflet package. If you want or need to disable this behaviour set this variable to false.
@@ -78,20 +78,24 @@ func AppendResourcesHandler(next http.Handler, opts *ProtomapsOptions) http.Hand
 
 	js_uris := opts.JS
 	css_uris := opts.CSS
-	
+
 	if opts.RollupAssets {
 
-		js_uris = []string{
-			"/javascript/protomaps.rollup.js",
+		if len(opts.JS) > 0 {
+			js_uris = []string{
+				"/javascript/protomaps.rollup.js",
+			}
 		}
 
-		css_uris = []string{
-			"/css/protomaps.rollup.css",
+		if len(opts.CSS) > 0 {
+			css_uris = []string{
+				"/css/protomaps.rollup.css",
+			}
 		}
 	}
-	
-	static_opts.CSS = js_uris
-	static_opts.JS = css_uris
+
+	static_opts.JS = js_uris
+	static_opts.CSS = css_uris
 
 	return aa_static.AppendResourcesHandlerWithPrefix(next, static_opts, opts.Prefix)
 }
@@ -116,9 +120,9 @@ func AppendAssetHandlers(mux *http.ServeMux, opts *ProtomapsOptions) error {
 	if !opts.RollupAssets {
 		return aa_static.AppendStaticAssetHandlersWithPrefix(mux, static.FS, opts.Prefix)
 	}
-	
+
 	// START OF this should eventually be made a generic function in go-http-rollup
-	
+
 	js_paths := make([]string, len(opts.JS))
 	css_paths := make([]string, len(opts.CSS))
 
@@ -132,69 +136,75 @@ func AppendAssetHandlers(mux *http.ServeMux, opts *ProtomapsOptions) error {
 		css_paths[idx] = path
 	}
 
-	rollup_js_paths := map[string][]string{
-		"protomaps.rollup.js": js_paths,
-	}
+	if len(js_paths) > 0 {
 
-	rollup_js_opts := &rollup.RollupJSHandlerOptions{
-		FS:     static.FS,
-		Paths:  rollup_js_paths,
-		Logger: opts.Logger,
-	}
-
-	rollup_js_handler, err := rollup.RollupJSHandler(rollup_js_opts)
-
-	if err != nil {
-		return fmt.Errorf("Failed to create rollup JS handler, %w", err)
-	}
-
-	rollup_js_uri := "/javascript/protomaps.rollup.js"
-
-	if opts.Prefix != "" {
-
-		u, err := url.JoinPath(opts.Prefix, rollup_js_uri)
-
-		if err != nil {
-			return fmt.Errorf("Failed to append prefix to %s, %w", rollup_js_uri, err)
+		rollup_js_paths := map[string][]string{
+			"protomaps.rollup.js": js_paths,
 		}
 
-		rollup_js_uri = u
-	}
+		rollup_js_opts := &rollup.RollupJSHandlerOptions{
+			FS:     static.FS,
+			Paths:  rollup_js_paths,
+			Logger: opts.Logger,
+		}
 
-	mux.Handle(rollup_js_uri, rollup_js_handler)
+		rollup_js_handler, err := rollup.RollupJSHandler(rollup_js_opts)
+
+		if err != nil {
+			return fmt.Errorf("Failed to create rollup JS handler, %w", err)
+		}
+
+		rollup_js_uri := "/javascript/protomaps.rollup.js"
+
+		if opts.Prefix != "" {
+
+			u, err := url.JoinPath(opts.Prefix, rollup_js_uri)
+
+			if err != nil {
+				return fmt.Errorf("Failed to append prefix to %s, %w", rollup_js_uri, err)
+			}
+
+			rollup_js_uri = u
+		}
+
+		mux.Handle(rollup_js_uri, rollup_js_handler)
+	}
 
 	// CSS
 
-	rollup_css_paths := map[string][]string{
-		"protomaps.rollup.css": css_paths,
-	}
+	if len(css_paths) > 0 {
 
-	rollup_css_opts := &rollup.RollupCSSHandlerOptions{
-		FS:     static.FS,
-		Paths:  rollup_css_paths,
-		Logger: opts.Logger,
-	}
-
-	rollup_css_handler, err := rollup.RollupCSSHandler(rollup_css_opts)
-
-	if err != nil {
-		return fmt.Errorf("Failed to create rollup CSS handler, %w", err)
-	}
-
-	rollup_css_uri := "/css/protomaps.rollup.css"
-
-	if opts.Prefix != "" {
-
-		u, err := url.JoinPath(opts.Prefix, rollup_css_uri)
-
-		if err != nil {
-			return fmt.Errorf("Failed to append prefix to %s, %w", rollup_css_uri, err)
+		rollup_css_paths := map[string][]string{
+			"protomaps.rollup.css": css_paths,
 		}
 
-		rollup_css_uri = u
-	}
+		rollup_css_opts := &rollup.RollupCSSHandlerOptions{
+			FS:     static.FS,
+			Paths:  rollup_css_paths,
+			Logger: opts.Logger,
+		}
 
-	mux.Handle(rollup_css_uri, rollup_css_handler)
+		rollup_css_handler, err := rollup.RollupCSSHandler(rollup_css_opts)
+
+		if err != nil {
+			return fmt.Errorf("Failed to create rollup CSS handler, %w", err)
+		}
+
+		rollup_css_uri := "/css/protomaps.rollup.css"
+
+		if opts.Prefix != "" {
+
+			u, err := url.JoinPath(opts.Prefix, rollup_css_uri)
+
+			if err != nil {
+				return fmt.Errorf("Failed to append prefix to %s, %w", rollup_css_uri, err)
+			}
+
+			rollup_css_uri = u
+		}
+
+		mux.Handle(rollup_css_uri, rollup_css_handler)
+	}
 
 	// END OF this should eventually be made a generic function in go-http-rollup
 
