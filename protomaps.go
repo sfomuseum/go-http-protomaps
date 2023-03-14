@@ -2,6 +2,8 @@ package protomaps
 
 import (
 	"fmt"
+	"io"
+	"log"
 	"net/http"
 	"path/filepath"
 
@@ -9,12 +11,6 @@ import (
 	aa_static "github.com/aaronland/go-http-static"
 	"github.com/sfomuseum/go-http-protomaps/static"
 )
-
-// By default the go-http-protomaps package will also include and reference Leaflet.js resources using the aaronland/go-http-leaflet package. If you want or need to disable this behaviour set this variable to false.
-var APPEND_LEAFLET_RESOURCES = true
-
-// By default the go-http-protomaps package will also include and reference Leaflet.js assets using the aaronland/go-http-leaflet package. If you want or need to disable this behaviour set this variable to false.
-var APPEND_LEAFLET_ASSETS = true
 
 // ProtomapsOptions provides a list of JavaScript and CSS link to include with HTML output as well as a URL referencing a specific Protomaps PMTiles database to include a data attribute.
 type ProtomapsOptions struct {
@@ -29,10 +25,19 @@ type ProtomapsOptions struct {
 	// AppendJavaScriptAtEOF is a boolean flag to append JavaScript markup at the end of an HTML document
 	// rather than in the <head> HTML element. Default is false
 	AppendJavaScriptAtEOF bool
+	RollupAssets          bool
+	Prefix                string
+	Logger                *log.Logger
+	// By default the go-http-protomaps package will also include and reference Leaflet.js resources using the aaronland/go-http-leaflet package. If you want or need to disable this behaviour set this variable to false.
+	AppendLeafletResources bool
+	// By default the go-http-protomaps package will also include and reference Leaflet.js assets using the aaronland/go-http-leaflet package. If you want or need to disable this behaviour set this variable to false.
+	AppendLeafletAssets bool
 }
 
 // Return a *ProtomapsOptions struct with default paths and URIs.
 func DefaultProtomapsOptions() *ProtomapsOptions {
+
+	logger := log.New(io.Discard, "", 0)
 
 	leaflet_opts := leaflet.DefaultLeafletOptions()
 
@@ -41,54 +46,56 @@ func DefaultProtomapsOptions() *ProtomapsOptions {
 		JS: []string{
 			"/javascript/protomaps.min.js",
 		},
-		LeafletOptions: leaflet_opts,
+		LeafletOptions:         leaflet_opts,
+		Logger:                 logger,
+		AppendLeafletResources: true,
+		AppendLeafletAssets:    true,
 	}
 
 	return opts
 }
 
-// AppendResourcesHandler will rewrite any HTML produced by previous handler to include the necessary markup to load Protomaps JavaScript files and related assets.
+// AppendResourcesHandlerWithPrefix will rewrite any HTML produced by previous handler to include the necessary markup to load Protomaps JavaScript files and related assets ensuring that all URIs are prepended with a prefix.
 func AppendResourcesHandler(next http.Handler, opts *ProtomapsOptions) http.Handler {
 
-	return AppendResourcesHandlerWithPrefix(next, opts, "")
-}
+	if opts.AppendLeafletResources {
 
-// AppendResourcesHandlerWithPrefix will rewrite any HTML produced by previous handler to include the necessary markup to load Protomaps JavaScript files and related assets ensuring that all URIs are prepended with a prefix.
-func AppendResourcesHandlerWithPrefix(next http.Handler, opts *ProtomapsOptions, prefix string) http.Handler {
-
-	if APPEND_LEAFLET_RESOURCES {
 		opts.LeafletOptions.AppendJavaScriptAtEOF = opts.AppendJavaScriptAtEOF
-		next = leaflet.AppendResourcesHandlerWithPrefix(next, opts.LeafletOptions, prefix)
+		opts.LeafletOptions.RollupAssets = opts.RollupAssets
+		opts.LeafletOptions.Prefix = opts.Prefix
+		opts.LeafletOptions.Logger = opts.Logger
+
+		next = leaflet.AppendResourcesHandler(next, opts.LeafletOptions)
 	}
 
 	static_opts := aa_static.DefaultResourcesOptions()
-	static_opts.CSS = opts.CSS
-	static_opts.JS = opts.JS
 	static_opts.DataAttributes["protomaps-tile-url"] = opts.TileURL
 	static_opts.AppendJavaScriptAtEOF = opts.AppendJavaScriptAtEOF
 
-	return aa_static.AppendResourcesHandlerWithPrefix(next, static_opts, prefix)
-}
+	static_opts.CSS = opts.CSS
+	static_opts.JS = opts.JS
 
-// Append all the files in the net/http FS instance containing the embedded Protomaps assets to an *http.ServeMux instance.
-func AppendAssetHandlers(mux *http.ServeMux) error {
-
-	return AppendAssetHandlersWithPrefix(mux, "")
+	return aa_static.AppendResourcesHandlerWithPrefix(next, static_opts, opts.Prefix)
 }
 
 // Append all the files in the net/http FS instance containing the embedded Protomaps assets to an *http.ServeMux instance ensuring that all URLs are prepended with prefix.
-func AppendAssetHandlersWithPrefix(mux *http.ServeMux, prefix string) error {
+func AppendAssetHandlers(mux *http.ServeMux, opts *ProtomapsOptions) error {
 
-	if APPEND_LEAFLET_ASSETS {
+	if opts.AppendLeafletAssets {
 
-		err := leaflet.AppendAssetHandlersWithPrefix(mux, prefix)
+		opts.LeafletOptions.AppendJavaScriptAtEOF = opts.AppendJavaScriptAtEOF
+		opts.LeafletOptions.RollupAssets = opts.RollupAssets
+		opts.LeafletOptions.Prefix = opts.Prefix
+		opts.LeafletOptions.Logger = opts.Logger
+
+		err := leaflet.AppendAssetHandlers(mux, opts.LeafletOptions)
 
 		if err != nil {
 			return fmt.Errorf("Failed to append Leaflet assets, %w", err)
 		}
 	}
 
-	return aa_static.AppendStaticAssetHandlersWithPrefix(mux, static.FS, prefix)
+	return aa_static.AppendStaticAssetHandlersWithPrefix(mux, static.FS, opts.Prefix)
 }
 
 // FileHandlerFromPath will take a path and create a http.FileServer handler

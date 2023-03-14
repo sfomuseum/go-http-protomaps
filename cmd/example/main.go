@@ -25,9 +25,13 @@ func main() {
 
 	js_eof := flag.Bool("javascript-at-eof", false, "Append JavaScript resources to end of HTML file.")
 
+	rollup_assets := flag.Bool("rollup-assets", false, "Rollup (minify and bundle) JavaScript and CSS assets.")
+
 	flag.Parse()
 
 	ctx := context.Background()
+
+	logger := log.Default()
 
 	static_fs := http.FS(staticFS)
 	static_handler := http.FileServer(static_fs)
@@ -36,33 +40,44 @@ func main() {
 
 	mux := http.NewServeMux()
 
+	pm_opts := protomaps.DefaultProtomapsOptions()
+	pm_opts.TileURL = *tile_url
+
+	pm_opts.LeafletOptions.EnableHash()
+	pm_opts.AppendJavaScriptAtEOF = *js_eof
+	pm_opts.RollupAssets = *rollup_assets
+	pm_opts.Logger = logger
+
 	if !*append_leaflet {
 
-		protomaps.APPEND_LEAFLET_RESOURCES = false
-		protomaps.APPEND_LEAFLET_ASSETS = false
+		pm_opts.AppendLeafletResources = false
+		pm_opts.AppendLeafletAssets = false
 
 		leaflet_opts := leaflet.DefaultLeafletOptions()
+		leaflet_opts.AppendJavaScriptAtEOF = *js_eof
+		leaflet_opts.RollupAssets = *rollup_assets
+
 		leaflet_opts.EnableHash()
 
 		index_handler = leaflet.AppendResourcesHandler(index_handler, leaflet_opts)
 
-		err := leaflet.AppendAssetHandlers(mux)
+		err := leaflet.AppendAssetHandlers(mux, leaflet_opts)
 
 		if err != nil {
-			log.Fatalf("Failed to append Leaflet asset handlers, %v", err)
+			logger.Fatalf("Failed to append Leaflet asset handlers, %v", err)
 		}
 	}
 
-	err := protomaps.AppendAssetHandlers(mux)
+	err := protomaps.AppendAssetHandlers(mux, pm_opts)
 
 	if err != nil {
-		log.Fatalf("Failed to append leaflet-protomaps asset handler, %v", err)
+		logger.Fatalf("Failed to append leaflet-protomaps asset handler, %v", err)
 	}
 
 	u, err := url.Parse(*tile_url)
 
 	if err != nil {
-		log.Fatalf("Failed to parse '%s', %v", tile_url, err)
+		logger.Fatalf("Failed to parse '%s', %v", tile_url, err)
 	}
 
 	switch u.Scheme {
@@ -75,7 +90,7 @@ func main() {
 		mux_url, mux_handler, err := protomaps.FileHandlerFromPath(u.Path, "")
 
 		if err != nil {
-			log.Fatalf("Failed to determine absolute path for '%s', %v", *tile_url, err)
+			logger.Fatalf("Failed to determine absolute path for '%s', %v", *tile_url, err)
 		}
 
 		mux.Handle(mux_url, mux_handler)
@@ -88,19 +103,13 @@ func main() {
 		log.Fatalf("Invalid or unsupported scheme")
 	}
 
-	pm_opts := protomaps.DefaultProtomapsOptions()
-	pm_opts.TileURL = *tile_url
-
-	pm_opts.LeafletOptions.EnableHash()
-	pm_opts.AppendJavaScriptAtEOF = *js_eof
-
 	index_handler = protomaps.AppendResourcesHandler(index_handler, pm_opts)
 	mux.Handle("/", index_handler)
 
 	s, err := server.NewServer(ctx, *server_uri)
 
 	if err != nil {
-		log.Fatalf("Failed to start server '%s', %v", *server_uri, err)
+		logger.Fatalf("Failed to start server '%s', %v", *server_uri, err)
 	}
 
 	log.Printf("Listening for requests on %s\n", s.Address())
@@ -108,7 +117,7 @@ func main() {
 	err = s.ListenAndServe(ctx, mux)
 
 	if err != nil {
-		log.Fatalf("Failed to start server, %v", err)
+		logger.Fatalf("Failed to start server, %v", err)
 	}
 
 }
