@@ -4,12 +4,13 @@ import (
 	"context"
 	"embed"
 	"flag"
-	"github.com/aaronland/go-http-leaflet"
-	"github.com/aaronland/go-http-server"
-	"github.com/sfomuseum/go-http-protomaps"
 	"log"
 	"net/http"
 	"net/url"
+
+	"github.com/aaronland/go-http-leaflet"
+	"github.com/aaronland/go-http-server"
+	"github.com/sfomuseum/go-http-protomaps"
 )
 
 //go:embed index.html sfo.pmtiles
@@ -31,8 +32,6 @@ func main() {
 
 	ctx := context.Background()
 
-	logger := log.Default()
-
 	static_fs := http.FS(staticFS)
 	static_handler := http.FileServer(static_fs)
 
@@ -46,7 +45,6 @@ func main() {
 	pm_opts.LeafletOptions.EnableHash()
 	pm_opts.AppendJavaScriptAtEOF = *js_eof
 	pm_opts.RollupAssets = *rollup_assets
-	pm_opts.Logger = logger
 
 	if !*append_leaflet {
 
@@ -64,20 +62,20 @@ func main() {
 		err := leaflet.AppendAssetHandlers(mux, leaflet_opts)
 
 		if err != nil {
-			logger.Fatalf("Failed to append Leaflet asset handlers, %v", err)
+			log.Fatalf("Failed to append Leaflet asset handlers, %v", err)
 		}
 	}
 
 	err := protomaps.AppendAssetHandlers(mux, pm_opts)
 
 	if err != nil {
-		logger.Fatalf("Failed to append leaflet-protomaps asset handler, %v", err)
+		log.Fatalf("Failed to append leaflet-protomaps asset handler, %v", err)
 	}
 
 	u, err := url.Parse(*tile_url)
 
 	if err != nil {
-		logger.Fatalf("Failed to parse '%s', %v", tile_url, err)
+		log.Fatalf("Failed to parse '%s', %v", tile_url, err)
 	}
 
 	switch u.Scheme {
@@ -90,7 +88,7 @@ func main() {
 		mux_url, mux_handler, err := protomaps.FileHandlerFromPath(u.Path, "")
 
 		if err != nil {
-			logger.Fatalf("Failed to determine absolute path for '%s', %v", *tile_url, err)
+			log.Fatalf("Failed to determine absolute path for '%s', %v", *tile_url, err)
 		}
 
 		mux.Handle(mux_url, mux_handler)
@@ -109,7 +107,7 @@ func main() {
 	s, err := server.NewServer(ctx, *server_uri)
 
 	if err != nil {
-		logger.Fatalf("Failed to start server '%s', %v", *server_uri, err)
+		log.Fatalf("Failed to start server '%s', %v", *server_uri, err)
 	}
 
 	log.Printf("Listening for requests on %s\n", s.Address())
@@ -117,7 +115,7 @@ func main() {
 	err = s.ListenAndServe(ctx, mux)
 
 	if err != nil {
-		logger.Fatalf("Failed to start server, %v", err)
+		log.Fatalf("Failed to start server, %v", err)
 	}
 
 }
