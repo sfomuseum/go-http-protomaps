@@ -9,7 +9,7 @@ import (
 	"net/url"
 
 	"github.com/aaronland/go-http-leaflet"
-	"github.com/aaronland/go-http-server"
+	"github.com/aaronland/go-http/v3/server"
 	"github.com/sfomuseum/go-http-protomaps"
 )
 

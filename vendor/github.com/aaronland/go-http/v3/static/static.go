@@ -3,11 +3,10 @@ package static
 import (
 	"fmt"
 	"io/fs"
-	_ "log"
 	"net/http"
 	"strings"
 
-	"github.com/aaronland/go-http-rewrite"	
+	"github.com/aaronland/go-http/v3/rewrite"
 )
 
 func StaticAssetsHandler(static_fs fs.FS) (http.Handler, error) {

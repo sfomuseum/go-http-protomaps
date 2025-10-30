@@ -2,11 +2,12 @@ package rewrite
 
 import (
 	"fmt"
-	"golang.org/x/net/html"
-	"golang.org/x/net/html/atom"
 	"io"
 	_ "log"
 	"net/http"
+
+	"golang.org/x/net/html"
+	"golang.org/x/net/html/atom"
 )
 
 // AppendResourcesOptions is a struct containing configuration options for the `AppendResourcesHandler` method.

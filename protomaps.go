@@ -9,9 +9,9 @@ import (
 	"strings"
 
 	"github.com/aaronland/go-http-leaflet"
-	aa_static "github.com/aaronland/go-http-static"
+	aa_static "github.com/aaronland/go-http/v3/static"
 	"github.com/sfomuseum/go-http-protomaps/static"
-	"github.com/sfomuseum/go-http-rollup"
+	"github.com/aaronland/go-http/v3/rollup"
 )
 
 // ProtomapsOptions provides a list of JavaScript and CSS link to include with HTML output as well as a URL referencing a specific Protomaps PMTiles database to include a data attribute.

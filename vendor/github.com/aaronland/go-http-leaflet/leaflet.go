@@ -7,8 +7,8 @@ import (
 	"strings"
 
 	"github.com/aaronland/go-http-leaflet/static"
-	aa_static "github.com/aaronland/go-http-static"
-	"github.com/sfomuseum/go-http-rollup"
+	aa_static "github.com/aaronland/go-http/v3/static"
+	"github.com/aaronland/go-http/v3/rollup"
 )
 
 var ROLLUP_ASSETS = false
